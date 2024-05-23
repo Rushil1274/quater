@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './App.css'; 
+import './App.css';
 
 const Doctors = () => {
   const [filter, setFilter] = useState({ name: '', specialization: '', fees: '', location: '' });
@@ -51,6 +51,11 @@ const Doctors = () => {
     setShowModal(true);
   };
 
+
+  const hnadleViewDetails = () => {
+
+  }
+
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedDoctor(null);
@@ -73,14 +78,14 @@ const Doctors = () => {
   return (
     <div>
       <h2>Filter Doctors</h2>
-      <div className="filters"> 
+      <div className="filters">
         <input
           type="text"
           name="name"
           placeholder="Filter by Name"
           value={filter.name}
           onChange={handleFilterChange}
-          className="input" 
+          className="input"
         />
         <input
           type="text"
@@ -88,7 +93,7 @@ const Doctors = () => {
           placeholder="Filter by Specialization"
           value={filter.specialization}
           onChange={handleFilterChange}
-          className="input" 
+          className="input"
         />
         <input
           type="text"
@@ -96,7 +101,7 @@ const Doctors = () => {
           placeholder="Filter by Fees"
           value={filter.fees}
           onChange={handleFilterChange}
-          className="input" 
+          className="input"
         />
         <input
           type="text"
@@ -108,16 +113,19 @@ const Doctors = () => {
         />
       </div>
       <h2>Doctor List</h2>
-      <div className="cardContainer"> 
+      <div className="cardContainer">
         {filteredDoctors.map((doctor, index) => (
-          <div key={index} className="card"> 
+          <div key={index} className="card">
             <img src={doctor.image} alt={doctor.name} className="image" />
             <h3>{doctor.name}</h3>
             <p><strong>Specialization:</strong> {doctor.specialization}</p>
             <p><strong>Fees:</strong> {doctor.fees}</p>
             <p><strong>Location:</strong> {doctor.location}</p>
             <p>{doctor.description}</p>
-            <button onClick={() => handleBookAppointment(doctor)} className="bookButton">Book Appointment</button>
+            <div className='doc-card-button'>
+              <button onClick={() => handleBookAppointment(doctor)} className="bookButton">Book Appointment</button>
+              <button onClick={() => hnadleViewDetails()} className='viewDetailsButton'>View Details</button>
+            </div>
           </div>
         ))}
       </div>

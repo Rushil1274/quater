@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaCheckDouble } from "react-icons/fa";
-import { FaClock, FaHeadset,FaHouseUser  } from "react-icons/fa";
+import { FaClock, FaHeadset, FaHouseUser } from "react-icons/fa";
 
 import img1 from "./images/specialities-01.png"
 import img2 from "./images/specialities-02.png"
@@ -30,7 +30,6 @@ function Home() {
             </section>
             <section className="why-us mt-5 mt-md-0">
                 <div className="container">
-
                     <div className="row">
                         <div className="col-lg-4 d-flex align-items-stretch">
                             <div className="content">
@@ -87,7 +86,6 @@ function Home() {
                         <h2>Clinic and Specialities</h2>
                         <p className='m-0'>Lorem ipsum dolor sit amet consectetur adipisicing.</p>
                     </div>
-
                     <div className="row justify-content-center">
                         <div className="col-md-9">
                             <div className="specialities-slider d-flex justify-content-center align-items-center gap-5">
@@ -131,11 +129,14 @@ function Home() {
                     </div>
                 </div>
             </section>
+            <section className="section section-rec-doc position-relative">
+                <div className="container-fluid">
+                    <div className='mb-5 section-title text-center'>
+                        <h2>Recommended Doctors</h2>
+                    </div>
+                </div>
+            </section>
         </>
-
-
-
-
     )
 }
 

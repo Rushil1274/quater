@@ -13,7 +13,7 @@ import Footer from './Footer';
 function App() {
   return (
     <BrowserRouter>
-       <Header/>
+      <Header />
       <Routes>
         <Route path='/' element={<Login />}></Route>
         <Route path='/signup' element={<Signup />}></Route>
@@ -22,8 +22,9 @@ function App() {
         <Route path='/about' element={<AboutPage />}></Route>
         <Route path='/contact' element={<Contact />}></Route>
         <Route path='/doctors' element={<Doctors />}></Route>
+        
       </Routes>
-      <Footer/>
+      <Footer />
     </BrowserRouter>
   );
 }
