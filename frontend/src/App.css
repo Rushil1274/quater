@@ -506,7 +506,6 @@ iframe {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* margin-bottom: 20px; */
 }
 
 .sticky-header {
@@ -523,14 +522,27 @@ iframe {
 .nav__wrapper {
   display: flex;
   align-items: center;
-  gap: 12;
+  justify-content: space-between; /* Ensure items are spaced correctly */
+  width: 100%;
+}
+
+.logo {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.logo img {
+  width: 180px;
+  padding: 10px;
 }
 
 .navigation {
+  flex: 2;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  /* gap: 12; */
+  justify-content: center; /* Center navigation links */
 }
 
 .menu {
@@ -543,47 +555,51 @@ ul {
   list-style-type: none;
 }
 
-.logo {
+.nav_icons {
+  flex: 1;
   display: flex;
+  justify-content: flex-end; /* Align icons to the right */
   align-items: center;
-  column-gap: 8px;
+  gap: 12px;
+  cursor: pointer;
 }
-
-.logo img {
-  width: 180px;
-  padding: 10px;
-}
-
 
 .nav_icons .user_icon img {
-  /* margin-top: 70px;/ */
   width: 33px;
   cursor: pointer;
-  /* display: flex; */
-  /* justify-content: center; */
-  /* align-items: center; */
 }
 
 .nav_icons .user_icon {
   position: relative;
   z-index: 9;
+  display: flex;
+  align-items: center;
 }
 
 .nav_icons .user_icon .profile-actions {
   position: absolute;
   top: calc(100% + 10px);
-  left: 0;
-  width: 150px;
+  left: 50%; /* Adjust positioning */
+  transform: translateX(-50%); /* Center the dropdown */
+  width: 200px; /* Increased width for better spacing */
   z-index: 10;
-  /* display: flex; */
-  /* align-items: center; */
   text-align: center;
   flex-direction: column;
   background: var(--secondary-color);
   border-radius: 10px;
-  line-height: 50px;
+  line-height: 1.5;
   display: none;
   cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box shadow */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.nav_icons .user_icon .profile-actions.show_profileActions {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
 }
 
 .profile_link {
@@ -591,61 +607,42 @@ ul {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #dddddd83;
+  background-color: #ffffff; /* Light background for better contrast */
   border-radius: 10px;
+  padding: 10px; /* Add padding */
 }
 
-.show_profileActions {
-  display: block !important;
+.profile_link a {
+  display: block;
+  width: 100%;
+  padding: 10px 0;
+  color: var(--primary-color);
+  text-decoration: none; /* Remove underline */
+  transition: background 0.3s ease;
+  border-radius: 5px;
 }
 
+.profile_link a:hover {
+  background: var(--primary-color);
+  color: #fff; /* White text on hover */
+}
+
+.profile_link a:not(:last-child) {
+  border-bottom: 1px solid #ddd; /* Separator line */
+}
 
 .nav_item, .navlink {
-  /* font-size: 18px; */
   font-family: "Poppins", sans-serif;
   font-weight: 400;
   color: var(--primary-color);
-  /* color: black; */
-  /* font-weight: 500; */
-  /* cursor: pointer; */
-  text-decoration: none;
+  text-decoration: none; /* Remove underline */
 }
 
-.nav_icons {
-  display: flex;
-  /* align-items: center; */
-  /* column-gap: 1.2rem; */
-  gap: 12px;
-  /* margin: 0px 10px; */
-  cursor: pointer;
-}
-
-.nav_icons .user_icon {
-  display: flex;
-  align-items: center;
-}
-
-.user-profile{
+.user-profile {
   font-size: 33px;
 }
 
-.nav_icons .profile .profile-action {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 150px;
-  z-index: 10;
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  background: var(--secondary-color);
-  line-height: 30px;
-  display: none;
-  cursor: pointer;
-}
-
-.mobile_menu{
+.mobile_menu {
   font-size: 1.3rem;
   color: var(--primary-color);
   display: none;
@@ -655,19 +652,8 @@ ul {
   font-weight: 600 !important;
 }
 
-.sticky-header {
-  width: 100%;
-  height: 70px;
-  line-height: 70px;
-  position: sticky;
-  top: 0;
-  right: 0;
-  z-index: 999;
-  box-shadow: 3px 3px 8px -3px #ddd;
-}
-
-@media only screen and (max-width:992px) {
-  .navigation{
+@media only screen and (max-width: 992px) {
+  .navigation {
       position: fixed;
       top: 0;
       left: 0;
@@ -690,8 +676,8 @@ ul {
       justify-content: center;
       align-items: center;
   }
-  
-  .active-menu{
+
+  .active-menu {
       display: block;
   }
 
@@ -709,7 +695,7 @@ ul {
       height: 60px;
       line-height: 60px;
   }
-} 
+}
 
 /* header end */
 
@@ -972,3 +958,5 @@ ul {
 }
 
 /* Home End */
+
+
