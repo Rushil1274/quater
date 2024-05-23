@@ -9,21 +9,21 @@ import Contact from './Contactus';
 import Doctors from './Doctorsearch';
 import Header from './Header';
 import Footer from './Footer';
-
+import MyProfile from './MyProfile'
 
 function App() {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<Login />}></Route>
-        <Route path="/signup" element={<Signup />}></Route>
-        <Route path="/Login" element={<Login />}></Route>
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/home" element={<Home />}></Route>
-        <Route path="/about" element={<AboutPage />}></Route>
-        <Route path="/contact" element={<Contact />}></Route>
-        <Route path="/doctors" element={<Doctors />}></Route>
+        <Route path='/' element={<Login />}></Route>
+        <Route path='/signup' element={<Signup />}></Route>
+        <Route path='/Login' element={<Login />}></Route>
+        <Route path='/home' element={<Home />}></Route>
+        <Route path='/about' element={<AboutPage />}></Route>
+        <Route path='/contact' element={<Contact />}></Route>
+        <Route path='/doctors' element={<Doctors />}></Route>
+        <Route path='myprofile/*' element={<MyProfile />}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>

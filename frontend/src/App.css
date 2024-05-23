@@ -131,7 +131,7 @@ iframe {
   color: black;
   margin-top: 20px;
   padding: 10px;
-  background-color: var(--secondary-color);
+  background-color: #c3c3c3;
   border-radius: 5px;
   margin: 0px 50px;
   margin-bottom: 10px;
@@ -162,7 +162,7 @@ iframe {
   color: black;
   margin-top: 20px;
   padding: 10px;
-  background-color: var(--secondary-color);
+  background-color: #c3c3c3;
   border-radius: 5px;
   margin: 0px 50px;
   margin-bottom: 10px;
@@ -182,7 +182,7 @@ iframe {
 }
 
 .contact-info .contact-item h5, i {
-  color: var(--primary-color);
+  color: #0a1d37;
   margin-top: 5px;
 }
 
@@ -220,7 +220,7 @@ iframe {
 }
 
 .contact-form button {
-  background-color: var(--primary-color);
+  background-color: #0a1d37;
   color: black;
   padding: 10px 20px;
   border: 1px solid #ddd;
@@ -228,7 +228,7 @@ iframe {
   border-radius: 5px;
 }
 .contact-form button:hover {
-  background-color: var(--secondary-color);
+  background-color: #c3c3c3;
   color: black;
 }
 
@@ -451,7 +451,7 @@ iframe {
 .footer-title {
   font-weight: bold;
   margin-bottom: 15px;
-  color: var(--primary-color);
+  color: #0a1d37;
 }
 
 .footer-ul {
@@ -585,7 +585,7 @@ ul {
   z-index: 10;
   text-align: center;
   flex-direction: column;
-  background: var(--secondary-color);
+  background: #c3c3c3;
   border-radius: 10px;
   line-height: 1.5;
   display: none;
@@ -616,14 +616,14 @@ ul {
   display: block;
   width: 100%;
   padding: 10px 0;
-  color: var(--primary-color);
+  color: #0a1d37;
   text-decoration: none; /* Remove underline */
   transition: background 0.3s ease;
   border-radius: 5px;
 }
 
 .profile_link a:hover {
-  background: var(--primary-color);
+  background: #0a1d37;
   color: #fff; /* White text on hover */
 }
 
@@ -634,7 +634,7 @@ ul {
 .nav_item, .navlink {
   font-family: "Poppins", sans-serif;
   font-weight: 400;
-  color: var(--primary-color);
+  color: #0a1d37;
   text-decoration: none; /* Remove underline */
 }
 
@@ -644,7 +644,7 @@ ul {
 
 .mobile_menu {
   font-size: 1.3rem;
-  color: var(--primary-color);
+  color: #0a1d37;
   display: none;
 }
 
@@ -958,5 +958,158 @@ ul {
 }
 
 /* Home End */
+
+/* My Profile Start */
+
+.user-profile {
+  max-width: 960px;
+  margin: auto;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.user-profile nav {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.user-profile nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: start;
+}
+
+.user-profile nav ul li {
+  margin-right: 20px;
+  font-size: 20px;
+  color: black;
+}
+
+.user-profile nav ul li a {
+  color: #0a1d37;
+  border: 1px solid rgb(79, 78, 78);
+  /* background-color: white; */
+  border-radius: 5px;
+  padding: 5px;
+  text-decoration: none;
+  font-weight: 400;
+  transition: color 0.3s;
+}
+
+.user-profile nav ul li a:hover {
+  background-color: #e0e0e0;
+}
+
+.user-icon {
+  font-size: 50px;
+  color: #0a1d37;
+  margin-bottom: 10px;
+}
+
+.account-details h4,
+.my-appointments h4,
+.settings h4 {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.account-details p,
+.my-appointments p,
+.settings p {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Update Address */
+.update-profile form label {
+  font: 400;
+  font-size: 16px;
+}
+
+.update-profile form label input {
+  border-radius: 5px;
+  border: 1px solid #c3c3c3;
+  padding: 5px;
+  margin: 5px;
+}
+
+.update-profile form button {
+  border-radius: 10px;
+  border: none;
+  margin: 10px;
+  font-weight: 400;
+  font-size: 20px;
+  padding: 3px 10px;
+  background-color: #0a1d37;
+  color: white;
+}
+
+.address-text label textarea {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.gender label {
+  margin-right: 10px;
+}
+.gender input {
+  margin-right: 2px;
+}
+
+/* My Appointments */
+.my-appointments ul li {
+  background-color: #c3c3c3;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px;
+}
+
+.my-appointments ul li p {
+  background-color: whitesmoke;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 5px;
+}
+
+.my-appointments ul li ul li {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.my-appointments ul li ul li img {
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-profile {
+    padding: 10px;
+  }
+
+  .user-profile nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .user-profile nav ul li {
+    margin-bottom: 10px;
+  }
+
+  .user-profile nav ul li:last-child {
+    margin-bottom: 0;
+  }
+}
+
+
+
+/* My Profile End*/
 
 
