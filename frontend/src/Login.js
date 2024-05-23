@@ -26,7 +26,10 @@ function Login() {
       axios
         .post("http://localhost:8081/login", values)
         .then((res) => {
-          if (res.data === "Success") {
+          if (res.data.status === "Success") {
+            // Store user data in local storage
+            localStorage.setItem("user", JSON.stringify(res.data.user));
+
             if (values.role === "Doctor") {
               navigate("/doctor-home");
             } else if (values.role === "Receptionist") {
@@ -94,7 +97,10 @@ function Login() {
           </Link>
           <br />
           <br />
-          <Link to="/forgotpassword" className="btn btn-default border w-100 bg-light">
+          <Link
+            to="/forgotpassword"
+            className="btn btn-default border w-100 bg-light"
+          >
             <strong>Forgot Password</strong>
           </Link>
         </form>
