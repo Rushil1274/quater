@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2024 at 11:27 AM
+-- Generation Time: May 23, 2024 at 01:06 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -120,6 +120,48 @@ DELIMITER $$
 CREATE TRIGGER `receptionist` AFTER INSERT ON `login` FOR EACH ROW BEGIN
     IF NEW.role = 'Receptionist' THEN
         INSERT INTO receptionist (name, email, password, role) VALUES (NEW.name, NEW.email, NEW.password, NEW.role);
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update-doctor` AFTER UPDATE ON `login` FOR EACH ROW BEGIN
+    IF NEW.role = 'Doctor' THEN
+        UPDATE doctor
+        SET
+            name = NEW.name,
+            email = NEW.email,
+            password = NEW.password
+        WHERE
+            email = NEW.email; -- Assuming there's an email field in your table
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update-patient` AFTER UPDATE ON `login` FOR EACH ROW BEGIN
+    IF NEW.role = 'Patient' THEN
+        UPDATE patient
+        SET
+            name = NEW.name,
+            email = NEW.email,
+            password = NEW.password
+        WHERE
+            email = NEW.email; -- Assuming there's an id field in your table
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update-receptionist` AFTER UPDATE ON `login` FOR EACH ROW BEGIN
+    IF NEW.role = 'Receptionist' THEN
+        UPDATE receptionist
+        SET
+            name = NEW.name,
+            email = NEW.email,
+            password = NEW.password
+        WHERE
+            email = NEW.email; -- Assuming there's an id field in your table
     END IF;
 END
 $$
