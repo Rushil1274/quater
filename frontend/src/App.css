@@ -131,7 +131,7 @@ iframe {
   color: black;
   margin-top: 20px;
   padding: 10px;
-  background-color: #c3c3c3;
+  /* background-color: #c3c3c3; */
   border-radius: 5px;
   margin: 0px 50px;
   margin-bottom: 10px;
@@ -162,12 +162,13 @@ iframe {
   color: black;
   margin-top: 20px;
   padding: 10px;
-  background-color: #c3c3c3;
+  /* background-color: #c3c3c3; */
   border-radius: 5px;
   margin: 0px 50px;
   margin-bottom: 10px;
   text-align: justify;
   border: 1px solid #ddd;
+  text-align: center;
 }
 
 /* About End */
@@ -224,16 +225,17 @@ iframe {
 }
 
 .contact-form button {
-  background-color: #c3c3c3;
+  background-color: #CADCFC;
   color: black;
   padding: 10px 20px;
   border: 1px solid #ddd;
   cursor: pointer;
   border-radius: 5px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 .contact-form button:hover {
-  background-color: #9f9f9f;
-  color: black;
+  background-color: #00246B;
+  color: white;
 }
 
 /* contactus end */
@@ -460,8 +462,8 @@ ul {
 }
 
 .profile_link a:hover {
-  background: #9ba6b6;
-  color: #fff; /* White text on hover */
+  background: #CADCFC;
+  /* color: white;  */
 }
 
 .profile_link a:not(:last-child) {
@@ -944,9 +946,6 @@ ul {
     margin-bottom: 0;
   }
 }
-
-
-
 /* My Profile End*/
 
 
@@ -983,7 +982,7 @@ ul {
 }
 
 .bookButton {
-  background-color: #007bff;
+  background-color: #CADCFC;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -992,7 +991,8 @@ ul {
 }
 
 .bookButton:hover {
-  background-color: #0056b3;
+  background-color: #00246B;
+  color: white;
 }
 
 /* Modal styles */
@@ -1038,8 +1038,8 @@ ul {
 }
 
 .bookButton {
-  background-color: #007bff;
-  color: white;
+  background-color: #CADCFC;
+  color: black;
   border: none;
   padding: 5px 10px;
   border-radius: 5px;
@@ -1047,6 +1047,7 @@ ul {
 }
 
 .bookButton:hover {
-  background-color: #0056b3;
+  background-color: #00246B;
+  color: white;
 }
 
