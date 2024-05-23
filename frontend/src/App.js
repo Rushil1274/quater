@@ -3,6 +3,7 @@ import './App.css';
 import Home from './Home';
 import Login from './Login';
 import Signup from './Signup';
+import ForgotPassword from "./forgotpassword";
 import AboutPage from './About';
 import Contact from './Contactus';
 import Doctors from './Doctorsearch';
