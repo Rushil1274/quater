@@ -1,6 +1,4 @@
-// doctorController.js
-
-const db = require("../db"); // Assuming db.js is your database connection file
+const db = require("../db");
 
 // Get all doctors
 exports.getAllDoctors = (req, res) => {
@@ -8,82 +6,105 @@ exports.getAllDoctors = (req, res) => {
   db.query(sql, (err, data) => {
     if (err) {
       console.error("Database error:", err);
-      return res.json("Error");
+      return res.status(500).json("Error");
     }
     return res.json(data);
   });
 };
 
-// Get doctor by ID
+// Get doctor by doctor_id
 exports.getDoctorById = (req, res) => {
-  const sql = "SELECT * FROM doctor WHERE id = ?";
+  const sql = "SELECT * FROM doctor WHERE doctor_id = ?";
   db.query(sql, [req.params.id], (err, data) => {
     if (err) {
       console.error("Database error:", err);
-      return res.json("Error");
+      return res.status(500).json("Error");
     }
     if (data.length > 0) {
       return res.json(data[0]);
     } else {
-      return res.json("Doctor not found");
+      return res.status(404).json("Doctor not found");
     }
   });
 };
 
 // Create new doctor
 exports.createDoctor = (req, res) => {
-  const sql = "INSERT INTO doctor (`name`, `specialty`, `email`, `phone`) VALUES (?)";
+  const sql = `
+    INSERT INTO doctor (
+      name, email, password, role, age, gender, hospital, number, specialization, experience, doc_pic
+    ) VALUES (?)
+  `;
   const values = [
     req.body.name,
-    req.body.specialty,
     req.body.email,
-    req.body.phone,
+    req.body.password,
+    req.body.role,
+    req.body.age,
+    req.body.gender,
+    req.body.hospital,
+    req.body.number,
+    req.body.specialization,
+    req.body.experience,
+    req.body.doc_pic
   ];
 
   db.query(sql, [values], (err, data) => {
     if (err) {
       console.error("Database error:", err);
-      return res.json("Error");
+      return res.status(500).json("Error");
     }
     return res.json("Success");
   });
 };
 
-// Update doctor by ID
+// Update doctor by doctor_id
 exports.updateDoctorById = (req, res) => {
-  const sql = "UPDATE doctor SET `name`=?, `specialty`=?, `email`=?, `phone`=? WHERE `id`=?";
+  const sql = `
+    UPDATE doctor SET 
+      name=?, email=?, password=?, role=?, age=?, gender=?, hospital=?, number=?, specialization=?, experience=?, doc_pic=?
+    WHERE doctor_id=?
+  `;
   const values = [
     req.body.name,
-    req.body.specialty,
     req.body.email,
-    req.body.phone,
+    req.body.password,
+    req.body.role,
+    req.body.age,
+    req.body.gender,
+    req.body.hospital,
+    req.body.number,
+    req.body.specialization,
+    req.body.experience,
+    req.body.doc_pic,
+    req.params.id
   ];
 
-  db.query(sql, [...values, req.params.id], (err, data) => {
+  db.query(sql, values, (err, data) => {
     if (err) {
       console.error("Database error:", err);
-      return res.json("Error");
+      return res.status(500).json("Error");
     }
     if (data.affectedRows > 0) {
       return res.json("Success");
     } else {
-      return res.json("Doctor not found");
+      return res.status(404).json("Doctor not found");
     }
   });
 };
 
-// Delete doctor by ID
+// Delete doctor by doctor_id
 exports.deleteDoctorById = (req, res) => {
-  const sql = "DELETE FROM doctor WHERE id = ?";
+  const sql = "DELETE FROM doctor WHERE doctor_id = ?";
   db.query(sql, [req.params.id], (err, data) => {
     if (err) {
       console.error("Database error:", err);
-      return res.json("Error");
+      return res.status(500).json("Error");
     }
     if (data.affectedRows > 0) {
       return res.json("Success");
     } else {
-      return res.json("Doctor not found");
+      return res.status(404).json("Doctor not found");
     }
   });
 };
