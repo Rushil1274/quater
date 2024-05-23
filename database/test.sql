@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 22, 2024 at 01:55 PM
+-- Generation Time: May 23, 2024 at 01:06 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -55,17 +55,18 @@ CREATE TABLE `doctor` (
   `specialization` varchar(50) NOT NULL,
   `experience` varchar(50) NOT NULL,
   `doctor_id` int(11) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `doc_pic` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `doctor`
 --
 
-INSERT INTO `doctor` (`name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `doctor_id`, `created_at`) VALUES
-('Dr. John Doe', 'johndoe@example.com', 'password123', 'doctor', '35', 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', 1, '2024-05-22 16:39:36'),
-('Dr. Jane Smith', 'janesmith@example.com', 'password456', 'doctor', '42', 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', 2, '2024-05-22 16:39:36'),
-('Dr. Michael Johnson', 'michaeljohnson@example.com', 'password789', 'doctor', '40', 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', 3, '2024-05-22 16:39:36');
+INSERT INTO `doctor` (`name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `doctor_id`, `created_at`, `doc_pic`) VALUES
+('Dr. John Doe', 'johndoe@example.com', 'Password@123', 'doctor', '35', 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', 1, '2024-05-22 16:39:36', ''),
+('Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'doctor', '42', 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', 2, '2024-05-22 16:39:36', ''),
+('Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'doctor', '40', 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', 3, '2024-05-22 16:39:36', '');
 
 -- --------------------------------------------------------
 
@@ -102,7 +103,7 @@ INSERT INTO `login` (`name`, `email`, `password`, `role`) VALUES
 DELIMITER $$
 CREATE TRIGGER `doctor` AFTER INSERT ON `login` FOR EACH ROW BEGIN
     IF NEW.role = 'Doctor' THEN
-        INSERT INTO doctor (name, email,password) VALUES (NEW.name, NEW.email, NEW.password);
+        INSERT INTO doctor (name, email, password, role) VALUES (NEW.name, NEW.email, NEW.password, NEW.role);
     END IF;
 END
 $$
@@ -110,7 +111,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `patient` AFTER INSERT ON `login` FOR EACH ROW BEGIN
     IF NEW.role = 'Patient' THEN
-        INSERT INTO patient (name, email, password) VALUES (NEW.name, NEW.email, NEW.password);
+        INSERT INTO patient (name, email, password, role) VALUES (NEW.name, NEW.email, NEW.password, NEW.role);
     END IF;
 END
 $$
@@ -118,7 +119,49 @@ DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `receptionist` AFTER INSERT ON `login` FOR EACH ROW BEGIN
     IF NEW.role = 'Receptionist' THEN
-        INSERT INTO receptionist (name, email, password) VALUES (NEW.name, NEW.email, NEW.password);
+        INSERT INTO receptionist (name, email, password, role) VALUES (NEW.name, NEW.email, NEW.password, NEW.role);
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update-doctor` AFTER UPDATE ON `login` FOR EACH ROW BEGIN
+    IF NEW.role = 'Doctor' THEN
+        UPDATE doctor
+        SET
+            name = NEW.name,
+            email = NEW.email,
+            password = NEW.password
+        WHERE
+            email = NEW.email; -- Assuming there's an email field in your table
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update-patient` AFTER UPDATE ON `login` FOR EACH ROW BEGIN
+    IF NEW.role = 'Patient' THEN
+        UPDATE patient
+        SET
+            name = NEW.name,
+            email = NEW.email,
+            password = NEW.password
+        WHERE
+            email = NEW.email; -- Assuming there's an id field in your table
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update-receptionist` AFTER UPDATE ON `login` FOR EACH ROW BEGIN
+    IF NEW.role = 'Receptionist' THEN
+        UPDATE receptionist
+        SET
+            name = NEW.name,
+            email = NEW.email,
+            password = NEW.password
+        WHERE
+            email = NEW.email; -- Assuming there's an id field in your table
     END IF;
 END
 $$
@@ -142,17 +185,20 @@ CREATE TABLE `patient` (
   `adhar_no` varchar(12) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `patient_id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL
+  `name` varchar(100) NOT NULL,
+  `dob` date NOT NULL,
+  `patient_pic` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `patient`
 --
 
-INSERT INTO `patient` (`email`, `password`, `role`, `age`, `gender`, `address`, `number`, `insurance`, `adhar_no`, `created_at`, `patient_id`, `name`) VALUES
-('john@example.com', 'password123', 'patient', '30', 'Male', '123 Main St', '987-654-32', 'XYZ Insurance', '1234-5678-90', '2024-05-22 16:44:14', 1, 'John Doe'),
-('jane@example.com', 'password456', 'patient', '25', 'Female', '456 Elm St', '123-456-78', 'ABC Insurance', '9876-5432-10', '2024-05-22 16:44:14', 2, 'Jane Smith'),
-('alex@example.com', 'password789', 'patient', '40', 'Male', '789 Oak St', '456-789-01', 'DEF Insurance', '5678-9012-34', '2024-05-22 16:44:14', 3, 'Alex Brown');
+INSERT INTO `patient` (`email`, `password`, `role`, `age`, `gender`, `address`, `number`, `insurance`, `adhar_no`, `created_at`, `patient_id`, `name`, `dob`, `patient_pic`) VALUES
+('john@example.com', 'Password@123', 'patient', '30', 'Male', '123 Main St', '987-654-32', 'XYZ Insurance', '1234-5678-90', '2024-05-22 16:44:14', 1, 'John Doe', '2001-12-31', ''),
+('jane@example.com', 'Password@456', 'patient', '25', 'Female', '456 Elm St', '123-456-78', 'ABC Insurance', '9876-5432-10', '2024-05-22 16:44:14', 2, 'Jane Smith', '2001-12-31', ''),
+('alex@example.com', 'Password@789', 'patient', '40', 'Male', '789 Oak St', '456-789-01', 'DEF Insurance', '5678-9012-34', '2024-05-22 16:44:14', 3, 'Alex Brown', '2001-12-31', ''),
+('john@example.com', 'password123', 'patient', '25', 'Male', '123 Main St, City', '+123456789', 'Insurance Company A', '123456789012', '2024-05-23 13:29:45', 4, 'John Doe', '1999-05-20', '');
 
 -- --------------------------------------------------------
 
@@ -169,17 +215,19 @@ CREATE TABLE `receptionist` (
   `salary` int(10) NOT NULL,
   `employment` varchar(50) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `password` varchar(50) NOT NULL
+  `password` varchar(50) NOT NULL,
+  `role` varchar(50) NOT NULL,
+  `rec_pic` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `receptionist`
 --
 
-INSERT INTO `receptionist` (`receptionist_id`, `name`, `email`, `phone`, `address`, `salary`, `employment`, `created_at`, `password`) VALUES
-(1, 'Alice Johnson', 'alice@example.com', 1234567890, '123 Main St', 35000, 'Full-Time', '2024-05-22 16:48:27', ''),
-(2, 'Bob Smith', 'bob@example.com', 2147483647, '456 Elm St', 30000, 'Part-Time', '2024-05-22 16:48:27', ''),
-(3, 'Charlie Brown', 'charlie@example.com', 2147483647, '789 Oak St', 40000, 'Full-Time', '2024-05-22 16:48:27', '');
+INSERT INTO `receptionist` (`receptionist_id`, `name`, `email`, `phone`, `address`, `salary`, `employment`, `created_at`, `password`, `role`, `rec_pic`) VALUES
+(1, 'Alice Johnson', 'alice@example.com', 1234567890, '123 Main St', 35000, 'Full-Time', '2024-05-22 16:48:27', 'Alice@123', 'receptionist', ''),
+(2, 'Bob Smith', 'bob@example.com', 2147483647, '456 Elm St', 30000, 'Part-Time', '2024-05-22 16:48:27', 'Bob@123', 'receptionist', ''),
+(3, 'Charlie Brown', 'charlie@example.com', 2147483647, '789 Oak St', 40000, 'Full-Time', '2024-05-22 16:48:27', 'Charlie@123', 'receptionist', '');
 
 --
 -- Indexes for dumped tables
@@ -229,7 +277,7 @@ ALTER TABLE `doctor`
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `receptionist`
