@@ -29,6 +29,8 @@ function Login() {
           if (res.data === "Success") {
             if (values.role === "Doctor") {
               navigate("/doctor-home");
+            } else if (values.role === "Receptionist") {
+              navigate("/receptionist-home");
             } else {
               navigate("/home");
             }
@@ -80,6 +82,7 @@ function Login() {
             >
               <option value="Doctor">Doctor</option>
               <option value="Patient">Patient</option>
+              <option value="Receptionist">Receptionist</option>
             </select>
           </div>
           <button type="submit" className="btn btn-success w-100">
@@ -88,6 +91,11 @@ function Login() {
           <p>You agree to TnC</p>
           <Link to="/signup" className="btn btn-default border w-100 bg-light">
             <strong>Create Account</strong>
+          </Link>
+          <br />
+          <br />
+          <Link to="/forgotpassword" className="btn btn-default border w-100 bg-light">
+            <strong>Forgot Password</strong>
           </Link>
         </form>
       </div>

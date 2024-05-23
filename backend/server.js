@@ -50,4 +50,22 @@ app.post("/signup", (req, res) => {
   });
 });
 
+app.post("/forgotpassword", (req, res) => {
+  const sql = "UPDATE login SET `password`=? WHERE `email`=? AND `role`=?";
+  db.query(
+    sql,
+    [req.body.password, req.body.email, req.body.role],
+    (err, data) => {
+      if (err) {
+        return res.json("Error");
+      }
+      if (data.affectedRows > 0) {
+        return res.json("Success");
+      } else {
+        return res.json("Failed");
+      }
+    }
+  );
+});
+
 app.listen(port, () => console.log(`Server running on port ${port}`));

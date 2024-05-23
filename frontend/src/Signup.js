@@ -82,6 +82,7 @@ export default function Signup() {
             >
               <option value="Doctor">Doctor</option>
               <option value="Patient">Patient</option>
+              <option value="Receptionist">Receptionist</option>
             </select>
           </div>
           <button type="submit" className="btn btn-success w-100">
