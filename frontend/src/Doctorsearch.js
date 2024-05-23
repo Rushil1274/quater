@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './App.css';
+import './App.css'; 
 
 const Doctors = () => {
   const [filter, setFilter] = useState({ name: '', specialization: '', fees: '', location: '' });
@@ -128,26 +128,22 @@ const Doctors = () => {
             <h2>Book Appointment with {selectedDoctor.name}</h2>
             <form onSubmit={handleFormSubmit}>
               <div>
-                <label>Your Name: </label>
+                <label>Your Name:</label>
                 <input type="text" name="patientName" required />
               </div>
               <div>
-                <label>Your Email: </label>
+                <label>Your Email:</label>
                 <input type="email" name="patientEmail" required />
               </div>
               <div>
-                <label>Appointment Date: </label>
+                <label>Date:</label>
                 <input type="date" name="appointmentDate" required />
               </div>
               <div>
-                <label>Appointment Time: </label>
-                <input type="time" name="appointmentTime" required min="09:00" max="18:00" step="3600" />
+                <label>Time:</label>
+                <input type="time" name="appointmentTime" required />
               </div>
-              <div>
-                <label>Aadhar Card Number: </label>
-                <input type="text" name="aadharNumber" required pattern="\d{12}" title="Aadhaar number should be 12 digits" />
-              </div>
-              <button type="submit">Submit Request</button>
+              <button type="submit">Submit</button>
             </form>
           </div>
         </div>
