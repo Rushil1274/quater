@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import './App.css'; 
+import './App.css';
 
 const Doctors = () => {
   const [filter, setFilter] = useState({ name: '', specialization: '', fees: '', location: '' });
-  const [selectedDoctor, setSelectedDoctor] = useState(null); // State for selected doctor
-  const [showModal, setShowModal] = useState(false); // State to show/hide the modal
 
   const doctors = [
     {
@@ -44,22 +42,6 @@ const Doctors = () => {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilter({ ...filter, [name]: value });
-  };
-
-  const handleBookAppointment = (doctor) => {
-    setSelectedDoctor(doctor);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedDoctor(null);
-  };
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    alert(`Appointment booked with ${selectedDoctor.name}`);
-    handleCloseModal();
   };
 
   const filteredDoctors = doctors.filter(
@@ -117,37 +99,10 @@ const Doctors = () => {
             <p><strong>Fees:</strong> {doctor.fees}</p>
             <p><strong>Location:</strong> {doctor.location}</p>
             <p>{doctor.description}</p>
-            <button onClick={() => handleBookAppointment(doctor)} className="bookButton">Book Appointment</button>
+            <button className="bookButton">Book Appointment</button>
           </div>
         ))}
       </div>
-      {showModal && selectedDoctor && (
-        <div className="modal">
-          <div className="modalContent">
-            <span className="closeButton" onClick={handleCloseModal}>&times;</span>
-            <h2>Book Appointment with {selectedDoctor.name}</h2>
-            <form onSubmit={handleFormSubmit}>
-              <div>
-                <label>Your Name:</label>
-                <input type="text" name="patientName" required />
-              </div>
-              <div>
-                <label>Your Email:</label>
-                <input type="email" name="patientEmail" required />
-              </div>
-              <div>
-                <label>Date:</label>
-                <input type="date" name="appointmentDate" required />
-              </div>
-              <div>
-                <label>Time:</label>
-                <input type="time" name="appointmentTime" required />
-              </div>
-              <button type="submit">Submit</button>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

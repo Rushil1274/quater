@@ -171,6 +171,10 @@ iframe {
 }
 
 /* About End */
+/* doctor search */
+
+
+/* doctor search.css */
 
 /* contactus css */
 .contact-info {
@@ -233,173 +237,6 @@ iframe {
 }
 
 /* contactus end */
-
-/* doctor-search css  */.filters {
-  margin-left: 225px;
-}
-.filters input{
-  height: 50px;
-  width: 20%;
-  text-align: center;
-  border-radius: 5px ;
-  border: 1px solid #ddd;
-}
-.input {
-  margin-right: 10px;
-}
-.cardContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-.card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 8px;
-  width: 300px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-.image {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.bookButton {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.bookButton:hover {
-  backgrounds-color: #0056b3;
-}
-
-/* search.css */
-
-/* search.css */
-
-.filters {
-  margin-bottom: 20px;
-}
-
-.input {
-  margin-right: 10px;
-  padding: 5px;
-}
-
-.cardContainer {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.card {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin: 10px;
-  width: 200px;
-  text-align: center;
-}
-
-.image {
-  width: 100%;
-  height: auto;
-}
-
-.bookButton {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-}
-
-.bookButton:hover {
-  background-color: #45a049;
-}
-
-.modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modalContent {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 500px;
-  position: relative;
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Shadow for depth */
-}
-
-.closeButton {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.closeButton:hover,
-.closeButton:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.modalContent form {
-  display: flex;
-  flex-direction: column;
-}
-
-.modalContent label {
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.modalContent input {
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-.modalContent button[type="submit"] {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.modalContent button[type="submit"]:hover {
-  background-color: #45a049;
-}
-
-
-/* doctor-search end  */
 
 /* Footer.css */
 .footer {
@@ -959,4 +796,104 @@ ul {
 
 /* Home End */
 
+
+
+.filters {
+  margin-bottom: 20px;
+}
+
+.input {
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.cardContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 10px;
+  width: 300px;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.bookButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.bookButton:hover {
+  background-color: #0056b3;
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modalContent {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.closeButton {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.closeButton:hover,
+.closeButton:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Responsive layout - make the modal smaller on mobile devices */
+@media screen and (max-width: 700px) {
+  .modalContent {
+    width: 90%;
+  }
+}
+
+.bookButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.bookButton:hover {
+  background-color: #0056b3;
+}
 

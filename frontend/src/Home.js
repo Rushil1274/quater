@@ -23,8 +23,7 @@ function Home() {
                         <p className='hero-p'>deserunt rem suscipit placeat.</p>
                     </div>
                     <div className="d-flex justify-content-start gap-2">
-                        <Link to={'/doctors'} className="btn-get-started scrollto">Get Started</Link>
-                        <Link to={'/track-appointment'} className="btn-get-started scrollto">Track Appointment</Link>
+                        <Link to={'/doctors'} className="btn-get-started scrollto">Book Appointment</Link>
                     </div>
                 </div>
             </section>
