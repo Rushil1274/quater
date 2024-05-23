@@ -24,6 +24,7 @@ function App() {
         <Route path='/contact' element={<Contact />}></Route>
         <Route path='/doctors' element={<Doctors />}></Route>
         <Route path='myprofile/*' element={<MyProfile />}></Route>
+        <Route path='/forgotpassword' element={<ForgotPassword />}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>

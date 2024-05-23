@@ -224,7 +224,7 @@ iframe {
 }
 
 .contact-form button {
-  background-color: #0a1d37;
+  background-color: #c3c3c3;
   color: black;
   padding: 10px 20px;
   border: 1px solid #ddd;
@@ -232,7 +232,7 @@ iframe {
   border-radius: 5px;
 }
 .contact-form button:hover {
-  background-color: #c3c3c3;
+  background-color: #9f9f9f;
   color: black;
 }
 
@@ -460,7 +460,7 @@ ul {
 }
 
 .profile_link a:hover {
-  background: #0a1d37;
+  background: #9ba6b6;
   color: #fff; /* White text on hover */
 }
 
