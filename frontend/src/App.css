@@ -551,6 +551,7 @@ ul {
 #hero .container {
   position: relative;
   padding-left: 8%;
+  margin-left: -10px;
 }
 
 #hero h1 {
@@ -949,7 +950,7 @@ ul {
 /* My Profile End*/
 
 
-/* Doctors search css start */
+
 .filters {
   margin-bottom: 20px;
 }
@@ -1050,4 +1051,4 @@ ul {
   background-color: #00246B;
   color: white;
 }
-/* Doctor search */
+
