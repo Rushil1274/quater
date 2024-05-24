@@ -56,38 +56,10 @@ const Doctors = () => {
     <div>
       <h2>Filter Doctors</h2>
       <div className="filters"> 
-        <input
-          type="text"
-          name="name"
-          placeholder="Filter by Name"
-          value={filter.name}
-          onChange={handleFilterChange}
-          className="input" 
-        />
-        <input
-          type="text"
-          name="specialization"
-          placeholder="Filter by Specialization"
-          value={filter.specialization}
-          onChange={handleFilterChange}
-          className="input" 
-        />
-        <input
-          type="text"
-          name="fees"
-          placeholder="Filter by Fees"
-          value={filter.fees}
-          onChange={handleFilterChange}
-          className="input" 
-        />
-        <input
-          type="text"
-          name="location"
-          placeholder="Filter by Location"
-          value={filter.location}
-          onChange={handleFilterChange}
-          className="input"
-        />
+        <input type="text" name="name" placeholder="Filter by Name" value={filter.name} onChange={handleFilterChange} className="input" />
+        <input type="text" name="specialization" placeholder="Filter by Specialization" value={filter.specialization} onChange={handleFilterChange} className="input" />
+        <input type="text" name="fees" placeholder="Filter by Fees" value={filter.fees} onChange={handleFilterChange} className="input" />
+        <input type="text" name="location" placeholder="Filter by Location" value={filter.location} onChange={handleFilterChange} className="input"/>
       </div>
       <h2>Doctor List</h2>
       <div className="cardContainer"> 
