@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 24, 2024 at 10:52 AM
+-- Generation Time: May 24, 2024 at 11:47 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -95,17 +95,18 @@ CREATE TABLE `doctor` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `doc_pic` longblob NOT NULL,
-  `hospital_loc` varchar(255) NOT NULL
+  `hospital_loc` varchar(255) NOT NULL,
+  `fees` int(7) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `doctor`
 --
 
-INSERT INTO `doctor` (`doctor_id`, `login_id`, `name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `created_at`, `updated_at`, `doc_pic`, `hospital_loc`) VALUES
-(1, 1, 'Dr. John Doe', 'johndoe@example.com', 'Password@123', 'doctor', 35, 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963, ''),
-(2, 2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'doctor', 42, 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963, ''),
-(3, 3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'doctor', 40, 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963, '');
+INSERT INTO `doctor` (`doctor_id`, `login_id`, `name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `created_at`, `updated_at`, `doc_pic`, `hospital_loc`, `fees`) VALUES
+(1, 1, 'Dr. John Doe', 'johndoe@example.com', 'Password@123', 'doctor', 35, 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963, '', 0),
+(2, 2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'doctor', 42, 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963, '', 0),
+(3, 3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'doctor', 40, 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963, '', 0);
 
 -- --------------------------------------------------------
 
