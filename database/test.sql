@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 24, 2024 at 08:09 AM
+-- Generation Time: May 24, 2024 at 10:52 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,7 +35,7 @@ CREATE TABLE `appointments` (
   `status` enum('pending','confirmed','completed','cancelled') NOT NULL DEFAULT 'pending',
   `notes` varchar(50) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `appointment_time` time NOT NULL,
+  `appointment_time` datetime NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -44,9 +44,34 @@ CREATE TABLE `appointments` (
 --
 
 INSERT INTO `appointments` (`appointment_id`, `receptionist_id`, `doctor_id`, `patient_id`, `status`, `notes`, `created_at`, `appointment_time`, `updated_at`) VALUES
-(1, 1, 1, 1, 'confirmed', 'Please arrive 15 minutes early', '2024-05-24 04:48:37', '10:00:00', '2024-05-24 04:48:37'),
-(2, 1, 2, 2, 'pending', '', '2024-05-24 04:48:37', '14:30:00', '2024-05-24 04:48:37'),
-(3, 2, 1, 3, 'confirmed', 'Bring previous medical records', '2024-05-24 04:48:37', '11:00:00', '2024-05-24 04:48:37');
+(1, 1, 1, 1, 'confirmed', 'Please arrive 15 minutes early', '2024-05-24 04:48:37', '2024-05-24 10:00:00', '2024-05-24 04:48:37'),
+(2, 1, 2, 2, 'pending', '', '2024-05-24 04:48:37', '2024-05-24 14:30:00', '2024-05-24 04:48:37'),
+(3, 2, 1, 3, 'confirmed', 'Bring previous medical records', '2024-05-24 04:48:37', '2024-05-24 11:00:00', '2024-05-24 04:48:37');
+
+--
+-- Triggers `appointments`
+--
+DELIMITER $$
+CREATE TRIGGER `add_time_slot_after_appointment_insert` BEFORE INSERT ON `appointments` FOR EACH ROW BEGIN
+    DECLARE duration INT DEFAULT 60; -- Assuming each appointment has a duration of 60 minutes
+
+    -- Checking if the appointment time overlaps with existing time slots
+    IF EXISTS (
+        SELECT 1
+        FROM time_slots
+        WHERE doctor_id = NEW.doctor_id
+        AND start_time <= DATE_ADD(NEW.appointment_time, INTERVAL duration MINUTE)
+        AND end_time >= NEW.appointment_time
+    ) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Appointment time overlaps with existing time slot';
+    ELSE
+        -- Inserting the appointment time into the time_slots table
+        INSERT INTO time_slots (doctor_id, start_time, end_time, status)
+        VALUES (NEW.doctor_id, NEW.appointment_time, DATE_ADD(NEW.appointment_time, INTERVAL duration MINUTE), 'booked');
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -69,17 +94,18 @@ CREATE TABLE `doctor` (
   `experience` varchar(50) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `doc_pic` longblob NOT NULL
+  `doc_pic` longblob NOT NULL,
+  `hospital_loc` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `doctor`
 --
 
-INSERT INTO `doctor` (`doctor_id`, `login_id`, `name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `created_at`, `updated_at`, `doc_pic`) VALUES
-(1, 1, 'Dr. John Doe', 'johndoe@example.com', 'Password@123', 'doctor', 35, 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963),
-(2, 2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'doctor', 42, 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963),
-(3, 3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'doctor', 40, 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963);
+INSERT INTO `doctor` (`doctor_id`, `login_id`, `name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `created_at`, `updated_at`, `doc_pic`, `hospital_loc`) VALUES
+(1, 1, 'Dr. John Doe', 'johndoe@example.com', 'Password@123', 'doctor', 35, 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963, ''),
+(2, 2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'doctor', 42, 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963, ''),
+(3, 3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'doctor', 40, 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963, '');
 
 -- --------------------------------------------------------
 
@@ -245,6 +271,29 @@ INSERT INTO `receptionist` (`receptionist_id`, `login_id`, `name`, `email`, `pho
 (2, 8, 'Bob Smith', 'Bob@example.com', 2147483647, '456 Elm St', 30000, 'Part-Time', '2024-05-22 16:48:27', '2024-05-24 05:59:53', 'Bob@1234', 'receptionist', ''),
 (3, 9, 'Charlie Brown', 'Charlie@example.com', 2147483647, '789 Oak St', 40000, 'Full-Time', '2024-05-22 16:48:27', '2024-05-24 05:59:32', 'Charlie@123', 'receptionist', '');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `time_slots`
+--
+
+CREATE TABLE `time_slots` (
+  `slot_id` int(11) NOT NULL,
+  `doctor_id` int(11) DEFAULT NULL,
+  `start_time` datetime NOT NULL,
+  `end_time` datetime DEFAULT NULL,
+  `status` enum('available','booked') DEFAULT 'available'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `time_slots`
+--
+
+INSERT INTO `time_slots` (`slot_id`, `doctor_id`, `start_time`, `end_time`, `status`) VALUES
+(1, 1, '2024-05-24 10:00:00', '2024-05-24 10:30:00', 'available'),
+(2, 2, '2024-05-24 14:30:00', '2024-05-24 15:00:00', 'available'),
+(3, 1, '2024-05-24 11:00:00', '2024-05-24 11:30:00', 'available');
+
 --
 -- Indexes for dumped tables
 --
@@ -256,7 +305,8 @@ ALTER TABLE `appointments`
   ADD PRIMARY KEY (`appointment_id`),
   ADD KEY `patient_id` (`patient_id`),
   ADD KEY `doctor_id` (`doctor_id`),
-  ADD KEY `receptionist_id` (`receptionist_id`);
+  ADD KEY `receptionist_id` (`receptionist_id`),
+  ADD KEY `appointment_time` (`appointment_time`);
 
 --
 -- Indexes for table `doctor`
@@ -290,6 +340,14 @@ ALTER TABLE `receptionist`
   ADD KEY `login_id` (`login_id`);
 
 --
+-- Indexes for table `time_slots`
+--
+ALTER TABLE `time_slots`
+  ADD PRIMARY KEY (`slot_id`),
+  ADD KEY `start_time` (`start_time`),
+  ADD KEY `fk_doctor_id` (`doctor_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -297,7 +355,7 @@ ALTER TABLE `receptionist`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `doctor`
@@ -322,6 +380,12 @@ ALTER TABLE `patient`
 --
 ALTER TABLE `receptionist`
   MODIFY `receptionist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `time_slots`
+--
+ALTER TABLE `time_slots`
+  MODIFY `slot_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
@@ -352,6 +416,13 @@ ALTER TABLE `patient`
 --
 ALTER TABLE `receptionist`
   ADD CONSTRAINT `receptionist_ibfk_1` FOREIGN KEY (`login_id`) REFERENCES `login` (`login_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `time_slots`
+--
+ALTER TABLE `time_slots`
+  ADD CONSTRAINT `fk_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `appointments` (`doctor_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `time_slots_ibfk_1` FOREIGN KEY (`doctor_id`) REFERENCES `doctor` (`doctor_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
