@@ -39,7 +39,7 @@ function Home() {
                                     Asperiores dolores sed et. Tenetur quia eos. Autem tempore quibusdam vel necessitatibus optio ad corporis.
                                 </p>
                                 <div className="text-center">
-                                    <Link href="/" className="more-btn">Learn More <i className="bx bx-chevron-right"></i></Link>
+                                    <Link style={{textDecoration:'none'}} to = {'/about'} className="more-btn">Learn More <i className="bx bx-chevron-right"></i></Link>
                                 </div>
                             </div>
                         </div>
