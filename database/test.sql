@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2024 at 01:06 PM
+-- Generation Time: May 24, 2024 at 08:09 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,8 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `test`
 --
-create database test;
-use test;
+
 -- --------------------------------------------------------
 
 --
@@ -33,10 +32,21 @@ CREATE TABLE `appointments` (
   `receptionist_id` int(11) NOT NULL,
   `doctor_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
-  `status` varchar(50) NOT NULL,
+  `status` enum('pending','confirmed','completed','cancelled') NOT NULL DEFAULT 'pending',
   `notes` varchar(50) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `appointment_time` time NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `appointments`
+--
+
+INSERT INTO `appointments` (`appointment_id`, `receptionist_id`, `doctor_id`, `patient_id`, `status`, `notes`, `created_at`, `appointment_time`, `updated_at`) VALUES
+(1, 1, 1, 1, 'confirmed', 'Please arrive 15 minutes early', '2024-05-24 04:48:37', '10:00:00', '2024-05-24 04:48:37'),
+(2, 1, 2, 2, 'pending', '', '2024-05-24 04:48:37', '14:30:00', '2024-05-24 04:48:37'),
+(3, 2, 1, 3, 'confirmed', 'Bring previous medical records', '2024-05-24 04:48:37', '11:00:00', '2024-05-24 04:48:37');
 
 -- --------------------------------------------------------
 
@@ -45,29 +55,31 @@ CREATE TABLE `appointments` (
 --
 
 CREATE TABLE `doctor` (
-  `name` varchar(50) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
-  `role` varchar(50) NOT NULL,
-  `age` varchar(50) NOT NULL,
-  `gender` varchar(50) NOT NULL,
-  `hospital` varchar(50) NOT NULL,
-  `number` varchar(10) NOT NULL,
-  `specialization` varchar(50) NOT NULL,
-  `experience` varchar(50) NOT NULL,
   `doctor_id` int(11) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `login_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `role` varchar(50) NOT NULL,
+  `age` int(11) NOT NULL,
+  `gender` varchar(10) NOT NULL,
+  `hospital` varchar(100) NOT NULL,
+  `number` varchar(20) NOT NULL,
+  `specialization` varchar(100) NOT NULL,
+  `experience` varchar(50) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `doc_pic` longblob NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `doctor`
 --
 
-INSERT INTO `doctor` (`name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `doctor_id`, `created_at`, `doc_pic`) VALUES
-('Dr. John Doe', 'johndoe@example.com', 'Password@123', 'doctor', '35', 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', 1, '2024-05-22 16:39:36', ''),
-('Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'doctor', '42', 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', 2, '2024-05-22 16:39:36', ''),
-('Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'doctor', '40', 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', 3, '2024-05-22 16:39:36', '');
+INSERT INTO `doctor` (`doctor_id`, `login_id`, `name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `created_at`, `updated_at`, `doc_pic`) VALUES
+(1, 1, 'Dr. John Doe', 'johndoe@example.com', 'Password@123', 'doctor', 35, 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963),
+(2, 2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'doctor', 42, 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963),
+(3, 3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'doctor', 40, 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', '2024-05-22 11:09:36', '2024-05-24 05:45:25', 0x706174685f746f5f646f635f706963);
 
 -- --------------------------------------------------------
 
@@ -76,27 +88,27 @@ INSERT INTO `doctor` (`name`, `email`, `password`, `role`, `age`, `gender`, `hos
 --
 
 CREATE TABLE `login` (
+  `login_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `role` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `login`
 --
 
-INSERT INTO `login` (`name`, `email`, `password`, `role`) VALUES
-('Panchal Rushil', 'rushil@gmail.com', 'Rrp@123456789', ''),
-('jay', 'jay@gmail.com', 'Jay@12345', ''),
-('jy', 'jay123@gmail.com', 'Jayj@123', 'Patient'),
-('kush', 'kush123@gmail.com', 'Kushal@1123', 'Doctor'),
-('jdbcu', 'jaj123@gmail.com', 'Abcd@123', 'Patient'),
-('Patel Dhruv', 'dhruv13042001@gmail.com', 'Dhruv@1303', 'Doctor'),
-('Devraj Rajput', 'devrajrajput18@gmail.com', 'dEVRAJ@18', 'Doctor'),
-('abc', 'abc@gmail.com', 'Abc@1234', 'Patient'),
-('def', 'def@gmail.com', 'deF@1234', 'Doctor'),
-('ghi', 'ghi@gmail.com', 'Ghi@1234', 'Patient');
+INSERT INTO `login` (`login_id`, `name`, `email`, `password`, `role`) VALUES
+(1, 'Dr. John Doe', 'johndoe@example.com', 'Password@123', 'doctor'),
+(2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'doctor'),
+(3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'doctor'),
+(4, 'John Doe', 'john@example.com', 'Password@123', 'patient'),
+(5, 'Jane Smith', 'jane@example.com', 'Password@456', 'patient'),
+(6, 'Alex Brown', 'alex@example.com', 'Password@789', 'patient'),
+(7, 'Alice Johnson', 'alice@example.com', 'Alice@123', 'receptionist'),
+(8, 'Bob Smith', 'bob@example.com', 'Bob@123', 'receptionist'),
+(9, 'Charlie Brown', 'charlie@example.com', 'Charlie@123', 'receptionist');
 
 --
 -- Triggers `login`
@@ -104,7 +116,7 @@ INSERT INTO `login` (`name`, `email`, `password`, `role`) VALUES
 DELIMITER $$
 CREATE TRIGGER `doctor` AFTER INSERT ON `login` FOR EACH ROW BEGIN
     IF NEW.role = 'Doctor' THEN
-        INSERT INTO doctor (name, email, password, role) VALUES (NEW.name, NEW.email, NEW.password, NEW.role);
+        INSERT INTO doctor (name, email, password, role, login_id) VALUES (NEW.name, NEW.email, NEW.password, NEW.role, NEW.login_id);
     END IF;
 END
 $$
@@ -112,7 +124,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `patient` AFTER INSERT ON `login` FOR EACH ROW BEGIN
     IF NEW.role = 'Patient' THEN
-        INSERT INTO patient (name, email, password, role) VALUES (NEW.name, NEW.email, NEW.password, NEW.role);
+        INSERT INTO patient (name, email, password, role, login_id) VALUES (NEW.name, NEW.email, NEW.password, NEW.role, NEW.login_id);
     END IF;
 END
 $$
@@ -120,7 +132,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `receptionist` AFTER INSERT ON `login` FOR EACH ROW BEGIN
     IF NEW.role = 'Receptionist' THEN
-        INSERT INTO receptionist (name, email, password, role) VALUES (NEW.name, NEW.email, NEW.password, NEW.role);
+        INSERT INTO receptionist (name, email, password, role, login_id) VALUES (NEW.name, NEW.email, NEW.password, NEW.role, NEW.login_id);
     END IF;
 END
 $$
@@ -175,6 +187,8 @@ DELIMITER ;
 --
 
 CREATE TABLE `patient` (
+  `patient_id` int(11) NOT NULL,
+  `login_id` int(11) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `role` varchar(50) NOT NULL,
@@ -185,21 +199,20 @@ CREATE TABLE `patient` (
   `insurance` varchar(50) NOT NULL,
   `adhar_no` varchar(12) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `patient_id` int(11) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `name` varchar(100) NOT NULL,
   `dob` date NOT NULL,
   `patient_pic` longblob NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `patient`
 --
 
-INSERT INTO `patient` (`email`, `password`, `role`, `age`, `gender`, `address`, `number`, `insurance`, `adhar_no`, `created_at`, `patient_id`, `name`, `dob`, `patient_pic`) VALUES
-('john@example.com', 'Password@123', 'patient', '30', 'Male', '123 Main St', '987-654-32', 'XYZ Insurance', '1234-5678-90', '2024-05-22 16:44:14', 1, 'John Doe', '2001-12-31', ''),
-('jane@example.com', 'Password@456', 'patient', '25', 'Female', '456 Elm St', '123-456-78', 'ABC Insurance', '9876-5432-10', '2024-05-22 16:44:14', 2, 'Jane Smith', '2001-12-31', ''),
-('alex@example.com', 'Password@789', 'patient', '40', 'Male', '789 Oak St', '456-789-01', 'DEF Insurance', '5678-9012-34', '2024-05-22 16:44:14', 3, 'Alex Brown', '2001-12-31', ''),
-('john@example.com', 'password123', 'patient', '25', 'Male', '123 Main St, City', '+123456789', 'Insurance Company A', '123456789012', '2024-05-23 13:29:45', 4, 'John Doe', '1999-05-20', '');
+INSERT INTO `patient` (`patient_id`, `login_id`, `email`, `password`, `role`, `age`, `gender`, `address`, `number`, `insurance`, `adhar_no`, `created_at`, `updated_at`, `name`, `dob`, `patient_pic`) VALUES
+(1, 4, 'john@example.com', 'Password@123', 'patient', '30', 'Male', '123 Main St', '987-654-32', 'XYZ Insurance', '1234-5678-90', '2024-05-22 16:44:14', '2024-05-24 05:52:09', 'John Doe', '2001-12-31', ''),
+(2, 5, 'jane@example.com', 'Password@456', 'patient', '25', 'Female', '456 Elm St', '123-456-78', 'ABC Insurance', '9876-5432-10', '2024-05-22 16:44:14', '2024-05-24 05:52:09', 'Jane Smith', '2001-12-31', ''),
+(3, 6, 'alex@example.com', 'Password@789', 'patient', '40', 'Male', '789 Oak St', '456-789-01', 'DEF Insurance', '5678-9012-34', '2024-05-22 16:44:14', '2024-05-24 05:52:09', 'Alex Brown', '2001-12-31', '');
 
 -- --------------------------------------------------------
 
@@ -209,6 +222,7 @@ INSERT INTO `patient` (`email`, `password`, `role`, `age`, `gender`, `address`, 
 
 CREATE TABLE `receptionist` (
   `receptionist_id` int(11) NOT NULL,
+  `login_id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `phone` int(10) NOT NULL,
@@ -216,6 +230,7 @@ CREATE TABLE `receptionist` (
   `salary` int(10) NOT NULL,
   `employment` varchar(50) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `password` varchar(50) NOT NULL,
   `role` varchar(50) NOT NULL,
   `rec_pic` longblob NOT NULL
@@ -225,10 +240,10 @@ CREATE TABLE `receptionist` (
 -- Dumping data for table `receptionist`
 --
 
-INSERT INTO `receptionist` (`receptionist_id`, `name`, `email`, `phone`, `address`, `salary`, `employment`, `created_at`, `password`, `role`, `rec_pic`) VALUES
-(1, 'Alice Johnson', 'alice@example.com', 1234567890, '123 Main St', 35000, 'Full-Time', '2024-05-22 16:48:27', 'Alice@123', 'receptionist', ''),
-(2, 'Bob Smith', 'bob@example.com', 2147483647, '456 Elm St', 30000, 'Part-Time', '2024-05-22 16:48:27', 'Bob@123', 'receptionist', ''),
-(3, 'Charlie Brown', 'charlie@example.com', 2147483647, '789 Oak St', 40000, 'Full-Time', '2024-05-22 16:48:27', 'Charlie@123', 'receptionist', '');
+INSERT INTO `receptionist` (`receptionist_id`, `login_id`, `name`, `email`, `phone`, `address`, `salary`, `employment`, `created_at`, `updated_at`, `password`, `role`, `rec_pic`) VALUES
+(1, 7, 'Alice Johnson', 'Alice@example.com', 1234567890, '123 Main St', 35000, 'Full-Time', '2024-05-22 16:48:27', '2024-05-24 05:59:32', 'Alice@123', 'receptionist', ''),
+(2, 8, 'Bob Smith', 'Bob@example.com', 2147483647, '456 Elm St', 30000, 'Part-Time', '2024-05-22 16:48:27', '2024-05-24 05:59:53', 'Bob@1234', 'receptionist', ''),
+(3, 9, 'Charlie Brown', 'Charlie@example.com', 2147483647, '789 Oak St', 40000, 'Full-Time', '2024-05-22 16:48:27', '2024-05-24 05:59:32', 'Charlie@123', 'receptionist', '');
 
 --
 -- Indexes for dumped tables
@@ -248,43 +263,65 @@ ALTER TABLE `appointments`
 --
 ALTER TABLE `doctor`
   ADD PRIMARY KEY (`doctor_id`),
+  ADD KEY `login_id` (`login_id`),
   ADD KEY `doctor_id` (`doctor_id`);
+
+--
+-- Indexes for table `login`
+--
+ALTER TABLE `login`
+  ADD PRIMARY KEY (`login_id`),
+  ADD KEY `login_id` (`login_id`);
 
 --
 -- Indexes for table `patient`
 --
 ALTER TABLE `patient`
   ADD PRIMARY KEY (`patient_id`),
-  ADD KEY `patient_id` (`patient_id`);
+  ADD KEY `patient_id` (`patient_id`),
+  ADD KEY `login_id` (`login_id`);
 
 --
 -- Indexes for table `receptionist`
 --
 ALTER TABLE `receptionist`
   ADD PRIMARY KEY (`receptionist_id`),
-  ADD KEY `receptionist_id` (`receptionist_id`);
+  ADD KEY `receptionist_id` (`receptionist_id`),
+  ADD KEY `login_id` (`login_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
+-- AUTO_INCREMENT for table `appointments`
+--
+ALTER TABLE `appointments`
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `doctor`
 --
 ALTER TABLE `doctor`
-  MODIFY `doctor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `doctor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `login`
+--
+ALTER TABLE `login`
+  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `receptionist`
 --
 ALTER TABLE `receptionist`
-  MODIFY `receptionist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `receptionist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -294,9 +331,27 @@ ALTER TABLE `receptionist`
 -- Constraints for table `appointments`
 --
 ALTER TABLE `appointments`
-  ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`receptionist_id`) REFERENCES `receptionist` (`receptionist_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `doctor` (`doctor_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`receptionist_id`) REFERENCES `receptionist` (`receptionist_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `doctor`
+--
+ALTER TABLE `doctor`
+  ADD CONSTRAINT `doctor_ibfk_1` FOREIGN KEY (`login_id`) REFERENCES `login` (`login_id`);
+
+--
+-- Constraints for table `patient`
+--
+ALTER TABLE `patient`
+  ADD CONSTRAINT `patient_ibfk_1` FOREIGN KEY (`login_id`) REFERENCES `login` (`login_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `receptionist`
+--
+ALTER TABLE `receptionist`
+  ADD CONSTRAINT `receptionist_ibfk_1` FOREIGN KEY (`login_id`) REFERENCES `login` (`login_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
