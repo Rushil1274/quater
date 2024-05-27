@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Validation from "./LoginValidation";
+import Validation from "./SignupValidation";
 import axios from "axios";
 
-function Login() {
+export default function Signup() {
   const [values, setValues] = useState({
+    name: "",
     email: "",
     password: "",
     role: "Doctor", // Default role
   });
 
-  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
 
   const handleInput = (event) => {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
@@ -24,23 +25,8 @@ function Login() {
 
     if (Object.keys(validationErrors).length === 0) {
       axios
-        .post("http://localhost:8081/login", values)
-        .then((res) => {
-          if (res.data.status === "Success") {
-            // Store user data in local storage
-            localStorage.setItem("user", JSON.stringify(res.data.user));
-
-            if (values.role === "Doctor") {
-              navigate("/doctor-home");
-            } else if (values.role === "Receptionist") {
-              navigate("/receptionist-home");
-            } else {
-              navigate("/home");
-            }
-          } else {
-            alert("No record exist");
-          }
-        })
+        .post("http://localhost:8081/signup", values)
+        .then(() => navigate("/"))
         .catch((err) => console.log(err));
     }
   };
@@ -48,15 +34,26 @@ function Login() {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="bg-white p-3 rounded w-25">
-        <h2>Sign In</h2>
+        <h2>Sign Up</h2>
         <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              placeholder="Enter Name"
+              onChange={handleInput}
+              name="name"
+              className="form-control rounded-0"
+            />
+            {errors.name && <span className="text-danger">{errors.name}</span>}
+          </div>
           <div className="mb-3">
             <label htmlFor="email">Email</label>
             <input
               type="email"
               placeholder="Enter Email"
-              name="email"
               onChange={handleInput}
+              name="email"
               className="form-control rounded-0"
             />
             {errors.email && (
@@ -67,9 +64,9 @@ function Login() {
             <label htmlFor="password">Password</label>
             <input
               type="password"
-              name="password"
               placeholder="Enter Password"
               onChange={handleInput}
+              name="password"
               className="form-control rounded-0"
             />
             {errors.password && (
@@ -89,24 +86,14 @@ function Login() {
             </select>
           </div>
           <button type="submit" className="btn btn-success w-100">
-            <strong>Log In</strong>
+            <strong>Signup</strong>
           </button>
           <p>You agree to TnC</p>
-          <Link to="/signup" className="btn btn-default border w-100 bg-light">
-            <strong>Create Account</strong>
-          </Link>
-          <br />
-          <br />
-          <Link
-            to="/forgotpassword"
-            className="btn btn-default border w-100 bg-light"
-          >
-            <strong>Forgot Password</strong>
+          <Link to="/" className="btn btn-default border w-100 bg-light">
+            <strong>Login</strong>
           </Link>
         </form>
       </div>
     </div>
   );
 }
-
-export default Login;
