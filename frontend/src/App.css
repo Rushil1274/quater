@@ -797,6 +797,62 @@ ul {
 	transition: 0.4s ease-in;
 }
 
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  position: relative;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  /* text-align: center; */
+}
+
+.popup-content h2 {
+  margin-bottom: 1rem;
+}
+
+.popup-content .form-group {
+  margin-bottom: 1rem;
+}
+
+.popup-content .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.popup-content .form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.popup-content button {
+  margin-top: 1rem;
+}
+
+.close-popup {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
 /* Home End */
 
 /* My Profile Start */

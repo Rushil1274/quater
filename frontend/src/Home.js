@@ -1,19 +1,175 @@
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FaCheckDouble } from "react-icons/fa";
-import { FaClock, FaHeadset,FaHouseUser  } from "react-icons/fa";
+import { FaCheckDouble, FaClock, FaHeadset, FaHouseUser } from "react-icons/fa";
 
-import img1 from "./images/specialities-01.png"
-import img2 from "./images/specialities-02.png"
-import img3 from "./images/specialities-03.png"
-import img4 from "./images/specialities-04.png"
-import img5 from "./images/specialities-05.png"
+import img1 from "./images/specialities-01.png";
+import img2 from "./images/specialities-02.png";
+import img3 from "./images/specialities-03.png";
+import img4 from "./images/specialities-04.png";
+import img5 from "./images/specialities-05.png";
 
 function Home() {
+    const [showPopup, setShowPopup] = useState(false);
+    const [mobile, setMobile] = useState('');
+    const [aadhaar, setAadhaar] = useState('');
+    const [gender, setGender] = useState('');
+    const [dob, setDob] = useState('');
+    const [age, setAge] = useState(null);
+    const [maxBirthDate, setMaxBirthDate] = useState('');
+
+    useEffect(() => {
+        setShowPopup(true);
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() - 110);
+        setMaxBirthDate(maxDate.toISOString().split('T')[0]);
+    }, []);
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
+    };
+
+    const handleMobileChange = (e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value) && value.length <= 10) {
+            setMobile(value);
+        }
+    };
+
+    const handleAadhaarChange = (e) => {
+        const value = e.target.value.replace(/\s/g, ''); // Remove spaces
+        if (/^\d*$/.test(value) && value.length <= 12) {
+            const formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
+            setAadhaar(formattedValue);
+        }
+    };
+
+    const handleGenderChange = (e) => {
+        setGender(e.target.value);
+    };
+
+    const handleDobChange = (e) => {
+        const value = e.target.value;
+        setDob(value);
+        calculateAge(value);
+    };
+
+    const calculateAge = (dob) => {
+        const birthDate = new Date(dob);
+        const today = new Date();
+        
+        if (birthDate > today) {
+            setAge(null); // Reset age
+        } else {
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDifference = today.getMonth() - birthDate.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            setAge(Math.min(age, 110)); // Limit age to maximum 110
+        }
+    };
 
     return (
         <>
+            {showPopup && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <span className="close-popup" onClick={handleClosePopup}>&times;</span>
+                        <h2>Complete Your Profile</h2>
+                        <form>
+                            <div className="form-group">
+                                <label htmlFor="name">Name:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="name"
+                                    placeholder="Enter Your Name"
+                                    pattern="[A-Za-z\s]+"
+                                    title="Name can only contain letters and spaces"
+                                    required
+                                />
+
+                                <label htmlFor="email">Email:</label>
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    id="email"
+                                    placeholder="Enter Your Email"
+                                    required
+                                />
+                                
+                                <label htmlFor="gender">Gender:</label>
+                                <select
+                                    className="form-control"
+                                    id="gender"
+                                    value={gender}
+                                    onChange={handleGenderChange}
+                                    required
+                                >
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+
+                                <label htmlFor="dob">Date of Birth:</label>
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    id="dob"
+                                    value={dob}
+                                    onChange={handleDobChange}
+                                    max={maxBirthDate} // Set max birth date
+                                    required
+                                />
+                                {age !== null && (
+                                    <p>Age: {age} years</p>
+                                )}
+
+                                <label htmlFor="mobile">Mobile No:</label>
+                                <input
+                                    type="tel"
+                                    className="form-control"
+                                    id="mobile"
+                                    placeholder="Enter Your Mobile Number"
+                                    value={mobile}
+                                    onChange={handleMobileChange}
+                                    required
+                                />
+                                {mobile.length > 0 && mobile.length < 10 && (
+                                    <small className="text-danger">Mobile number must be exactly 10 digits long</small>
+                                )}
+
+                                <label htmlFor="aadhaar">Aadhaar Card No:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="aadhaar"
+                                    placeholder="Enter Your Aadhaar Number"
+                                    value={aadhaar}
+                                    onChange={handleAadhaarChange}
+                                    required
+                                />
+                                                                {aadhaar.replace(/\s/g, '').length > 0 && aadhaar.replace(/\s/g, '').length < 12 && (
+                                    <small className="text-danger">Aadhaar number must be exactly 12 digits long</small>
+                                )}
+
+                                <label htmlFor="address">Address:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="address"
+                                    placeholder="Enter Your Address"
+                                    required
+                                />
+                            </div>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            )}
             <section id="hero" className="d-flex align-items-center">
                 <div className="container">
                     <div>
@@ -40,7 +196,7 @@ function Home() {
                                     Asperiores dolores sed et. Tenetur quia eos. Autem tempore quibusdam vel necessitatibus optio ad corporis.
                                 </p>
                                 <div className="text-center">
-                                    <Link style={{textDecoration:'none'}} to = {'/about'} className="more-btn">Learn More <i className="bx bx-chevron-right"></i></Link>
+                                    <Link style={{ textDecoration: 'none' }} to={'/about'} className="more-btn">Learn More <i className="bx bx-chevron-right"></i></Link>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +214,7 @@ function Home() {
                                     <div className="col-xl-4 d-flex align-items-stretch">
                                         <div className="icon-box mt-4 mt-xl-0">
                                             <FaHeadset className="icon" />
-                                            <h4>Emegency Cases</h4>
+                                            <h4>Emergency Cases</h4>
                                             <h6 className='text-secondary'>+88 01751 040425</h6>
                                             <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Qui facilis perferendis quia maxime. Laborum excepturi pariatur laboriosam nihil, dolor molestias.</p>
                                         </div>
@@ -132,11 +288,6 @@ function Home() {
                 </div>
             </section>
         </>
-
-
-
-
-    )
-}
-
-export default Home
+    );
+}                               
+export default Home;
