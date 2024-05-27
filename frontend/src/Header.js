@@ -118,7 +118,7 @@ const Header = () => {
                       </>
                     ) : (
                       <>
-                        {user.email === "admin@gmail.com" && (
+                        {user.name === "Admin" && (
                           <Link
                             to="/dashboard"
                             style={{
