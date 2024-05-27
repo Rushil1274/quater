@@ -926,7 +926,6 @@ ul {
 }
 
 /* Update Profile */
-/* General form styling */
 .update-profile {
   max-width: 600px;
   margin: 0 auto;
@@ -965,12 +964,14 @@ ul {
   box-sizing: border-box;
 }
 
-.update-profile .gender {
+.update-profile .gender,
+.update-profile .insurance {
   display: flex;
   align-items: center;
 }
 
-.update-profile .gender label {
+.update-profile .gender label,
+.update-profile .insurance label {
   margin-right: 10px;
 }
 
@@ -1005,13 +1006,15 @@ ul {
   }
 }
 
-.gender label {
+.gender label,
+.insurance label {
   font-weight: 600;
   font-family: "Poppins";
   margin: 0px;
 }
 
-.gender .input {
+.gender .input,
+.insurance .input {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #ccc;

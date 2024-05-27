@@ -147,8 +147,13 @@ const UpdateProfile = ({ user }) => {
             <option value="Others">Others</option>
           </select>
         </div>
-        <div>
-        <label for="insuranceNo">Insurance No: <input type="text" id="insuranceNo" name="insuranceNo" placeholder="Enter your insurance number" required minlength="6" maxlength="20" /></label>
+        <div className='insurance'>
+          <label for="insuranceNo">Insurance:</label>
+          <select id="insurance" name="insurance" onChange={handleGenderChange} className='input'>
+            <option value="all"></option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
         </div>
         <div className='address-text'>
           <label> Address: <textarea placeholder='Enter your address' rows={2} cols={60} /></label>

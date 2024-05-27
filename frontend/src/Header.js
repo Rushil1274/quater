@@ -52,8 +52,13 @@ const Header = () => {
                   <li className="nav_item nav_link" key={index}>
                     <NavLink
                       to={item.path}
-                      className={(navClass) => (navClass.isActive ? "nav_active" : "")}
-                      style={{ textDecoration: "none", color: "var(--primary-color)" }}
+                      className={(navClass) =>
+                        navClass.isActive ? "nav_active" : ""
+                      }
+                      style={{
+                        textDecoration: "none",
+                        color: "var(--primary-color)",
+                      }}
                     >
                       {item.display}
                     </NavLink>
@@ -69,15 +74,24 @@ const Header = () => {
                 </div>
               )}
               <div className="user_icon" onBlur={closeProfileActions}>
-                <img src={userIcon} alt="User Icon" onClick={toggleProfileActions} />
+                <img
+                  src={userIcon}
+                  alt="User Icon"
+                  onClick={toggleProfileActions}
+                />
                 <div
-                  className={`profile-actions ${profileActionsVisible ? "show_profileActions" : ""}`}
+                  className={`profile-actions ${
+                    profileActionsVisible ? "show_profileActions" : ""
+                  }`}
                   ref={profileActionRef}
                 >
                   <div className="profile_link">
                     <Link
                       to="/myprofile"
-                      style={{ textDecoration: "none", color: "var(--primary-color)" }}
+                      style={{
+                        textDecoration: "none",
+                        color: "var(--primary-color)",
+                      }}
                     >
                       My Profile
                     </Link>
@@ -85,31 +99,47 @@ const Header = () => {
                       <>
                         <Link
                           to="/signup"
-                          style={{ textDecoration: "none", color: "var(--primary-color)" }}
+                          style={{
+                            textDecoration: "none",
+                            color: "var(--primary-color)",
+                          }}
                         >
                           SignUp
                         </Link>
                         <Link
                           to="/login"
-                          style={{ textDecoration: "none", color: "var(--primary-color)" }}
+                          style={{
+                            textDecoration: "none",
+                            color: "var(--primary-color)",
+                          }}
                         >
                           Login
                         </Link>
-                        <Link
-                          to="/dashboard"
-                          style={{ textDecoration: "none", color: "var(--primary-color)" }}
-                        >
-                          Dashboard
-                        </Link>
                       </>
                     ) : (
-                      <Link
-                        to="#"
-                        onClick={handleLogout}
-                        style={{ textDecoration: "none", color: "var(--primary-color)" }}
-                      >
-                        Logout
-                      </Link>
+                      <>
+                        {user.email === "admin@gmail.com" && (
+                          <Link
+                            to="/dashboard"
+                            style={{
+                              textDecoration: "none",
+                              color: "var(--primary-color)",
+                            }}
+                          >
+                            Dashboard
+                          </Link>
+                        )}
+                        <Link
+                          to="#"
+                          onClick={handleLogout}
+                          style={{
+                            textDecoration: "none",
+                            color: "var(--primary-color)",
+                          }}
+                        >
+                          Logout
+                        </Link>
+                      </>
                     )}
                   </div>
                 </div>

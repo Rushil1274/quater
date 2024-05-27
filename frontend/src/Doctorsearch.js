@@ -88,14 +88,14 @@ const Doctors = () => {
         <div>
           <select id="location" name="location" onChange={handleFilterChange} className='input'>
             <option value="all">Filter by location</option>
-            <option value="ahmedabad">Ahmedabad</option>
-            <option value="gandhinagar">Gandhinagar</option>
-            <option value="chennai">Chennai</option>
-            <option value="mumbai">Mumbai</option>
-            <option value="benglore">Benglore</option>
-            <option value="delhi">Delhi</option>
-            <option value="kolkata">Kolkata</option>
-            <option value="lakhnow">Lakhnow</option>
+            <option value="Ahmedabad">Ahmedabad</option>
+            <option value="Gandhinagar">Gandhinagar</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Benglore">Benglore</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Kolkata">Kolkata</option>
+            <option value="Lakhnow">Lakhnow</option>
           </select>
         </div>
       </div>
