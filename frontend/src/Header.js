@@ -13,13 +13,6 @@ const Header = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const nav_links = [
-    { path: "home", display: "Home" },
-    { path: "about", display: "About" },
-    { path: "doctors", display: "Doctors" },
-    { path: "contact", display: "Contact" },
-  ];
-
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -37,6 +30,16 @@ const Header = () => {
     setUser(null);
     navigate("/login");
   };
+
+  let nav_links = [
+    { path: "home", display: "Home" },
+    { path: "about", display: "About" },
+    { path: "contact", display: "Contact" },
+  ];
+
+  if (!user || user.role === "patient") {
+    nav_links.splice(2, 0, { path: "doctors", display: "Doctors" });
+  }
 
   return (
     <header className="header sticky-header">

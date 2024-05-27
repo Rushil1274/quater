@@ -65,7 +65,7 @@ const Doctors = () => {
   return (
     <div className="container-doctor">
       <div className="filters">
-        <h2>Filter Doctors</h2>
+        <h2>Filters</h2>
         <input type="text" name="name" placeholder="Search by Name" value={filter.name} onChange={handleFilterChange} className="input" />
         <div>
           <select id="specialization" name="specialization" onChange={handleFilterChange} className="input">

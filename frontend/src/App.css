@@ -675,14 +675,14 @@ ul {
   border-radius: 10px;
   background: #fff;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
-  padding: 40px 30px;
+  padding: 40px 30px 0px 30px;
   width: 100%;
 }
 
 .why-us .icon-boxes .icon-box .icon {
   font-size: 40px;
   color: #1977cc;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
 }
 
 .why-us .icon-boxes .icon-box h4 {
@@ -697,10 +697,52 @@ ul {
   color: #848484;
 }
 
+.reco-doc-card div  {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reco-doc-card h2 {
+  margin: 20px 0px;
+}
+
+.spec-header h2,
+.reco-doc-card h2 {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 20px;
+}
+
+.spec-header h2::before,
+.reco-doc-card h2::before {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 120px;
+  height: 1px;
+  background: #ddd;
+  bottom: 1px;
+  left: calc(50% - 60px);
+}
+
+.spec-header h2::after,
+.reco-doc-card h2::after {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: #1977cc;
+  bottom: 0;
+  left: calc(50% - 20px);
+}
+
+
 .section-specialities {
 	background-color: rgb(243, 241, 241);
-	padding: 80px 0;
-	margin: 7rem 0;
+	padding: 50px 0;
+	margin: 1rem 0;
 }
 
 @media (max-width: 600px) {
