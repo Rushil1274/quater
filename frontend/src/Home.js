@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaCheckDouble, FaClock, FaHeadset, FaHouseUser } from "react-icons/fa";
-<<<<<<< HEAD
+
 import img1 from "./images/specialities-01.png";
 import img2 from "./images/specialities-02.png";
 import img3 from "./images/specialities-03.png";
@@ -48,15 +48,9 @@ function Home() {
         (filter.fees === '' || doctor.fees.includes(filter.fees)) &&
         (filter.location === '' || doctor.location.toLowerCase().includes(filter.location.toLowerCase()))
     );
-=======
-
-import img1 from "./images/specialities-01.png";
-import img2 from "./images/specialities-02.png";
-import img3 from "./images/specialities-03.png";
-import img4 from "./images/specialities-04.png";
-import img5 from "./images/specialities-05.png";
 
 function Home() {
+
     const [showPopup, setShowPopup] = useState(false);
     const [mobile, setMobile] = useState('');
     const [aadhaar, setAadhaar] = useState('');
@@ -116,7 +110,7 @@ function Home() {
             setAge(Math.min(age, 110)); // Limit age to maximum 110
         }
     };
->>>>>>> 4d3a78c61fe5f74f48baa40df4319fb5993daf2e
+
 
     return (
         <>
@@ -358,19 +352,9 @@ function Home() {
                         </div>
                     </div>
                 </div>
-            </section>
-
-
-            {/* Rest of your component remains unchanged */}
-            {/* Why us section */}
-            {/* Clinic and Specialities section */}
+            </section>                            
         </>
     );
-<<<<<<< HEAD
-}
-
-export default Home;
-=======
 }                               
 export default Home;
->>>>>>> 4d3a78c61fe5f74f48baa40df4319fb5993daf2e
+
