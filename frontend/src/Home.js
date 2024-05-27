@@ -9,7 +9,6 @@ import img2 from "./images/specialities-02.png";
 import img3 from "./images/specialities-03.png";
 import img4 from "./images/specialities-04.png";
 import img5 from "./images/specialities-05.png";
-import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 
@@ -48,8 +47,6 @@ function Home() {
         (filter.fees === '' || doctor.fees.includes(filter.fees)) &&
         (filter.location === '' || doctor.location.toLowerCase().includes(filter.location.toLowerCase()))
     );
-
-function Home() {
 
     const [showPopup, setShowPopup] = useState(false);
     const [mobile, setMobile] = useState('');
@@ -357,4 +354,3 @@ function Home() {
     );
 }                               
 export default Home;
-
