@@ -1,16 +1,51 @@
 import { Link } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FaCheckDouble } from "react-icons/fa";
-import { FaClock, FaHeadset,FaHouseUser  } from "react-icons/fa";
+import { FaCheckDouble, FaClock, FaHeadset, FaHouseUser } from "react-icons/fa";
+import img1 from "./images/specialities-01.png";
+import img2 from "./images/specialities-02.png";
+import img3 from "./images/specialities-03.png";
+import img4 from "./images/specialities-04.png";
+import img5 from "./images/specialities-05.png";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-import img1 from "./images/specialities-01.png"
-import img2 from "./images/specialities-02.png"
-import img3 from "./images/specialities-03.png"
-import img4 from "./images/specialities-04.png"
-import img5 from "./images/specialities-05.png"
 
 function Home() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    // const role = user.role; // Can be 'Doctor', 'Receptionist', or 'Patient'
+
+    const [filter, setFilter] = useState({ name: '', specialization: '', fees: '', location: '' });
+    const [doctors, setDoctors] = useState([]);
+
+    useEffect(() => {
+        const fetchDoctors = async () => {
+            try {
+                const response = await axios.get('http://localhost:8081/doctors');
+                setDoctors(response.data);
+            } catch (error) {
+                console.error('Failed to fetch doctors:', error);
+            }
+        };
+        fetchDoctors();
+    }, []);
+
+    const bufferToBase64 = (buffer) => {
+        let binary = '';
+        const bytes = new Uint8Array(buffer.data);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    };
+
+    const filteredDoctors = doctors.filter((doctor) =>
+        doctor.name.toLowerCase().includes(filter.name.toLowerCase()) &&
+        doctor.specialization.toLowerCase().includes(filter.specialization.toLowerCase()) &&
+        (filter.fees === '' || doctor.fees.includes(filter.fees)) &&
+        (filter.location === '' || doctor.location.toLowerCase().includes(filter.location.toLowerCase()))
+    );
 
     return (
         <>
@@ -23,8 +58,13 @@ function Home() {
                         <p className='hero-p'>deserunt rem suscipit placeat.</p>
                     </div>
                     <div className="d-flex justify-content-start gap-2">
-                        <Link to={'/doctors'} className="btn-get-started scrollto">Book Appointment</Link>
-                        <Link to={'/doctors-dashboard'} className="btn-get-started scrollto">Track Appointment</Link>
+                        {/* Conditional rendering based on user role */}
+                        {user.role === 'patient' && (
+                            <Link to={'/doctors'} className="btn-get-started scrollto">Book Appointment</Link>
+                        )}
+                        {(user.role === 'doctor' || user.role === 'receptionist') && (
+                            <Link to={'/doctors-dashboard'} className="btn-get-started scrollto">Track Appointment</Link>
+                        )}
                     </div>
                 </div>
             </section>
@@ -40,7 +80,7 @@ function Home() {
                                     Asperiores dolores sed et. Tenetur quia eos. Autem tempore quibusdam vel necessitatibus optio ad corporis.
                                 </p>
                                 <div className="text-center">
-                                    <Link style={{textDecoration:'none'}} to = {'/about'} className="more-btn">Learn More <i className="bx bx-chevron-right"></i></Link>
+                                    <Link style={{ textDecoration: 'none' }} to={'/about'} className="more-btn">Learn More <i className="bx bx-chevron-right"></i></Link>
                                 </div>
                             </div>
                         </div>
@@ -81,9 +121,29 @@ function Home() {
                     </div>
                 </div>
             </section>
+            <section className='reco-doc'>
+                <div className="container-fluid">
+                    <div className='mb-5 mt-100 section-title text-center reco-doc-card'>
+                        <h2>Recommended Doctors</h2>
+                        <div className="cardContainer">
+                            {filteredDoctors.slice(0, 5).map((doctor, index) => (
+                                <div key={index} className="card">
+                                    <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
+                                    <h3>{doctor.name}</h3>
+                                    <p><strong>Specialization:</strong> {doctor.specialization}</p>
+                                    <p><strong>Fees:</strong> {doctor.fees}</p>
+                                    <p><strong>Location:</strong> {doctor.location}</p>
+                                    <p>{doctor.description}</p>
+                                    <button className="bookButton">Book Appointment</button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
             <section className="section section-specialities position-relative">
                 <div className="container-fluid">
-                    <div className='mb-5 section-title text-center'>
+                    <div className='mb-5 section-title text-center spec-header'>
                         <h2>Clinic and Specialities</h2>
                         <p className='m-0'>Lorem ipsum dolor sit amet consectetur adipisicing.</p>
                     </div>
@@ -131,12 +191,13 @@ function Home() {
                     </div>
                 </div>
             </section>
+
+
+            {/* Rest of your component remains unchanged */}
+            {/* Why us section */}
+            {/* Clinic and Specialities section */}
         </>
-
-
-
-
-    )
+    );
 }
 
-export default Home
+export default Home;
