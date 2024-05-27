@@ -8,6 +8,7 @@ const AccountDetails = ({ user }) => (
   <div className="account-details">
     <AiOutlineUser className='user-icon' />
     <h4>Name: </h4>
+    <p>Role: </p>
     <p>Email: </p>
     <p>Mobile: </p>
     <p>Adhar No: </p>
@@ -87,6 +88,11 @@ const UpdateProfile = ({ user }) => {
 
   const today = new Date().toISOString().split('T')[0];
 
+  // const handleGenderChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFilter({ ...filter, [name]: value });
+  // };
+
   // const [streetAddress, setStreetAddress] = useState(user.streetAddress || '');
   // const [city, setCity] = useState(user.city || '');
   // const [state, setState] = useState(user.state || '');
@@ -124,28 +130,28 @@ const UpdateProfile = ({ user }) => {
           <label> Email Id : { }</label>
         </div>
         <div>
-          <label> Mobile No : <input type='number' placeholder='Enter your mobile no' /></label>
+          <label for="mobileNo">Mobile No: <input type="tel" id="mobileNo" name="mobileNo" placeholder="Enter your mobile number" required minlength="10" maxlength="10" pattern="[0-9]{10,15}" /></label>
         </div>
         <div>
-          <label> Adhar No : <input type='number' placeholder='Enter your adhar no' /></label>
         </div>
+        <label for="aadhaarNo">Aadhaar No: <input type="text" id="aadhaarNo" name="aadhaarNo" placeholder="Enter your Aadhaar number" required minlength="12" maxlength="12" pattern="\d{12}" /></label>
         <div>
           <label> Date of Birth : <input type='date' max={today} /></label>
         </div>
         <div className='gender'>
           <label>Gender:</label>
-          <input type="radio" id="male" name="gender" value="male" checked={gender === 'male'} onChange={handleGenderChange} />
-          <label htmlFor="male">Male</label>
-          <input type="radio" id="female" name="gender" value="female" checked={gender === 'female'} onChange={handleGenderChange} />
-          <label htmlFor="female">Female</label>
-          <input type="radio" id="other" name="gender" value="other" checked={gender === 'other'} onChange={handleGenderChange} />
-          <label htmlFor="other">Other</label>
+          <select id="gender" name="gender" onChange={handleGenderChange} className='input'>
+            <option value="all"></option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Others">Others</option>
+          </select>
         </div>
         <div>
-          <label> Insurance : <input type='number' /></label>
+        <label for="insuranceNo">Insurance No: <input type="text" id="insuranceNo" name="insuranceNo" placeholder="Enter your insurance number" required minlength="6" maxlength="20" /></label>
         </div>
         <div className='address-text'>
-          <label> Address: <textarea placeholder='Enter your address' rows={2} cols={60}  /></label>
+          <label> Address: <textarea placeholder='Enter your address' rows={2} cols={60} /></label>
         </div>
         <button type="submit" >Update Profile</button>
       </form>

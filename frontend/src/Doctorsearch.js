@@ -5,9 +5,9 @@ import axios from 'axios';
 const Doctors = () => {
   const [filter, setFilter] = useState({ name: '', specialization: '', fees: '', location: '' });
   const [doctors, setDoctors] = useState([]);
-  const [minPrice, setMinPrice] = useState(0); // Set minimum price to 0
-  const [maxPrice, setMaxPrice] = useState(5000); // Set maximum price to 5000
-
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(5000);
+  
   useEffect(() => {
     const fetchDoctors = async () => {
       try {

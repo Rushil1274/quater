@@ -879,29 +879,6 @@ ul {
   margin: 5px;
 }
 
-.update-profile form button {
-  border-radius: 10px;
-  border: none;
-  margin: 10px;
-  font-weight: 400;
-  font-size: 20px;
-  padding: 3px 10px;
-  background-color: #0a1d37;
-  color: white;
-}
-
-.address-text label textarea {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.gender label {
-  margin-right: 10px;
-}
-.gender input {
-  margin-right: 2px;
-}
-
 /* My Appointments */
 .my-appointments ul li {
   background-color: #c3c3c3;
@@ -947,6 +924,101 @@ ul {
     margin-bottom: 0;
   }
 }
+
+/* Update Profile */
+/* General form styling */
+.update-profile {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  font-family: "Poppins";
+}
+
+.update-profile form {
+  display: flex;
+  flex-direction: column;
+}
+
+.update-profile div {
+  margin-bottom: 15px;
+}
+
+.update-profile label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.update-profile input[type="tel"],
+.update-profile input[type="text"],
+.update-profile input[type="date"],
+.update-profile select,
+.update-profile textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.update-profile .gender {
+  display: flex;
+  align-items: center;
+}
+
+.update-profile .gender label {
+  margin-right: 10px;
+}
+
+.update-profile .address-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.update-profile button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #CADCFC;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.update-profile button[type="submit"]:hover {
+  background-color: #00246B;
+  color: white;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .update-profile {
+      padding: 10px;
+  }
+
+  .update-profile textarea {
+      width: 100%;
+      padding: 8px;
+  }
+}
+
+.gender label {
+  font-weight: 600;
+  font-family: "Poppins";
+  margin: 0px;
+}
+
+.gender .input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  font-family: "Poppins";
+}
+
 /* My Profile End*/
 
 
