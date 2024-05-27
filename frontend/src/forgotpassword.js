@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import ForgotPasswordValidation from "./ForgotPasswordValidation";
 
 function ForgotPassword() {
   const [values, setValues] = useState({
@@ -17,29 +18,12 @@ function ForgotPassword() {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
   };
 
-  const validate = () => {
-    let errors = {};
-    if (!values.email) {
-      errors.email = "Email is required";
-    }
-    if (!values.newPassword) {
-      errors.newPassword = "New password is required";
-    } else if (values.newPassword.length < 6) {
-      errors.newPassword = "Password must be at least 6 characters";
-    }
-    if (values.newPassword !== values.confirmPassword) {
-      errors.confirmPassword = "Passwords do not match";
-    }
-    return errors;
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    const validationErrors = validate();
+    const validationErrors = ForgotPasswordValidation(values);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      console.log("Submitting Form:", values);
       axios
         .post("http://localhost:8081/forgotpassword", {
           email: values.email,
@@ -47,15 +31,17 @@ function ForgotPassword() {
           role: values.role,
         })
         .then((res) => {
-          console.log("Server Response:", res.data);
-          if (res.data === "Success") {
+          if (res.data.status === "Success") {
             alert("Password updated successfully");
             navigate("/login");
           } else {
-            alert("Error updating password");
+            alert(res.data.message || "Error updating password");
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.error("Error in Axios request:", err);
+          alert("Error updating password");
+        });
     }
   };
 
@@ -130,4 +116,3 @@ function ForgotPassword() {
 }
 
 export default ForgotPassword;
-
