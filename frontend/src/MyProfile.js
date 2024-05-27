@@ -1,49 +1,55 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
+import axios from 'axios';
 import "./App.css"
+const AccountDetails = ({ user }) => {
+  const [patient, setPatient] = useState(null);
 
+  useEffect(() => {
+    const fetchPatientDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8081/patients/${user.id}`
+        );
+        setPatient(response.data);
+      } catch (error) {
+        console.error("Error fetching patient details:", error);
+      }
+    };
 
-const AccountDetails = ({ user }) => (
-  <div className="account-details">
-    <AiOutlineUser className='user-icon' />
-    <h4>Name: </h4>
-    <p>Role: </p>
-    <p>Email: </p>
-    <p>Mobile: </p>
-    <p>Adhar No: </p>
-    <p>Date of Birth: </p>
-    <p>Age: </p>
-    <p>Gender: </p>
-    <p>Insurance: </p>
-    <p>Address: </p>
-  </div>
-);
+    fetchPatientDetails();
+  }, [user.id]);
+
+  if (!patient) {
+    return <div>Loading...</div>;
+  }
+
+  const formatDate = (isoDate) => {
+    const date = new Date(isoDate);
+    return date.toLocaleDateString(); // Formats date to 'MM/DD/YYYY' by default
+  };
+
+  return (
+    <div className="account-details">
+      <AiOutlineUser className="user-icon" />
+      <h4>Name: {patient.name}</h4>
+      <p>Role: {patient.role}</p>
+      <p>Email: {patient.email}</p>
+      <p>Mobile: {patient.number}</p>
+      <p>Adhar No: {patient.adhar_no}</p>
+      <p>Date of Birth: {formatDate(patient.dob)}</p>
+      <p>Age: {patient.age}</p>
+      <p>Gender: {patient.gender}</p>
+      <p>Insurance: {patient.insurance}</p>
+      <p>Address: {patient.address}</p>
+    </div>
+  );
+};
+
 
 const MyAppointments = ({ user }) => {
   const [Appointments, setAppointments] = useState([]);
-
-  // useEffect(() => {
-  //   const fetchOrders = async () => {
-  //     try {
-  //       const ordersRef = collection(db, `users/${user.uid}/orders`);
-  //       const q = query(ordersRef);
-  //       const querySnapshot = await getDocs(q);
-  //       const ordersData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  //       setOrders(ordersData);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.error("Error fetching orders:", error);
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchOrders();
-  // }, [user]);
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
 
   return (
     <div className="my-appointments">
@@ -79,110 +85,204 @@ const MyAppointments = ({ user }) => {
 };
 
 const UpdateProfile = ({ user }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    number: "",
+    adhar_no: "",
+    dob: "",
+    gender: "",
+    insurance: "",
+    address: "",
+  });
 
-  const [gender, setGender] = useState('');
+  useEffect(() => {
+    const fetchPatientDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8081/patients/${user.id}`
+        );
+        const patientData = response.data;
+        setFormData({
+          ...patientData,
+          dob: patientData.dob ? new Date(patientData.dob).toISOString().split('T')[0] : ""
+        });
+      } catch (error) {
+        console.error("Error fetching patient details:", error);
+      }
+    };
 
-  const handleGenderChange = (event) => {
-    setGender(event.target.value);
+    fetchPatientDetails();
+  }, [user.id]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const today = new Date().toISOString().split('T')[0];
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`http://localhost:8081/patients/${user.id}`, formData);
+      alert("Profile updated successfully");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile");
+    }
+  };
 
-  // const handleGenderChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFilter({ ...filter, [name]: value });
-  // };
-
-  // const [streetAddress, setStreetAddress] = useState(user.streetAddress || '');
-  // const [city, setCity] = useState(user.city || '');
-  // const [state, setState] = useState(user.state || '');
-  // const [country, setCountry] = useState(user.country || '');
-  // const [postalCode, setPostalCode] = useState(user.postalCode || '');
-  // const [updating, setUpdating] = useState(false);
-
-  // const handleUpdateAddress = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     setUpdating(true);
-  //     const userRef = doc(db, 'users', user.uid);
-  //     await updateDoc(userRef, {
-  //       streetAddress,
-  //       city,
-  //       state,
-  //       country,
-  //       postalCode
-  //     });
-  //     setUpdating(false);
-  //   } catch (error) {
-  //     console.error("Error updating address:", error);
-  //     setUpdating(false);
-  //   }
-  // };
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="update-profile">
-      {/* <form onSubmit={handleUpdateAddress}> */}
-      <form>
+      <form onSubmit={handleSubmit}>
         <div>
-          <label> Name : { }</label>
+          <label>
+            {" "}
+            Name:{" "}
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </label>
         </div>
         <div>
-          <label> Email Id : { }</label>
+          <label>
+            {" "}
+            Email Id:{" "}
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </label>
         </div>
         <div>
-          <label for="mobileNo">Mobile No: <input type="tel" id="mobileNo" name="mobileNo" placeholder="Enter your mobile number" required minlength="10" maxlength="10" pattern="[0-9]{10,15}" /></label>
+          <label>
+            {" "}
+            Mobile No:{" "}
+            <input
+              type="tel"
+              name="number"
+              value={formData.number}
+              onChange={handleChange}
+              required
+              minLength="10"
+              maxLength="10"
+              pattern="[0-9]{10}"
+            />
+          </label>
         </div>
         <div>
+          <label>
+            {" "}
+            Aadhaar No:{" "}
+            <input
+              type="text"
+              name="adhar_no"
+              value={formData.adhar_no}
+              onChange={handleChange}
+              required
+              minLength="12"
+              maxLength="12"
+              pattern="\d{12}"
+            />
+          </label>
         </div>
-        <label for="aadhaarNo">Aadhaar No: <input type="text" id="aadhaarNo" name="aadhaarNo" placeholder="Enter your Aadhaar number" required minlength="12" maxlength="12" pattern="\d{12}" /></label>
         <div>
-          <label> Date of Birth : <input type='date' max={today} /></label>
+          <label>
+            {" "}
+            Date of Birth:{" "}
+            <input
+              type="date"
+              name="dob"
+              value={formData.dob}
+              max={today}
+              onChange={handleChange}
+            />
+          </label>
         </div>
-        <div className='gender'>
+        <div className="gender">
           <label>Gender:</label>
-          <select id="gender" name="gender" onChange={handleGenderChange} className='input'>
-            <option value="all"></option>
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            className="input"
+          >
+            <option value=""></option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Others">Others</option>
           </select>
         </div>
-        <div className='insurance'>
-          <label for="insuranceNo">Insurance:</label>
-          <select id="insurance" name="insurance" onChange={handleGenderChange} className='input'>
-            <option value="all"></option>
+        <div className="insurance">
+          <label>Insurance:</label>
+          <select
+            name="insurance"
+            value={formData.insurance}
+            onChange={handleChange}
+            className="input"
+          >
+            <option value=""></option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
         </div>
-        <div className='address-text'>
-          <label> Address: <textarea placeholder='Enter your address' rows={2} cols={60} /></label>
+        <div className="address-text">
+          <label>
+            {" "}
+            Address:{" "}
+            <textarea
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              rows={2}
+              cols={60}
+            />
+          </label>
         </div>
-        <button type="submit" >Update Profile</button>
+        <button type="submit">Update Profile</button>
       </form>
     </div>
   );
 };
 
 const MyProfile = () => {
+  const user = { id: 1 }; // Ensure user object has an id
+
   return (
     <div className="user-profile">
       <nav>
         <ul>
-          <li><Link to="">Account Details</Link></li>
-          <li><Link to="myappointments">My Appointments</Link></li>
-          <li><Link to="updateprofile">Update Profile</Link></li>
+          <li>
+            <Link to="">Account Details</Link>
+          </li>
+          <li>
+            <Link to="myappointments">My Appointments</Link>
+          </li>
+          <li>
+            <Link to="updateprofile">Update Profile</Link>
+          </li>
         </ul>
       </nav>
 
       <div className="profile-content">
         <Routes>
-          <Route path="" element={<AccountDetails />} />
-          <Route path="myappointments" element={<MyAppointments />} />
-          <Route path="updateprofile" element={<UpdateProfile />} />
+          <Route path="/" element={<AccountDetails user={user} />} />
+          <Route
+            path="myappointments"
+            element={<MyAppointments user={user} />}
+          />
+          <Route path="updateprofile" element={<UpdateProfile user={user} />} />
         </Routes>
       </div>
-    </div>)
-}
+    </div>
+  );
+};
 
 export default MyProfile
+

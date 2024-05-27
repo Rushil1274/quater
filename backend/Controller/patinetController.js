@@ -98,6 +98,34 @@ exports.updatePatientById = (req, res) => {
   });
 };
 
+exports.updatePatient = (req, res) => {
+  const { patient_id } = req.params;
+  const {
+    name,
+    email,
+    number,
+    adhar_no,
+    dob,
+    gender,
+    insurance,
+    address,
+  } = req.body;
+
+  const sql =
+    "UPDATE patient SET name = ?, email = ?, number = ?, adhar_no = ?, dob = ?, gender = ?, insurance = ?, address = ? WHERE patient_id = ?";
+  db.query(
+    sql,
+    [name, email, number, adhar_no, dob, gender, insurance, address, patient_id],
+    (err, data) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json("Error");
+      }
+      return res.json("Patient updated successfully");
+    }
+  );
+};
+
 // Delete patient by patient_id
 exports.deletePatientById = (req, res) => {
   const sql = "DELETE FROM patient WHERE patient_id = ?";
