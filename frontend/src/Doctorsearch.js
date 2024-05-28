@@ -105,7 +105,7 @@ const Doctors = () => {
         <div className="cardContainer">
           {filteredDoctors.map((doctor, index) => (
             <div key={index} className="card">
-              <Link to='/viewdetails' style={{ textDecoration: "none", color: "black" }} >
+              <Link to='/details' style={{ textDecoration: "none", color: "black" }} >
                 <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
                 <h3>{doctor.name}</h3>
                 <p><strong>Specialization:</strong> {doctor.specialization}</p>
