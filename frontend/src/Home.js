@@ -11,7 +11,6 @@ import img4 from "./images/specialities-04.png";
 import img5 from "./images/specialities-05.png";
 import axios from 'axios';
 
-
 function Home() {
     const user = JSON.parse(localStorage.getItem('user'));
     // const role = user.role; // Can be 'Doctor', 'Receptionist', or 'Patient'
@@ -95,7 +94,7 @@ function Home() {
     const calculateAge = (dob) => {
         const birthDate = new Date(dob);
         const today = new Date();
-        
+
         if (birthDate > today) {
             setAge(null); // Reset age
         } else {
@@ -108,7 +107,6 @@ function Home() {
         }
     };
 
-
     return (
         <>
             {showPopup && (
@@ -118,26 +116,19 @@ function Home() {
                         <h2>Complete Your Profile</h2>
                         <form>
                             <div className="form-group">
-                                <label htmlFor="name">Name:</label>
+                                <label htmlFor="mobile">Mobile No:</label>
                                 <input
-                                    type="text"
+                                    type="tel"
                                     className="form-control"
-                                    id="name"
-                                    placeholder="Enter Your Name"
-                                    pattern="[A-Za-z\s]+"
-                                    title="Name can only contain letters and spaces"
+                                    id="mobile"
+                                    placeholder="Enter Your Mobile Number"
+                                    value={mobile}
+                                    onChange={handleMobileChange}
                                     required
                                 />
-
-                                <label htmlFor="email">Email:</label>
-                                <input
-                                    type="email"
-                                    className="form-control"
-                                    id="email"
-                                    placeholder="Enter Your Email"
-                                    required
-                                />
-                                
+                                {mobile.length > 0 && mobile.length < 10 && (
+                                    <small className="text-danger">Mobile number must be exactly 10 digits long</small>
+                                )}
                                 <label htmlFor="gender">Gender:</label>
                                 <select
                                     className="form-control"
@@ -165,21 +156,6 @@ function Home() {
                                 {age !== null && (
                                     <p>Age: {age} years</p>
                                 )}
-
-                                <label htmlFor="mobile">Mobile No:</label>
-                                <input
-                                    type="tel"
-                                    className="form-control"
-                                    id="mobile"
-                                    placeholder="Enter Your Mobile Number"
-                                    value={mobile}
-                                    onChange={handleMobileChange}
-                                    required
-                                />
-                                {mobile.length > 0 && mobile.length < 10 && (
-                                    <small className="text-danger">Mobile number must be exactly 10 digits long</small>
-                                )}
-
                                 <label htmlFor="aadhaar">Aadhaar Card No:</label>
                                 <input
                                     type="text"
@@ -190,7 +166,7 @@ function Home() {
                                     onChange={handleAadhaarChange}
                                     required
                                 />
-                                                                {aadhaar.replace(/\s/g, '').length > 0 && aadhaar.replace(/\s/g, '').length < 12 && (
+                                {aadhaar.replace(/\s/g, '').length > 0 && aadhaar.replace(/\s/g, '').length < 12 && (
                                     <small className="text-danger">Aadhaar number must be exactly 12 digits long</small>
                                 )}
 
@@ -218,11 +194,15 @@ function Home() {
                     </div>
                     <div className="d-flex justify-content-start gap-2">
                         {/* Conditional rendering based on user role */}
-                        {user.role === 'patient' && (
+                        {user && user.role === 'patient' && (
                             <Link to={'/doctors'} className="btn-get-started scrollto">Book Appointment</Link>
                         )}
-                        {(user.role === 'doctor' || user.role === 'receptionist') && (
+                        {user && (user.role === 'doctor' || user.role === 'receptionist') && (
                             <Link to={'/doctors-dashboard'} className="btn-get-started scrollto">Track Appointment</Link>
+                        )}
+                        {/* Show 'Book Appointment' button if no user is logged in */}
+                        {!user && (
+                            <Link to={'/doctors'} className="btn-get-started scrollto">Book Appointment</Link>
                         )}
                     </div>
                 </div>
@@ -349,8 +329,9 @@ function Home() {
                         </div>
                     </div>
                 </div>
-            </section>                            
+            </section>
         </>
     );
-}                               
+}
+
 export default Home;
