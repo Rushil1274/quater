@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './doctorsearch.css';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Doctors = () => {
   const [filter, setFilter] = useState({ name: '', specialization: '', fees: '', location: '' });
   const [doctors, setDoctors] = useState([]);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(5000);
-  
+
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
@@ -104,13 +105,15 @@ const Doctors = () => {
         <div className="cardContainer">
           {filteredDoctors.map((doctor, index) => (
             <div key={index} className="card">
-              <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
-              <h3>{doctor.name}</h3>
-              <p><strong>Specialization:</strong> {doctor.specialization}</p>
-              <p><strong>Fees:</strong> {doctor.fees}</p>
-              <p><strong>Location:</strong> {doctor.location}</p>
-              <p>{doctor.description}</p>
-              <button className="bookButton">Book Appointment</button>
+              <Link to='/viewdetails' style={{ textDecoration: "none", color: "black" }} >
+                <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
+                <h3>{doctor.name}</h3>
+                <p><strong>Specialization:</strong> {doctor.specialization}</p>
+                <p><strong>Fees:</strong> {doctor.fees}</p>
+                <p><strong>Location:</strong> {doctor.location}</p>
+                <p>{doctor.description}</p>
+              </Link>
+              <button className="bookButton" type='submit' to='/book-appointment'>Book Appointment</button>
             </div>
           ))}
         </div>
