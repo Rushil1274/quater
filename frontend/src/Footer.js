@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import { Link } from 'react-router-dom';
 
 import Logo from './images/Logo.jpg'
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
@@ -30,19 +31,19 @@ const Footer = () => {
         <div className="col-lg-3 col-md-6">
           <p className="footer-title">For Patient</p>
           <ul className='footer-ul'>
-            <li>Search for Doctors</li>
-            <li>Login</li>
-            <li>Register</li>
-            <li>Booking</li>
-            <li>Patient Dashboard</li>
+          <Link to = "/doctors"> <li>Search for Doctors</li> </Link>
+          <Link to = "/Login"><li>Login</li> </Link>
+          <Link to = "/signup"><li>Register</li></Link>
+          <li>Book Appointment</li>
+          <Link to = "myprofile/*"><li>My Profile</li></Link>
           </ul>
         </div>
         <div className="col-lg-3 col-md-6">
-          <p className="footer-title">For Doctor</p>
+          <p className="footer-title">For Doctors</p>
           <ul className="footer-ul">
-            <li>Appointments</li>
-            <li>Login</li>
-            <li>Register</li>
+          <Link to = "myprofile/*"><li>My Profile</li></Link>
+          <Link to = "/Login"><li>Login</li> </Link>
+          <Link to = "/signup"><li>Register</li></Link>
             <li>Doctor Dashboard</li>
           </ul>
         </div>
@@ -53,19 +54,19 @@ const Footer = () => {
               <div className="footer-info-i">
                 <FaMapMarkerAlt />
               </div>
-              <span> 121, Mirzapure Union office,<br /> Sylhet, Bangladesh 03214 </span>
+              <span> 907 , Enblitz Technologies <br /> Gujrat, Ahmedabad - 382480 </span>
             </li>
             <li className='d-flex'>
               <div className="footer-info-i">
                 <FaPhoneAlt />
               </div>
-              <span>+88 017 51 040425</span>
+              <span>1234567890</span>
             </li>
             <li className='d-flex'>
               <div className="footer-info-i">
                 <FaEnvelope />
               </div>
-              <span>info@woodencraft.com</span>
+              <span>info@healthnest.com</span>
             </li>
           </ul>
         </div>
@@ -74,4 +75,4 @@ const Footer = () => {
   </section>
 }
 
-export default Footer
+export default Footer;

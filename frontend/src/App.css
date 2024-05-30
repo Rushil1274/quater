@@ -262,6 +262,7 @@ iframe {
 .col-md-6 {
   width: 25%;
   padding: 15px;
+  text-decoration: none;
 }
 
 .footer-image {
