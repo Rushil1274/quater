@@ -20,10 +20,10 @@ COPY Controller/ ./Controller
 EXPOSE 8081
 
 # Set environment variables
-ENV DB_HOST="mysql-container"
-ENV DB_USER="example_user"
-ENV DB_PASSWORD="example_password"
-ENV DB_DATABASE="test"
+ENV DB_HOST="localhost"
+ENV DB_USER="user"
+ENV DB_PASSWORD="password"
+ENV DB_DATABASE="default"
 
 # Command to run your application
 CMD ["node", "server.js"]
