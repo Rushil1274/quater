@@ -12,6 +12,8 @@ import Footer from './Footer';
 import MyProfile from './MyProfile'
 import Details from './Details'
 
+import Appointment from './Appointment';
+
 function App() {
   return (
     <BrowserRouter>
@@ -27,6 +29,7 @@ function App() {
         <Route path='myprofile/*' element={<MyProfile />}></Route>
         <Route path='/forgotpassword' element={<ForgotPassword />}></Route>
         <Route path='/details' element={<Details />}></Route>
+        <Route path='/appointment' element={<Appointment />}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>
