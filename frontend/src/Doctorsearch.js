@@ -3,6 +3,7 @@ import './doctorsearch.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+
 const Doctors = () => {
   const [filter, setFilter] = useState({ name: '', specialization: '', fees: '', location: '' });
   const [doctors, setDoctors] = useState([]);
@@ -113,7 +114,7 @@ const Doctors = () => {
                 <p><strong>Location:</strong> {doctor.location}</p>
                 <p>{doctor.description}</p>
               </Link>
-              <button className="bookButton" type='submit' to='/book-appointment'>Book Appointment</button>
+              <Link to="/appointment" className="bookButton" style={{textDecoration: 'none'}} >Book Appointment</Link>
             </div>
           ))}
         </div>

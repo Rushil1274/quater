@@ -865,6 +865,7 @@ ul {
 
 .popup-content h2 {
   margin-bottom: 1rem;
+  width: 100%;
 }
 
 .popup-content .form-group {
@@ -1234,8 +1235,7 @@ ul {
 .details-doc-img img {
   width: 100%;
   height: auto;
-  border-radius: 50%; /* Makes the image circular */
-  /* border: 2px solid #ccc; */
+  border-radius: 50%; 
   margin-bottom: 20px;
   box-shadow: 2px 2px 13px rgba(0, 0, 0, 0.1);
 }
@@ -1263,3 +1263,111 @@ ul {
   font-family: "Poppins";
   font-weight: 400;
 }
+
+/* Details Page End */
+
+
+/* Appointment Page Start */
+
+.appointment-schedule {
+  margin-top: 2rem;
+  background-color: #cccccc29;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.container-ap {
+  display: flex;
+}
+
+.info-part {
+  width: 70%;
+  border-right: 2px solid #dee2e6;
+  margin-right: 20px;
+  padding-right: 20px;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem !important;
+}
+
+.calender-div {
+  display: flex;
+}
+
+.calender-date {
+  border-right: 2px solid #dee2e6;
+  margin-right: 20px;
+  padding-right: 20px;
+}
+
+.date-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.calender-p {
+  border-bottom: 2px solid #dee2e6;
+  padding: 1rem;
+}
+
+.date-picker {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: calc(-.5* var(--bs-gutter-x));
+  width: 100%;
+}
+
+.date-btn, 
+.btn {
+  border-radius: 5px;
+  border: none;
+  text-align: center;
+  padding: 1rem !important;
+  box-shadow: 2px 2px 13px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-btn {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.appointment-btn button {
+  border: none;
+  box-shadow: 2px 2px 13px rgba(0, 0, 0, 0.314);
+  border-radius: 5px;
+  padding: 5px 10px;
+  background-color: whitesmoke;
+}
+
+.appointment-btn button:hover {
+  background-color: #CADCFC;
+}
+
+.appointment-form {
+  width: 100%;
+}
+
+.ap-form input,
+.ap-form textarea {
+  /* width: 100%; */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.ap-form textarea {
+  display: flex;
+  width: 100%;
+}
+
+.ap-form-input {
+  width: 100%;
+}
+
