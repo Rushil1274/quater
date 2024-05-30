@@ -7,19 +7,8 @@ const AccountDetails = ({ user }) => {
   const [patient, setPatient] = useState(null);
 
   useEffect(() => {
-    const fetchPatientDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8081/patients/${user.id}`
-        );
-        setPatient(response.data);
-      } catch (error) {
-        console.error("Error fetching patient details:", error);
-      }
-    };
-
-    fetchPatientDetails();
-  }, [user.id]);
+    setPatient(user); // Assuming the user object has the same structure as the patient data
+  }, [user]);
 
   if (!patient) {
     return <div>Loading...</div>;
@@ -46,6 +35,7 @@ const AccountDetails = ({ user }) => {
     </div>
   );
 };
+
 
 
 const MyAppointments = ({ user }) => {
@@ -97,39 +87,49 @@ const UpdateProfile = ({ user }) => {
   });
 
   useEffect(() => {
-    const fetchPatientDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8081/patients/${user.id}`
-        );
-        const patientData = response.data;
-        setFormData({
-          ...patientData,
-          dob: patientData.dob ? new Date(patientData.dob).toISOString().split('T')[0] : ""
-        });
-      } catch (error) {
-        console.error("Error fetching patient details:", error);
-      }
-    };
-
-    fetchPatientDetails();
-  }, [user.id]);
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        number: user.number || "",
+        adhar_no: user.adhar_no || "",
+        dob: user.dob ? new Date(user.dob).toISOString().split('T')[0] : "",
+        gender: user.gender || "",
+        insurance: user.insurance || "",
+        address: user.address || "",
+      });
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.put(`http://localhost:8081/patients/${user.id}`, formData);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const response = await axios.put(`http://localhost:8081/patients/email/${storedUser.email}`, formData);
+    console.log("Update response:", response);
+    if (response.status === 200) {
       alert("Profile updated successfully");
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("Failed to update profile");
+    } else {
+      console.error("Failed to update profile:", response.data);
+      alert(`Failed to update profile: ${response.data.message || response.status}`);
     }
-  };
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      alert(`Failed to update profile: ${error.response.data.message || error.response.status}`);
+    } else {
+      alert("Failed to update profile: An unknown error occurred.");
+    }
+  }
+};
+
+
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -138,8 +138,7 @@ const UpdateProfile = ({ user }) => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>
-            {" "}
-            Name:{" "}
+            Name:
             <input
               type="text"
               name="name"
@@ -150,8 +149,7 @@ const UpdateProfile = ({ user }) => {
         </div>
         <div>
           <label>
-            {" "}
-            Email Id:{" "}
+            Email Id:
             <input
               type="email"
               name="email"
@@ -162,8 +160,7 @@ const UpdateProfile = ({ user }) => {
         </div>
         <div>
           <label>
-            {" "}
-            Mobile No:{" "}
+            Mobile No:
             <input
               type="tel"
               name="number"
@@ -178,8 +175,7 @@ const UpdateProfile = ({ user }) => {
         </div>
         <div>
           <label>
-            {" "}
-            Aadhaar No:{" "}
+            Aadhaar No:
             <input
               type="text"
               name="adhar_no"
@@ -194,8 +190,7 @@ const UpdateProfile = ({ user }) => {
         </div>
         <div>
           <label>
-            {" "}
-            Date of Birth:{" "}
+            Date of Birth:
             <input
               type="date"
               name="dob"
@@ -234,8 +229,7 @@ const UpdateProfile = ({ user }) => {
         </div>
         <div className="address-text">
           <label>
-            {" "}
-            Address:{" "}
+            Address:
             <textarea
               name="address"
               value={formData.address}
@@ -252,7 +246,39 @@ const UpdateProfile = ({ user }) => {
 };
 
 const MyProfile = () => {
-  const user = { id: 1 }; // Ensure user object has an id
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (storedUser && storedUser.email) {
+      const fetchUserDetails = async () => {
+        try {
+          setIsLoading(true);
+          // Use the email to fetch the login_id and user details
+          const response = await axios.get(`http://localhost:8081/patients/email/${storedUser.email}`);
+          setUser(response.data);
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchUserDetails();
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <div>No user data available</div>;
+  }
 
   return (
     <div className="user-profile">
@@ -273,10 +299,7 @@ const MyProfile = () => {
       <div className="profile-content">
         <Routes>
           <Route path="/" element={<AccountDetails user={user} />} />
-          <Route
-            path="myappointments"
-            element={<MyAppointments user={user} />}
-          />
+          <Route path="myappointments" element={<MyAppointments user={user} />} />
           <Route path="updateprofile" element={<UpdateProfile user={user} />} />
         </Routes>
       </div>
@@ -284,5 +307,8 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile
+
+export default MyProfile;
+
+
 

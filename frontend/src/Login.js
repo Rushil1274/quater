@@ -17,33 +17,34 @@ function Login() {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
   };
 
-  const handleSubmit = (event) => {
+const handleSubmit = (event) => {
     event.preventDefault();
     const validationErrors = Validation(values);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      axios
-        .post("http://localhost:8081/login", values)
-        .then((res) => {
-          if (res.data.status === "Success") {
-            // Store user data in local storage
-            localStorage.setItem("user", JSON.stringify(res.data.user));
+        axios
+          .post("http://localhost:8081/login", values)
+          .then((res) => {
+            if (res.data.status === "Success") {
+              // Ensure the structure of the user object is correct
+              localStorage.setItem("user", JSON.stringify(res.data.user));
 
-            if (values.role === "Doctor") {
-              navigate("/doctor-home");
-            } else if (values.role === "Receptionist") {
-              navigate("/receptionist-home");
+              if (values.role === "Doctor") {
+                navigate("/doctor-home");
+              } else if (values.role === "Receptionist") {
+                navigate("/receptionist-home");
+              } else {
+                navigate("/home");
+              }
             } else {
-              navigate("/home");
+              alert("No record exist");
             }
-          } else {
-            alert("No record exist");
-          }
-        })
-        .catch((err) => console.log(err));
+          })
+          .catch((err) => console.log(err));
     }
   };
+
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
