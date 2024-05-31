@@ -225,15 +225,23 @@ const AppointmentScheduler = () => {
                     className='ap-form-input'
                     name="firstName"
                     value={formValues.firstName}
-                    onChange={handleInputChange}
+                    onChange={(event) => {
+                      const inputValue = event.target.value;
+                      const regex = /^[A-Za-z]*$/;
+                      if (regex.test(inputValue)) {
+                        handleInputChange(event);
+                      }
+                    }}
                     required
                   />
                   <label>Email</label>
                   <input
                     className='ap-form-input'
+                    type="email"
                     name="email"
                     value={formValues.email}
                     onChange={handleInputChange}
+                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                     required
                   />
                   <label>Mobile</label>
@@ -241,7 +249,17 @@ const AppointmentScheduler = () => {
                     className='ap-form-input'
                     name="phone"
                     value={formValues.phone}
-                    onChange={handleInputChange}
+                    onChange={(event) => {
+                      let inputValue = event.target.value;
+                      inputValue = inputValue.replace(/\D/g, '');
+                      inputValue = inputValue.slice(0, 10);
+                      handleInputChange({
+                        target: {
+                          name: 'phone',
+                          value: inputValue
+                        }
+                      });
+                    }}
                     required
                   />
                   <label>Reason For Visit</label>
@@ -249,8 +267,13 @@ const AppointmentScheduler = () => {
                     className='ap-form-input'
                     name="reasonForVisit"
                     value={formValues.reasonForVisit}
-                    onChange={handleInputChange}
-                    required
+                    onChange={(event) => {
+                      const inputValue = event.target.value;
+                      const regex = /^[A-Za-z]*$/;
+                      if (regex.test(inputValue)) {
+                        handleInputChange(event);
+                      }
+                    }}                    required
                   />
                   <label>Description</label>
                   <textarea
@@ -405,11 +428,19 @@ const AppointmentScheduler = () => {
                             className="card-input__input"
                             id="cardCvv"
                             value={cardCvv}
-                            onChange={handleCardCvvChange}
+                            onChange={(event) => {
+                              const inputValue = event.target.value;
+                              // Regular expression to match only numbers
+                              const regex = /^[0-9]*$/;
+                              if (regex.test(inputValue)) {
+                                handleCardCvvChange(event);
+                              }
+                            }}
                             onFocus={() => flipCard(true)}
                             onBlur={() => flipCard(false)}
                             autoComplete="off"
                           />
+
                         </div>
                       </div>
                     </div>
