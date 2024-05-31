@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Steps } from 'antd';
 import { useNavigate } from 'react-router-dom';
+
+import chip from './images/chip.png'
 import './App.css';
 
 const { Step } = Steps;
@@ -9,7 +11,6 @@ const AppointmentScheduler = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [paymentType, setPaymentType] = useState('creditCard');
 
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
@@ -21,21 +22,6 @@ const AppointmentScheduler = () => {
     description: '',
     address: '',
   });
-
-  const [state, setState] = useState({
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    nameOnCard: ''
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setState(prevState => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -80,8 +66,64 @@ const AppointmentScheduler = () => {
     navigate('/doctors');
   }
 
-  const handlePaymentTypeChange = (e) => {
-    setPaymentType(e.target.value);
+  const [currentCardBackground, setCurrentCardBackground] = useState(Math.floor(Math.random() * 25 + 1));
+  const [cardName, setCardName] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardMonth, setCardMonth] = useState('');
+  const [cardYear, setCardYear] = useState('');
+  const [cardCvv, setCardCvv] = useState('');
+  const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [focusElementStyle, setFocusElementStyle] = useState(null);
+
+  const cardNumberInput = useRef(null);
+  const cardNameInput = useRef(null);
+  const cardMonthInput = useRef(null);
+  const cardYearInput = useRef(null);
+
+  useEffect(() => {
+    if (cardNumberInput.current) {
+      setFocusElementStyle(cardNumberInput.current.getBoundingClientRect());
+    }
+  }, []);
+
+  const minCardYear = new Date().getFullYear();
+
+  const handleCardNumberChange = (e) => {
+    let { value } = e.target;
+    value = value.replace(/\D/g, '').substring(0, 16);
+    value = value.replace(/(.{4})/g, '$1 ').trim();
+    setCardNumber(value);
+  };
+
+  const handleCardNameChange = (e) => {
+    const { value } = e.target;
+    setCardName(value);
+  };
+
+  const handleCardMonthChange = (e) => {
+    setCardMonth(e.target.value);
+  };
+
+  const handleCardYearChange = (e) => {
+    setCardYear(e.target.value);
+  };
+
+  const handleCardCvvChange = (e) => {
+    let { value } = e.target;
+    value = value.substring(0, 3);
+    setCardCvv(value);
+  };
+
+  const flipCard = (status) => {
+    setIsCardFlipped(status);
+  };
+
+  const handleFocus = (position) => {
+    setFocusElementStyle(position);
+  };
+
+  const handleBlur = () => {
+    setFocusElementStyle(null);
   };
 
   return (
@@ -239,34 +281,168 @@ const AppointmentScheduler = () => {
       )}
       {currentStep === 2 && (
         <>
-          <div className='appointment-schedule'>
-            <div className='container-ap'>
-              <div className='appointment-payment'>
-                <div className="ap-booking-details">
-                  <div className="booking-item">
-                    <ul className="booking-date">
-                      <li>Date <span>{selectedDate}</span></li>
-                      <li>Time <span>{selectedTime}</span></li>
-                    </ul>
-                    <ul className="booking-fee">
-                      <li>Consulting Fee <span>$60</span></li>
-                      <li>Booking Fee <span>$10</span></li>
-                      <li>Vat (Including 15%) <span>$9</span></li>
-                    </ul>
-                    <ul className="booking-total">
-                      <li className="booking-total-li">
-                        <span>Total</span>
-                        <span className="total-cost"> $79</span>
-                      </li>
-                    </ul>
+          <div className='main-div-payment'>
+            <div className="wrapper">
+              <div className="card-form">
+                <div className="card-list">
+                  <div className={`card-item ${isCardFlipped ? '-active' : ''}`}>
+                    <div className="card-item__side -front">
+                      <div className={`card-item__focus ${focusElementStyle ? '-active' : ''}`} style={focusElementStyle}></div>
+                      <div className="card-item__cover">
+                        <img src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${currentCardBackground}.jpeg`} className="card-item__bg" alt="Card Background" />
+                      </div>
+                      <div className="card-item__wrapper">
+                        <div className="card-item__top">
+                          <img src={chip} alt="Card Chip" className="card-item__chip" />
+                          <div className="card-item__type"></div>
+                        </div>
+                        <label className="card-item__number">{cardNumber || '#### #### #### ####'}</label>
+                        <div className="card-item__content">
+                          <label className="card-item__info">
+                            <div className="card-item__holder">Card Holder</div>
+                            <div className="card-item__name">{cardName || 'FULL NAME'}</div>
+                          </label>
+                          <div className="card-item__date">
+                            <label className="card-item__dateTitle">Expires</label>
+                            <label className="card-item__dateItem">{cardMonth || 'MM'}/{cardYear || 'YY'}</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-item__side -back">
+                      <div className="card-item__cover">
+                        <img src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${currentCardBackground}.jpeg`} className="card-item__bg" alt="Card Background" />
+                      </div>
+                      <div className="card-item__band"></div>
+                      <div className="card-item__cvv">
+                        <div className="card-item__cvvTitle">CVV</div>
+                        <div className="card-item__cvvBand">{cardCvv}</div>
+                        <div className="card-item__type"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="">
+                  <div className="card-form__inner">
+                    <div className="card-input">
+                      <label htmlFor="cardNumber" className="card-input__label">Card Number</label>
+                      <input
+                        type="text"
+                        id="cardNumber"
+                        className="card-input__input"
+                        ref={cardNumberInput}
+                        value={cardNumber}
+                        onChange={handleCardNumberChange}
+                        onFocus={() => setFocusElementStyle(cardNumberInput.current.getBoundingClientRect())}
+                        onBlur={handleBlur}
+                        autoComplete="off"
+                      />
+                    </div>
+                    <div className="card-input">
+                      <label htmlFor="cardName" className="card-input__label">Card Holder</label>
+                      <input
+                        type="text"
+                        id="cardName"
+                        className="card-input__input"
+                        ref={cardNameInput}
+                        value={cardName}
+                        onChange={(event) => {
+                          const inputValue = event.target.value;
+                          const regex = /^[A-Za-z\s]*$/;
+                          if (regex.test(inputValue)) {
+                            handleCardNameChange(event);
+                          }
+                        }}
+                        onFocus={() => handleFocus(cardNameInput.current.getBoundingClientRect())}
+                        onBlur={handleBlur}
+                        autoComplete="off"
+                      />
+
+                    </div>
+                    <div className="card-form__row">
+                      <div className="card-form__col">
+                        <div className="card-form__group">
+                          <label htmlFor="cardMonth" className="card-input__label">Expiration Date</label>
+                          <select
+                            className="card-input__input -select"
+                            id="cardMonth"
+                            ref={cardMonthInput}
+                            value={cardMonth}
+                            onChange={handleCardMonthChange}
+                            onFocus={() => handleFocus(cardMonthInput.current.getBoundingClientRect())}
+                            onBlur={handleBlur}
+                          >
+                            <option value="" disabled>Month</option>
+                            {[...Array(12).keys()].map((n) => (
+                              <option key={n + 1} value={n + 1 < 10 ? '0' + (n + 1) : n + 1}>
+                                {n + 1 < 10 ? '0' + (n + 1) : n + 1}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="card-input__input -select"
+                            id="cardYear"
+                            ref={cardYearInput}
+                            value={cardYear}
+                            onChange={handleCardYearChange}
+                            onFocus={() => handleFocus(cardYearInput.current.getBoundingClientRect())}
+                            onBlur={handleBlur}
+                          >
+                            <option value="" disabled>Year</option>
+                            {[...Array(12).keys()].map((n) => (
+                              <option key={minCardYear + n} value={minCardYear + n}>
+                                {minCardYear + n}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      <div className="card-form__col -cvv">
+                        <div className="card-input">
+                          <label htmlFor="cardCvv" className="card-input__label">CVV</label>
+                          <input
+                            type="text"
+                            className="card-input__input"
+                            id="cardCvv"
+                            value={cardCvv}
+                            onChange={handleCardCvvChange}
+                            onFocus={() => flipCard(true)}
+                            onBlur={() => flipCard(false)}
+                            autoComplete="off"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <button className="card-form__button">Submit</button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="appointment-btn">
-            <button onClick={handlePrev}>Previous</button>
-            <button type="primary" onClick={handleNext} className="next">Confirm</button>
+            <div className='appointment-schedule'>
+              <div className='container-ap'>
+                <div className='appointment-payment'>
+                  <div className="ap-booking-details">
+                    <div className="booking-item">
+                      <ul className="booking-date">
+                        <li>Date <span>{selectedDate}</span></li>
+                        <li>Time <span>{selectedTime}</span></li>
+                      </ul>
+                      <ul className="booking-fee">
+                        <li>Consulting Fee <span>$60</span></li>
+                        <li>Booking Fee <span>$10</span></li>
+                        <li>Vat (Including 15%) <span>$9</span></li>
+                      </ul>
+                      <ul className="booking-total">
+                        <li className="booking-total-li">
+                          <span>Total</span>
+                          <span className="total-cost"> $79</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </>
       )}
