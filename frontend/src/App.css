@@ -1307,7 +1307,7 @@ ul {
 .date-picker {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  /* gap: 1rem; */
 }
 
 .calender-p {
@@ -1323,12 +1323,15 @@ ul {
 }
 
 .date-btn, 
-.btn {
+.btn,
+.time-btn {
   border-radius: 5px;
   border: none;
   text-align: center;
   padding: 1rem !important;
   box-shadow: 2px 2px 13px rgba(0, 0, 0, 0.1);
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .appointment-btn {

@@ -31,19 +31,19 @@ const Footer = () => {
         <div className="col-lg-3 col-md-6">
           <p className="footer-title">For Patient</p>
           <ul className='footer-ul'>
-          <Link to = "/doctors"> <li>Search for Doctors</li> </Link>
-          <Link to = "/Login"><li>Login</li> </Link>
-          <Link to = "/signup"><li>Register</li></Link>
+          <Link to = "/doctors" style={{ textDecoration: "none", color: "black"}}> <li>Search for Doctors</li> </Link>
+          <Link to = "/Login" style={{ textDecoration: "none", color: "black"}}><li>Login</li> </Link>
+          <Link to = "/signup" style={{ textDecoration: "none", color: "black"}}><li>Register</li></Link>
           <li>Book Appointment</li>
-          <Link to = "myprofile/*"><li>My Profile</li></Link>
+          <Link to = "myprofile/*" style={{ textDecoration: "none", color: "black"}}><li>My Profile</li></Link>
           </ul>
         </div>
         <div className="col-lg-3 col-md-6">
           <p className="footer-title">For Doctors</p>
           <ul className="footer-ul">
-          <Link to = "myprofile/*"><li>My Profile</li></Link>
-          <Link to = "/Login"><li>Login</li> </Link>
-          <Link to = "/signup"><li>Register</li></Link>
+          <Link to = "myprofile/*" style={{ textDecoration: "none", color: "black"}}><li>My Profile</li></Link>
+          <Link to = "/Login" style={{ textDecoration: "none", color: "black"}}><li>Login</li> </Link>
+          <Link to = "/signup" style={{ textDecoration: "none", color: "black"}}><li>Register</li></Link>
             <li>Doctor Dashboard</li>
           </ul>
         </div>

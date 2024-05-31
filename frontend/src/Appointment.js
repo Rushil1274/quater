@@ -66,6 +66,28 @@ const AppointmentScheduler = () => {
     navigate('/doctors');
   }
 
+  const getNext8Days = () => {
+    const dates = [];
+    for (let i = 0; i < 8; i++) {
+      const currentDate = new Date();
+      currentDate.setDate(currentDate.getDate() + i);
+      const formattedDate = currentDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+      dates.push(formattedDate);
+    }
+    return dates;
+  };
+
+  const generateMorningSlots = () => {
+    return ['09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM'];
+  };
+  const generateEveningSlots = () => {
+    return ['03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM'];
+  };
+
   const [currentCardBackground, setCurrentCardBackground] = useState(Math.floor(Math.random() * 25 + 1));
   const [cardName, setCardName] = useState('');
   const [cardNumber, setCardNumber] = useState('');
@@ -177,7 +199,7 @@ const AppointmentScheduler = () => {
                     {selectedDate ? `Selected Date - ${selectedDate}` : "Select Appointment Date"}
                   </p>
                   <div className="date-picker">
-                    {['May 29, 2024', 'May 30, 2024', 'May 31, 2024', 'Jun 01, 2024', 'Jun 02, 2024', 'Jun 03, 2024', 'Jun 04, 2024', 'Jun 05, 2024'].map(date => (
+                    {getNext8Days().map(date => (
                       <button
                         key={date}
                         className={`btn date-btn ${selectedDate === date ? 'active' : ''}`}
@@ -193,15 +215,30 @@ const AppointmentScheduler = () => {
                     {selectedTime ? `Selected Time - ${selectedTime}` : "Select Appointment Time"}
                   </p>
                   <div className="date-picker">
-                    {['08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM', '09:00 PM'].map(time => (
-                      <button
-                        key={time}
-                        className={`btn time-btn ${selectedTime === time ? 'active' : ''}`}
-                        onClick={() => handleTimeClick(time)}
-                      >
-                        {time}
-                      </button>
-                    ))}
+                    <div>
+                      <p>Morning Time</p>
+                      {generateMorningSlots().map(time => (
+                        <button
+                          key={time}
+                          className={`btn time-btn ${selectedTime === time ? 'active' : ''}`}
+                          onClick={() => handleTimeClick(time)}
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
+                    <div>
+                      <p>Evening Time</p>
+                      {generateEveningSlots().map(time => (
+                        <button
+                          key={time}
+                          className={`btn time-btn ${selectedTime === time ? 'active' : ''}`}
+                          onClick={() => handleTimeClick(time)}
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -273,7 +310,7 @@ const AppointmentScheduler = () => {
                       if (regex.test(inputValue)) {
                         handleInputChange(event);
                       }
-                    }}                    required
+                    }} required
                   />
                   <label>Description</label>
                   <textarea
