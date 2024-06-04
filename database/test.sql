@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 03, 2024 at 09:13 AM
+-- Generation Time: Jun 04, 2024 at 09:33 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -177,7 +177,10 @@ INSERT INTO `login` (`login_id`, `name`, `email`, `password`, `role`) VALUES
 (7, 'Alice Johnson', 'alice@example.com', 'Alice@1234', 'Receptionist'),
 (8, 'Bob Smith', 'bob@example.com', 'Bob@123456', 'Receptionist'),
 (9, 'Charlie Brown', 'charlie@example.com', 'Charlie@123', 'Receptionist'),
-(10, 'kushal', 'kushal@gmail.com', 'Kushal@1234', 'Doctor');
+(10, 'kushal', 'kushal@gmail.com', 'Kushal@1234', 'Doctor'),
+(12, 'abc', 'abc@gmail.com', 'Abc@1234', 'Receptionist'),
+(17, 'fde', 'fde@gmail.com', 'Fde@1234', 'Patient'),
+(18, 'hello', 'hello@gmail.com', 'Hello@1234', 'Patient');
 
 --
 -- Triggers `login`
@@ -298,7 +301,7 @@ CREATE TABLE `patient` (
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `role` varchar(50) NOT NULL,
-  `age` varchar(50) NOT NULL,
+  `age` varchar(50) DEFAULT NULL,
   `gender` varchar(50) NOT NULL,
   `address` varchar(50) NOT NULL,
   `number` varchar(10) NOT NULL,
@@ -318,14 +321,18 @@ CREATE TABLE `patient` (
 INSERT INTO `patient` (`patient_id`, `login_id`, `email`, `password`, `role`, `age`, `gender`, `address`, `number`, `insurance`, `adhar_no`, `created_at`, `updated_at`, `name`, `dob`, `patient_pic`) VALUES
 (1, 4, 'john@example.com', 'Password@123', 'Patient', '30', 'Male', '123 Main St', '987-654-32', 'Yes', '123444678590', '2024-05-22 16:44:14', '2024-06-03 07:12:43', 'John Potter', '2001-12-31', ''),
 (2, 5, 'jane@example.com', 'Password@456', 'Patient', '25', 'Female', '456 Elm St', '123-456-78', 'Yes', '987645432210', '2024-05-22 16:44:14', '2024-05-30 11:03:48', 'Jane Smith', '2001-12-31', ''),
-(3, 6, 'alex@example.com', 'Password@789', 'Patient', '40', 'Male', '789 Oak St', '4567789901', 'No', '5678-9012-34', '2024-05-22 16:44:14', '2024-05-30 11:03:29', 'Alex Brown', '2001-12-31', '');
+(3, 6, 'alex@example.com', 'Password@789', 'Patient', '40', 'Male', '789 Oak St', '4567789901', 'No', '5678-9012-34', '2024-05-22 16:44:14', '2024-05-30 11:03:29', 'Alex Brown', '2001-12-31', ''),
+(7, 17, 'fde@gmail.com', 'Fde@1234', 'Patient', '21', '', '', '', '', '', '2024-06-04 12:56:11', '2024-06-04 07:31:38', 'fde', '2003-05-26', ''),
+(8, 18, 'hello@gmail.com', 'Hello@1234', 'Patient', '20', '', '', '', '', '', '2024-06-04 13:02:07', '2024-06-04 07:32:24', 'hello', '2004-03-29', '');
 
 --
 -- Triggers `patient`
 --
 DELIMITER $$
-CREATE TRIGGER `calculate_age_trigger` BEFORE INSERT ON `patient` FOR EACH ROW BEGIN
-    SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.dob, CURDATE());
+CREATE TRIGGER `calculate_age_trigger` BEFORE UPDATE ON `patient` FOR EACH ROW BEGIN
+    IF NEW.dob <> OLD.dob THEN
+        SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.dob, CURDATE());
+    END IF;
 END
 $$
 DELIMITER ;
@@ -404,7 +411,8 @@ CREATE TABLE `receptionist` (
 INSERT INTO `receptionist` (`receptionist_id`, `login_id`, `name`, `email`, `phone`, `address`, `salary`, `employment`, `created_at`, `updated_at`, `password`, `role`, `rec_pic`) VALUES
 (1, 7, 'Alice Johnson', 'alice@example.com', 1234567890, '123 Main St', 35000, 'Full-Time', '2024-05-22 16:48:27', '2024-06-03 06:56:43', 'Alice@1234', 'Receptionist', ''),
 (2, 8, 'Bob Smith', 'bob@example.com', 2147483647, '456 Elm St', 30000, 'Part-Time', '2024-05-22 16:48:27', '2024-06-03 06:45:39', 'Bob@123456', 'Receptionist', ''),
-(3, 9, 'Charlie Brown', 'charlie@example.com', 2147483647, '789 Oak St', 40000, 'Full-Time', '2024-05-22 16:48:27', '2024-06-03 07:10:14', 'Charlie@123', 'Receptionist', '');
+(3, 9, 'Charlie Brown', 'charlie@example.com', 2147483647, '789 Oak St', 40000, 'Full-Time', '2024-05-22 16:48:27', '2024-06-03 07:10:14', 'Charlie@123', 'Receptionist', ''),
+(4, 12, 'abc', 'abc@gmail.com', 0, '', 0, '', '2024-06-04 12:39:24', '2024-06-04 07:09:24', 'Abc@1234', 'Receptionist', '');
 
 --
 -- Triggers `receptionist`
@@ -553,13 +561,13 @@ ALTER TABLE `doctor`
 -- AUTO_INCREMENT for table `login`
 --
 ALTER TABLE `login`
-  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `ratings_reviews`
@@ -571,7 +579,7 @@ ALTER TABLE `ratings_reviews`
 -- AUTO_INCREMENT for table `receptionist`
 --
 ALTER TABLE `receptionist`
-  MODIFY `receptionist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `receptionist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `time_slots`
