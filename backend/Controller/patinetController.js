@@ -142,4 +142,71 @@ exports.deletePatientById = (req, res) => {
   });
 };
 
+exports.saveProfile = (req, res) => {
+  const { mobile, gender, dob, aadhaar, address, email } = req.body;
+
+  // Check if the user exists in the login table
+  const checkUserSql = "SELECT login_id, name, email, password, role FROM login WHERE email = ?";
+  db.query(checkUserSql, [email], (err, result) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Failed to save profile" });
+    }
+
+    if (result.length === 0) {
+      // User not found in the login table
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const { login_id, name, password, role } = result[0];
+
+    // Check if the patient already exists
+    const checkPatientSql = "SELECT * FROM patient WHERE login_id = ?";
+    db.query(checkPatientSql, [login_id], (err, existingPatient) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: "Failed to save profile" });
+      }
+
+      if (existingPatient.length > 0) {
+        const patient = existingPatient[0];
+
+        // Check if the required fields are empty
+        const shouldUpdate =
+          !patient.number ||
+          !patient.adhar_no ||
+          !patient.gender ||
+          !patient.dob ||
+          !patient.address;
+
+        if (shouldUpdate) {
+          // Update the existing patient record
+          const updateSql =
+            "UPDATE patient SET number = ?, adhar_no = ?, gender = ?, dob = ?, address = ? WHERE login_id = ?";
+          const updateValues = [mobile, aadhaar, gender, dob, address, login_id];
+
+          db.query(updateSql, updateValues, (err, updateResult) => {
+            if (err) {
+              console.error("Error updating patient details:", err);
+              return res.status(500).json({ error: "Internal Server Error" });
+            }
+
+            return res.json({ message: "Patient details updated successfully" });
+          });
+        } else {
+          return res.json({ message: "Patient details are already complete" });
+        }
+      } else {
+        return res.status(404).json({ error: "Patient not found" });
+      }
+    });
+  });
+};
+
+
+
+
+
+
+
 

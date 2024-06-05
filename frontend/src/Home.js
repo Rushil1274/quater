@@ -47,24 +47,19 @@ function Home() {
         (filter.location === '' || doctor.location.toLowerCase().includes(filter.location.toLowerCase()))
     );
 
-    const [showPopup, setShowPopup] = useState(false);
+    const [showPopup, setShowPopup] = useState(true);
     const [mobile, setMobile] = useState('');
     const [aadhaar, setAadhaar] = useState('');
     const [gender, setGender] = useState('');
     const [dob, setDob] = useState('');
     const [age, setAge] = useState(null);
     const [maxBirthDate, setMaxBirthDate] = useState('');
+    const [address, setAddress] = useState('');
 
-    useEffect(() => {
-        setShowPopup(true);
-        const maxDate = new Date();
-        maxDate.setFullYear(maxDate.getFullYear() - 110);
-        setMaxBirthDate(maxDate.toISOString().split('T')[0]);
-    }, []);
-
-    const handleClosePopup = () => {
-        setShowPopup(false);
+    const handleAddressChange = (e) => {
+      setAddress(e.target.value);
     };
+
 
     const handleMobileChange = (e) => {
         const value = e.target.value;
@@ -107,14 +102,47 @@ function Home() {
         }
     };
 
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const userString = localStorage.getItem('user');
+        if (!userString) {
+          console.error('User not found in localStorage');
+          return;
+        }
+
+        const { email } = JSON.parse(userString);
+
+        const response = await axios.post('http://localhost:8081/patients/saveProfile', {
+          mobile,
+          aadhaar,
+          gender,
+          dob,
+          address,
+          email, // Include the email value in the request body
+        });
+        console.log(response.data); // Log the response from the server
+        setShowPopup(false); // Close the popup after successful submission
+      } catch (error) {
+        console.error('Failed to submit patient details:', error);
+      }
+    };
+
+
+    useEffect(() => {
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() - 18);
+        setMaxBirthDate(maxDate.toISOString().split('T')[0]);
+    }, []);
+
     return (
         <>
             {showPopup && (
                 <div className="popup">
                     <div className="popup-content">
-                        <span className="close-popup" onClick={handleClosePopup}>&times;</span>
+                        <span className="close-popup" onClick={() => setShowPopup(false)}>&times;</span>
                         <h2>Complete Your Profile</h2>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <label htmlFor="mobile">Mobile No:</label>
                                 <input
@@ -169,14 +197,15 @@ function Home() {
                                 {aadhaar.replace(/\s/g, '').length > 0 && aadhaar.replace(/\s/g, '').length < 12 && (
                                     <small className="text-danger">Aadhaar number must be exactly 12 digits long</small>
                                 )}
-
                                 <label htmlFor="address">Address:</label>
                                 <input
-                                    type="text"
-                                    className="form-control"
-                                    id="address"
-                                    placeholder="Enter Your Address"
-                                    required
+                                  type="text"
+                                  className="form-control"
+                                  id="address"
+                                  placeholder="Enter Your Address"
+                                  value={address}
+                                  onChange={handleAddressChange}
+                                  required
                                 />
                             </div>
                             <button type="submit" className="btn btn-primary">Submit</button>

@@ -151,4 +151,6 @@ app.put("/patients/email/:email", (req, res) => {
   });
 });
 
+app.use("/patients", patientRoutes);
+
 app.listen(port, () => console.log(`Server running on port ${port}`));
