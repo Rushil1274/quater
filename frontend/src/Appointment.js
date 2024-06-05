@@ -312,23 +312,6 @@ const AppointmentScheduler = () => {
                       }
                     }} required
                   />
-                  <label>Description</label>
-                  <textarea
-                    name="description"
-                    placeholder="Description"
-                    rows="4"
-                    value={formValues.description}
-                    onChange={handleInputChange}
-                    required
-                  ></textarea>
-                  <label>Address</label>
-                  <input
-                    className='ap-form-input'
-                    name="address"
-                    value={formValues.address}
-                    onChange={handleInputChange}
-                    required
-                  />
                 </form>
               </div>
             </div>
