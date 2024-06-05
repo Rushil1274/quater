@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 30, 2024 at 12:33 PM
+-- Generation Time: Jun 04, 2024 at 09:33 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -121,10 +121,33 @@ CREATE TABLE `doctor` (
 --
 
 INSERT INTO `doctor` (`doctor_id`, `login_id`, `name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `created_at`, `updated_at`, `doc_pic`, `hospital_loc`, `fees`) VALUES
-(1, 1, 'Dr. John Doe', 'johndoe@example.com', 'Password@123', 'Doctor', 35, 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', '2024-05-22 11:09:36', '2024-05-30 05:02:38', 'path_to_doc_pic', '', 0),
+(1, 1, 'Dr. John Doe', 'johndoe@example.com', 'Password@1234', 'Doctor', 35, 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', '2024-05-22 11:09:36', '2024-06-03 07:11:53', 'path_to_doc_pic', '', 0),
 (2, 2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'Doctor', 42, 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', '2024-05-22 11:09:36', '2024-05-30 05:02:26', 'path_to_doc_pic', '', 0),
 (3, 3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'Doctor', 40, 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', '2024-05-22 11:09:36', '2024-05-30 05:02:11', 'path_to_doc_pic', '', 0),
-(4, 10, 'kushal', 'kushal@gmail.com', 'Kushal@123', 'Doctor', 0, '', '', '', '', '', '2024-05-27 06:19:13', '2024-05-27 06:19:13', '', '', 0);
+(4, 10, 'kushal', 'kushal@gmail.com', 'Kushal@1234', 'Doctor', 0, '', '', '', '', '', '2024-05-27 06:19:13', '2024-06-03 07:10:18', '', '', 0);
+
+--
+-- Triggers `doctor`
+--
+DELIMITER $$
+CREATE TRIGGER `update_doctor1` BEFORE UPDATE ON `doctor` FOR EACH ROW BEGIN
+    DECLARE v_ignore_trigger INT DEFAULT 0;
+    SET v_ignore_trigger = (SELECT @TRIGGER_IGNORE := IFNULL(@TRIGGER_IGNORE, 0));
+
+    IF v_ignore_trigger = 0 AND NEW.role = 'Doctor' THEN
+        SET @TRIGGER_IGNORE = 1;
+        UPDATE login
+        SET
+            name = NEW.name,
+            email = NEW.email,
+            password = NEW.password
+        WHERE
+            login_id = NEW.login_id;
+        SET @TRIGGER_IGNORE = 0;
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -145,16 +168,19 @@ CREATE TABLE `login` (
 --
 
 INSERT INTO `login` (`login_id`, `name`, `email`, `password`, `role`) VALUES
-(1, 'Dr. John Doe', 'johndoe@example.com', 'Password@123', 'Doctor'),
+(1, 'Dr. John Doe', 'johndoe@example.com', 'Password@1234', 'Doctor'),
 (2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'Doctor'),
 (3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'Doctor'),
-(4, 'John Doe', 'john@example.com', 'Password@123', 'Patient'),
+(4, 'John Potter', 'john@example.com', 'Password@123', 'Patient'),
 (5, 'Jane Smith', 'jane@example.com', 'Password@456', 'Patient'),
 (6, 'Alex Brown', 'alex@example.com', 'Password@789', 'Patient'),
-(7, 'Alice Johnson', 'alice@example.com', 'Alice@123', 'receptionist'),
-(8, 'Bob Smith', 'bob@example.com', 'Bob@123456', 'receptionist'),
-(9, 'Charlie Brown', 'charlie@example.com', 'Charlie@123', 'receptionist'),
-(10, 'kushal', 'kushal@gmail.com', 'Kushal@123', 'Doctor');
+(7, 'Alice Johnson', 'alice@example.com', 'Alice@1234', 'Receptionist'),
+(8, 'Bob Smith', 'bob@example.com', 'Bob@123456', 'Receptionist'),
+(9, 'Charlie Brown', 'charlie@example.com', 'Charlie@123', 'Receptionist'),
+(10, 'kushal', 'kushal@gmail.com', 'Kushal@1234', 'Doctor'),
+(12, 'abc', 'abc@gmail.com', 'Abc@1234', 'Receptionist'),
+(17, 'fde', 'fde@gmail.com', 'Fde@1234', 'Patient'),
+(18, 'hello', 'hello@gmail.com', 'Hello@1234', 'Patient');
 
 --
 -- Triggers `login`
@@ -200,49 +226,64 @@ CREATE TRIGGER `update-admin` AFTER UPDATE ON `login` FOR EACH ROW BEGIN
             email = NEW.email,
             password = NEW.password
         WHERE
-            email = NEW.email; -- Assuming there's an email field in your table
+            login_id = NEW.login_id; -- Assuming there's an email field in your table
     END IF;
 END
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `update-doctor` AFTER UPDATE ON `login` FOR EACH ROW BEGIN
-    IF NEW.role = 'Doctor' THEN
+CREATE TRIGGER `update_doctor` BEFORE UPDATE ON `login` FOR EACH ROW BEGIN
+    DECLARE v_ignore_trigger INT DEFAULT 0;
+    SET v_ignore_trigger = (SELECT @TRIGGER_IGNORE := IFNULL(@TRIGGER_IGNORE, 0));
+
+    IF v_ignore_trigger = 0 AND NEW.role = 'Doctor' THEN
+        SET @TRIGGER_IGNORE = 1;
         UPDATE doctor
         SET
             name = NEW.name,
             email = NEW.email,
             password = NEW.password
         WHERE
-            email = NEW.email; -- Assuming there's an email field in your table
+            login_id = NEW.login_id;
+        SET @TRIGGER_IGNORE = 0;
     END IF;
 END
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `update-patient` AFTER UPDATE ON `login` FOR EACH ROW BEGIN
-    IF NEW.role = 'Patient' THEN
+CREATE TRIGGER `update_patient` BEFORE UPDATE ON `login` FOR EACH ROW BEGIN
+    DECLARE v_ignore_trigger INT DEFAULT 0;
+    SET v_ignore_trigger = (SELECT @TRIGGER_IGNORE := IFNULL(@TRIGGER_IGNORE, 0));
+
+    IF v_ignore_trigger = 0 AND NEW.role = 'Patient' THEN
+        SET @TRIGGER_IGNORE = 1;
         UPDATE patient
         SET
             name = NEW.name,
             email = NEW.email,
             password = NEW.password
         WHERE
-            email = NEW.email; -- Assuming there's an id field in your table
+            login_id = NEW.login_id;
+        SET @TRIGGER_IGNORE = 0;
     END IF;
 END
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `update-receptionist` AFTER UPDATE ON `login` FOR EACH ROW BEGIN
-    IF NEW.role = 'Receptionist' THEN
+CREATE TRIGGER `update_receptionist` BEFORE UPDATE ON `login` FOR EACH ROW BEGIN
+    DECLARE v_ignore_trigger INT DEFAULT 0;
+    SET v_ignore_trigger = (SELECT @TRIGGER_IGNORE := IFNULL(@TRIGGER_IGNORE, 0));
+
+    IF v_ignore_trigger = 0 AND NEW.role = 'Receptionist' THEN
+        SET @TRIGGER_IGNORE = 1;
         UPDATE receptionist
         SET
             name = NEW.name,
             email = NEW.email,
             password = NEW.password
         WHERE
-            email = NEW.email; -- Assuming there's an id field in your table
+            login_id = NEW.login_id;
+        SET @TRIGGER_IGNORE = 0;
     END IF;
 END
 $$
@@ -260,7 +301,7 @@ CREATE TABLE `patient` (
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `role` varchar(50) NOT NULL,
-  `age` varchar(50) NOT NULL,
+  `age` varchar(50) DEFAULT NULL,
   `gender` varchar(50) NOT NULL,
   `address` varchar(50) NOT NULL,
   `number` varchar(10) NOT NULL,
@@ -278,9 +319,42 @@ CREATE TABLE `patient` (
 --
 
 INSERT INTO `patient` (`patient_id`, `login_id`, `email`, `password`, `role`, `age`, `gender`, `address`, `number`, `insurance`, `adhar_no`, `created_at`, `updated_at`, `name`, `dob`, `patient_pic`) VALUES
-(1, 4, 'john@example.com', 'Password@123', 'Patient', '30', 'Male', '123 Main St', '987-654-32', 'XYZ Insurance', '1234-5678-90', '2024-05-22 16:44:14', '2024-05-30 05:32:26', 'John Doe', '2001-12-31', ''),
-(2, 5, 'jane@example.com', 'Password@456', 'Patient', '25', 'Female', '456 Elm St', '123-456-78', 'ABC Insurance', '9876-5432-10', '2024-05-22 16:44:14', '2024-05-30 05:32:31', 'Jane Smith', '2001-12-31', ''),
-(3, 6, 'alex@example.com', 'Password@789', 'Patient', '40', 'Male', '789 Oak St', '456-789-01', 'DEF Insurance', '5678-9012-34', '2024-05-22 16:44:14', '2024-05-30 05:32:37', 'Alex Brown', '2001-12-31', '');
+(1, 4, 'john@example.com', 'Password@123', 'Patient', '30', 'Male', '123 Main St', '987-654-32', 'Yes', '123444678590', '2024-05-22 16:44:14', '2024-06-03 07:12:43', 'John Potter', '2001-12-31', ''),
+(2, 5, 'jane@example.com', 'Password@456', 'Patient', '25', 'Female', '456 Elm St', '123-456-78', 'Yes', '987645432210', '2024-05-22 16:44:14', '2024-05-30 11:03:48', 'Jane Smith', '2001-12-31', ''),
+(3, 6, 'alex@example.com', 'Password@789', 'Patient', '40', 'Male', '789 Oak St', '4567789901', 'No', '5678-9012-34', '2024-05-22 16:44:14', '2024-05-30 11:03:29', 'Alex Brown', '2001-12-31', ''),
+(7, 17, 'fde@gmail.com', 'Fde@1234', 'Patient', '21', '', '', '', '', '', '2024-06-04 12:56:11', '2024-06-04 07:31:38', 'fde', '2003-05-26', ''),
+(8, 18, 'hello@gmail.com', 'Hello@1234', 'Patient', '20', '', '', '', '', '', '2024-06-04 13:02:07', '2024-06-04 07:32:24', 'hello', '2004-03-29', '');
+
+--
+-- Triggers `patient`
+--
+DELIMITER $$
+CREATE TRIGGER `calculate_age_trigger` BEFORE UPDATE ON `patient` FOR EACH ROW BEGIN
+    IF NEW.dob <> OLD.dob THEN
+        SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.dob, CURDATE());
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update_patient1` BEFORE UPDATE ON `patient` FOR EACH ROW BEGIN
+    DECLARE v_ignore_trigger INT DEFAULT 0;
+    SET v_ignore_trigger = (SELECT @TRIGGER_IGNORE := IFNULL(@TRIGGER_IGNORE, 0));
+
+    IF v_ignore_trigger = 0 AND NEW.role = 'Patient' THEN
+        SET @TRIGGER_IGNORE = 1;
+        UPDATE login
+        SET
+            name = NEW.name,
+            email = NEW.email,
+            password = NEW.password
+        WHERE
+            login_id = NEW.login_id;
+        SET @TRIGGER_IGNORE = 0;
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -335,9 +409,33 @@ CREATE TABLE `receptionist` (
 --
 
 INSERT INTO `receptionist` (`receptionist_id`, `login_id`, `name`, `email`, `phone`, `address`, `salary`, `employment`, `created_at`, `updated_at`, `password`, `role`, `rec_pic`) VALUES
-(1, 7, 'Alice Johnson', 'Alice@example.com', 1234567890, '123 Main St', 35000, 'Full-Time', '2024-05-22 16:48:27', '2024-05-24 05:59:32', 'Alice@123', 'receptionist', ''),
-(2, 8, 'Bob Smith', 'bob@example.com', 2147483647, '456 Elm St', 30000, 'Part-Time', '2024-05-22 16:48:27', '2024-05-27 06:39:31', 'Bob@123456', 'receptionist', ''),
-(3, 9, 'Charlie Brown', 'Charlie@example.com', 2147483647, '789 Oak St', 40000, 'Full-Time', '2024-05-22 16:48:27', '2024-05-24 05:59:32', 'Charlie@123', 'receptionist', '');
+(1, 7, 'Alice Johnson', 'alice@example.com', 1234567890, '123 Main St', 35000, 'Full-Time', '2024-05-22 16:48:27', '2024-06-03 06:56:43', 'Alice@1234', 'Receptionist', ''),
+(2, 8, 'Bob Smith', 'bob@example.com', 2147483647, '456 Elm St', 30000, 'Part-Time', '2024-05-22 16:48:27', '2024-06-03 06:45:39', 'Bob@123456', 'Receptionist', ''),
+(3, 9, 'Charlie Brown', 'charlie@example.com', 2147483647, '789 Oak St', 40000, 'Full-Time', '2024-05-22 16:48:27', '2024-06-03 07:10:14', 'Charlie@123', 'Receptionist', ''),
+(4, 12, 'abc', 'abc@gmail.com', 0, '', 0, '', '2024-06-04 12:39:24', '2024-06-04 07:09:24', 'Abc@1234', 'Receptionist', '');
+
+--
+-- Triggers `receptionist`
+--
+DELIMITER $$
+CREATE TRIGGER `update_receptionist1` BEFORE UPDATE ON `receptionist` FOR EACH ROW BEGIN
+    DECLARE v_ignore_trigger INT DEFAULT 0;
+    SET v_ignore_trigger = (SELECT @TRIGGER_IGNORE := IFNULL(@TRIGGER_IGNORE, 0));
+
+    IF v_ignore_trigger = 0 AND NEW.role = 'Receptionist' THEN
+        SET @TRIGGER_IGNORE = 1;
+        UPDATE login
+        SET
+            name = NEW.name,
+            email = NEW.email,
+            password = NEW.password
+        WHERE
+            login_id = NEW.login_id;
+        SET @TRIGGER_IGNORE = 0;
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -463,13 +561,13 @@ ALTER TABLE `doctor`
 -- AUTO_INCREMENT for table `login`
 --
 ALTER TABLE `login`
-  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `ratings_reviews`
@@ -481,7 +579,7 @@ ALTER TABLE `ratings_reviews`
 -- AUTO_INCREMENT for table `receptionist`
 --
 ALTER TABLE `receptionist`
-  MODIFY `receptionist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `receptionist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `time_slots`
