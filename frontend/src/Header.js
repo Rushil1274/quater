@@ -1,24 +1,17 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import "./App.css";
 import { Container, Row } from "reactstrap";
-
 import Logo from "./images/Logo.jpg";
 import userIcon from "./images/userIcon.jpg";
+import { useUser } from "./UserContext";
 
 const Header = () => {
   const menuRef = useRef(null);
   const profileActionRef = useRef(null);
   const [profileActionsVisible, setProfileActionsVisible] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, logout } = useUser();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
 
   const menuToggle = () => menuRef.current.classList.toggle("active-menu");
   const toggleProfileActions = () =>
@@ -26,8 +19,7 @@ const Header = () => {
   const closeProfileActions = () => setProfileActionsVisible(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
+    logout();
     navigate("/login");
   };
 
@@ -37,7 +29,7 @@ const Header = () => {
     { path: "contact", display: "Contact" },
   ];
 
-  if (!user || user.role === "patient") {
+  if (!user || !(user.role === "Doctor" || user.role === "receptionist")) {
     nav_links.splice(2, 0, { path: "doctors", display: "Doctors" });
   }
 
@@ -83,9 +75,8 @@ const Header = () => {
                   onClick={toggleProfileActions}
                 />
                 <div
-                  className={`profile-actions ${
-                    profileActionsVisible ? "show_profileActions" : ""
-                  }`}
+                  className={`profile-actions ${profileActionsVisible ? "show_profileActions" : ""
+                    }`}
                   ref={profileActionRef}
                 >
                   <div className="profile_link">
