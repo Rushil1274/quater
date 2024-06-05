@@ -57,7 +57,7 @@ function Home() {
     const [address, setAddress] = useState('');
 
     const handleAddressChange = (e) => {
-      setAddress(e.target.value);
+        setAddress(e.target.value);
     };
 
 
@@ -103,29 +103,29 @@ function Home() {
     };
 
     const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        const userString = localStorage.getItem('user');
-        if (!userString) {
-          console.error('User not found in localStorage');
-          return;
+        e.preventDefault();
+        try {
+            const userString = localStorage.getItem('user');
+            if (!userString) {
+                console.error('User not found in localStorage');
+                return;
+            }
+
+            const { email } = JSON.parse(userString);
+
+            const response = await axios.post('http://localhost:8081/patients/saveProfile', {
+                mobile,
+                aadhaar,
+                gender,
+                dob,
+                address,
+                email, // Include the email value in the request body
+            });
+            console.log(response.data); // Log the response from the server
+            setShowPopup(false); // Close the popup after successful submission
+        } catch (error) {
+            console.error('Failed to submit patient details:', error);
         }
-
-        const { email } = JSON.parse(userString);
-
-        const response = await axios.post('http://localhost:8081/patients/saveProfile', {
-          mobile,
-          aadhaar,
-          gender,
-          dob,
-          address,
-          email, // Include the email value in the request body
-        });
-        console.log(response.data); // Log the response from the server
-        setShowPopup(false); // Close the popup after successful submission
-      } catch (error) {
-        console.error('Failed to submit patient details:', error);
-      }
     };
 
 
@@ -199,13 +199,13 @@ function Home() {
                                 )}
                                 <label htmlFor="address">Address:</label>
                                 <input
-                                  type="text"
-                                  className="form-control"
-                                  id="address"
-                                  placeholder="Enter Your Address"
-                                  value={address}
-                                  onChange={handleAddressChange}
-                                  required
+                                    type="text"
+                                    className="form-control"
+                                    id="address"
+                                    placeholder="Enter Your Address"
+                                    value={address}
+                                    onChange={handleAddressChange}
+                                    required
                                 />
                             </div>
                             <button type="submit" className="btn btn-primary">Submit</button>
@@ -221,19 +221,7 @@ function Home() {
                         <p className='hero-p'>A repudiandae ipsam labore ipsa voluptatum quidem quae laudantium quisquam aperiam maiores sunt fugit,</p>
                         <p className='hero-p'>deserunt rem suscipit placeat.</p>
                     </div>
-                    <div className="d-flex justify-content-start gap-2">
-                        {/* Conditional rendering based on user role */}
-                        {user && user.role === 'patient' && (
-                            <Link to={'/doctors'} className="btn-get-started scrollto">Book Appointment</Link>
-                        )}
-                        {user && (user.role === 'doctor' || user.role === 'receptionist') && (
-                            <Link to={'/doctors-dashboard'} className="btn-get-started scrollto">Track Appointment</Link>
-                        )}
-                        {/* Show 'Book Appointment' button if no user is logged in */}
-                        {!user && (
-                            <Link to={'/doctors'} className="btn-get-started scrollto">Book Appointment</Link>
-                        )}
-                    </div>
+                    
                 </div>
             </section>
             <section className="why-us mt-5 mt-md-0">
