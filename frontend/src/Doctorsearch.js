@@ -44,12 +44,6 @@ const Doctors = () => {
     return window.btoa(binary);
   };
 
-  // const handleMinPriceChange = (event) => {
-  //   const value = parseInt(event.target.value);
-  //   if (value <= maxPrice) {
-  //     setMinPrice(value);
-  //   }
-  // };
 
   const handleMaxPriceChange = (event) => {
     const value = parseInt(event.target.value);
@@ -106,9 +100,9 @@ const Doctors = () => {
         <div className="cardContainer">
           {filteredDoctors.map((doctor, index) => (
             <div key={index} className="card">
-              <Link to='/details' style={{ textDecoration: "none", color: "black" }} >
+              <Link to={{ pathname: '/details', state: { doctor } }} style={{ textDecoration: "none", color: "black" }} >
                 <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
-                <h3>{doctor.name}</h3>
+                <h3>Dr. {doctor.name}</h3>
                 <p><strong>Specialization:</strong> {doctor.specialization}</p>
                 <p><strong>Fees:</strong> {doctor.fees}</p>
                 <p><strong>Location:</strong> {doctor.location}</p>
