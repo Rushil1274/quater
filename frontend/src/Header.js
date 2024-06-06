@@ -27,7 +27,7 @@ const Header = () => {
   let nav_links = [
     { path: "home", display: "Home" },
     { path: "about", display: "About" },
-    { path: "contact", display: "Contact" },
+    { path: "contact", display: "Help" },
   ];
 
   if (!user || !(user.role === "Doctor" || user.role === "receptionist")) {

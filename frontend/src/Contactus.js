@@ -51,8 +51,6 @@ const Contact = () => {
             <Col>
               <form className='contact-form'>
                 <p>
-                       <input type="text" name="Name" placeholder="Name" value={formData.subject} onChange={handleChange} required />
-                       <input type="email" name="email" placeholder="email" value={formData.subject} onChange={handleChange} required />
                       <input
                         type="tel"
                         placeholder="Enter your mobile number"
