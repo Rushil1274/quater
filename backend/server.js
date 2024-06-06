@@ -153,4 +153,20 @@ app.put("/patients/email/:email", (req, res) => {
 
 app.use("/patients", patientRoutes);
 
+app.post('/appointments', (req, res) => {
+  const { doctor_id, patient_id, appointment_date, appointment_time } = req.body;
+
+  const sql = 'INSERT INTO appointments (doctor_id, patient_id, appointment_date, appointment_time) VALUES (?, ?, ?, ?)';
+  const values = [doctor_id, patient_id, appointment_date, appointment_time];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error creating appointment:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    return res.json({ message: 'Appointment created successfully' });
+  });
+});
+
 app.listen(port, () => console.log(`Server running on port ${port}`));

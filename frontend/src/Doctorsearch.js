@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './doctorsearch.css';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
 
 const Doctors = () => {
   const [filter, setFilter] = useState({ name: '', specialization: '', fees: '', location: '' });
   const [doctors, setDoctors] = useState([]);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(5000);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -31,7 +31,7 @@ const Doctors = () => {
     doctor.name.toLowerCase().includes(filter.name.toLowerCase()) &&
     doctor.specialization.toLowerCase().includes(filter.specialization.toLowerCase()) &&
     (filter.fees === '' || doctor.fees.includes(filter.fees)) &&
-    (filter.location === '' || doctor.location.toLowerCase().includes(filter.location.toLowerCase()))
+    (filter.location === '' || doctor.hospital_loc.toLowerCase().includes(filter.location.toLowerCase()))
   );
 
   const bufferToBase64 = (buffer) => {
@@ -44,13 +44,6 @@ const Doctors = () => {
     return window.btoa(binary);
   };
 
-  // const handleMinPriceChange = (event) => {
-  //   const value = parseInt(event.target.value);
-  //   if (value <= maxPrice) {
-  //     setMinPrice(value);
-  //   }
-  // };
-
   const handleMaxPriceChange = (event) => {
     const value = parseInt(event.target.value);
     if (value >= minPrice) {
@@ -62,6 +55,15 @@ const Doctors = () => {
     event.preventDefault();
     console.log('Minimum Price:', minPrice);
     console.log('Maximum Price:', maxPrice);
+  };
+
+  const handleBookAppointment = (doctorId) => {
+    if (doctorId) {
+      localStorage.setItem('doctor_id', doctorId);
+      navigate('/appointment');
+    } else {
+      console.error('Doctor ID is undefined');
+    }
   };
 
   return (
@@ -111,10 +113,10 @@ const Doctors = () => {
                 <h3>{doctor.name}</h3>
                 <p><strong>Specialization:</strong> {doctor.specialization}</p>
                 <p><strong>Fees:</strong> {doctor.fees}</p>
-                <p><strong>Location:</strong> {doctor.location}</p>
+                <p><strong>Location:</strong> {doctor.hospital_loc}</p>
                 <p>{doctor.description}</p>
               </Link>
-              <Link to="/appointment" className="bookButton" style={{textDecoration: 'none'}} >Book Appointment</Link>
+              <button onClick={() => handleBookAppointment(doctor.doctor_id)} className="bookButton" style={{ textDecoration: 'none' }}>Book Appointment</button>
             </div>
           ))}
         </div>
@@ -124,3 +126,4 @@ const Doctors = () => {
 };
 
 export default Doctors;
+
