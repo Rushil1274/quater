@@ -33,6 +33,9 @@ const Header = () => {
   if (!user || !(user.role === "Doctor" || user.role === "receptionist")) {
     nav_links.splice(2, 0, { path: "doctors", display: "Doctors" });
   }
+  if (user && user.role === "Doctor") {
+    nav_links.splice(2, 0, { path: "doctorsdashboard", display: "Doctors Dashboard" });
+  }  
 
   return (
     <header className="header sticky-header">

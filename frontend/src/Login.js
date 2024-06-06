@@ -34,9 +34,9 @@ function Login() {
             login(res.data.user);
 
             if (values.role === "Doctor") {
-              navigate("/doctor-home");
+              navigate("/home");
             } else if (values.role === "Receptionist") {
-              navigate("/receptionist-home");
+              navigate("/home");
             } else {
               navigate("/home");
             }
