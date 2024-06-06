@@ -105,7 +105,6 @@ const Doctors = () => {
                 <h3>Dr. {doctor.name}</h3>
                 <p><strong>Specialization:</strong> {doctor.specialization}</p>
                 <p><strong>Fees:</strong> {doctor.fees}</p>
-                <p><strong>Location:</strong> {doctor.location}</p>
                 <p>{doctor.description}</p>
               </Link>
               <Link to="/appointment" className="bookButton" style={{textDecoration: 'none'}} >Book Appointment</Link>
