@@ -106,30 +106,28 @@ const UpdateProfile = ({ user }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const response = await axios.put(`http://localhost:8081/patients/email/${storedUser.email}`, formData);
-    console.log("Update response:", response);
-    if (response.status === 200) {
-      alert("Profile updated successfully");
-    } else {
-      console.error("Failed to update profile:", response.data);
-      alert(`Failed to update profile: ${response.data.message || response.status}`);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const response = await axios.put(`http://localhost:8081/patients/email/${storedUser.email}`, formData);
+      console.log("Update response:", response);
+      if (response.status === 200) {
+        alert("Profile updated successfully");
+      } else {
+        console.error("Failed to update profile:", response.data);
+        alert(`Failed to update profile: ${response.data.message || response.status}`);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      if (error.response) {
+        console.error("Error response data:", error.response.data);
+        alert(`Failed to update profile: ${error.response.data.message || error.response.status}`);
+      } else {
+        alert("Failed to update profile: An unknown error occurred.");
+      }
     }
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    if (error.response) {
-      console.error("Error response data:", error.response.data);
-      alert(`Failed to update profile: ${error.response.data.message || error.response.status}`);
-    } else {
-      alert("Failed to update profile: An unknown error occurred.");
-    }
-  }
-};
-
-
+  };
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -150,12 +148,7 @@ const handleSubmit = async (e) => {
         <div>
           <label>
             Email Id:
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
+            <p className='update-email' style={{ fontWeight: '400', padding: '8px' }}>{formData.email}</p>
           </label>
         </div>
         <div>
@@ -170,6 +163,9 @@ const handleSubmit = async (e) => {
               minLength="10"
               maxLength="10"
               pattern="[0-9]{10}"
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+              }}
             />
           </label>
         </div>

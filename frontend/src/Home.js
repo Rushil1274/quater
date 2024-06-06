@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaCheckDouble, FaClock, FaHeadset, FaHouseUser } from "react-icons/fa";
-
 import img1 from "./images/specialities-01.png";
 import img2 from "./images/specialities-02.png";
 import img3 from "./images/specialities-03.png";
@@ -13,11 +12,17 @@ import axios from 'axios';
 
 function Home() {
     const user = JSON.parse(localStorage.getItem('user'));
-    // const role = user.role; // Can be 'Doctor', 'Receptionist', or 'Patient'
-
     const [filter, setFilter] = useState({ name: '', specialization: '', fees: '', location: '' });
     const [doctors, setDoctors] = useState([]);
-
+    const [showPopup, setShowPopup] = useState(false);
+    const [mobile, setMobile] = useState('');
+    const [aadhaar, setAadhaar] = useState('');
+    const [gender, setGender] = useState('');
+    const [dob, setDob] = useState('');
+    const [age, setAge] = useState(null);
+    const [maxBirthDate, setMaxBirthDate] = useState('');
+    const [address, setAddress] = useState('');
+    
     useEffect(() => {
         const fetchDoctors = async () => {
             try {
@@ -28,6 +33,40 @@ function Home() {
             }
         };
         fetchDoctors();
+    }, []);
+
+    useEffect(() => {
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() - 18);
+        setMaxBirthDate(maxDate.toISOString().split('T')[0]);
+        
+        const fetchUserProfile = async () => {
+            try {
+                const userString = localStorage.getItem('user');
+                if (!userString) {
+                    console.error('User not found in localStorage');
+                    return;
+                }
+                const { email } = JSON.parse(userString);
+                const response = await axios.get(`http://localhost:8081/patients/email/${email}`);
+                const { number, adhar_no, gender, dob, address } = response.data;
+                setMobile(number || '');
+                setAadhaar(adhar_no || '');
+                setGender(gender || '');
+                setDob(dob || '');
+                setAddress(address || '');
+                if (!number || !adhar_no || !gender || !dob || !address) {
+                    const popupShown = sessionStorage.getItem('popupShown');
+                    if (!popupShown) {
+                        setShowPopup(true);
+                        sessionStorage.setItem('popupShown', 'true');
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch user profile:', error);
+            }
+        };
+        fetchUserProfile();
     }, []);
 
     const bufferToBase64 = (buffer) => {
@@ -47,19 +86,9 @@ function Home() {
         (filter.location === '' || doctor.location.toLowerCase().includes(filter.location.toLowerCase()))
     );
 
-    const [showPopup, setShowPopup] = useState(true);
-    const [mobile, setMobile] = useState('');
-    const [aadhaar, setAadhaar] = useState('');
-    const [gender, setGender] = useState('');
-    const [dob, setDob] = useState('');
-    const [age, setAge] = useState(null);
-    const [maxBirthDate, setMaxBirthDate] = useState('');
-    const [address, setAddress] = useState('');
-
     const handleAddressChange = (e) => {
         setAddress(e.target.value);
     };
-
 
     const handleMobileChange = (e) => {
         const value = e.target.value;
@@ -69,10 +98,9 @@ function Home() {
     };
 
     const handleAadhaarChange = (e) => {
-        const value = e.target.value.replace(/\s/g, ''); // Remove spaces
+        const value = e.target.value.replace(/\s/g, '');
         if (/^\d*$/.test(value) && value.length <= 12) {
-            const formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
-            setAadhaar(formattedValue);
+            setAadhaar(value);
         }
     };
 
@@ -89,16 +117,15 @@ function Home() {
     const calculateAge = (dob) => {
         const birthDate = new Date(dob);
         const today = new Date();
-
         if (birthDate > today) {
-            setAge(null); // Reset age
+            setAge(null);
         } else {
             let age = today.getFullYear() - birthDate.getFullYear();
             const monthDifference = today.getMonth() - birthDate.getMonth();
             if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
                 age--;
             }
-            setAge(Math.min(age, 110)); // Limit age to maximum 110
+            setAge(Math.min(age, 110));
         }
     };
 
@@ -110,30 +137,22 @@ function Home() {
                 console.error('User not found in localStorage');
                 return;
             }
-
             const { email } = JSON.parse(userString);
-
             const response = await axios.post('http://localhost:8081/patients/saveProfile', {
                 mobile,
                 aadhaar,
                 gender,
                 dob,
                 address,
-                email, // Include the email value in the request body
+                email,
             });
-            console.log(response.data); // Log the response from the server
-            setShowPopup(false); // Close the popup after successful submission
+            console.log(response.data);
+            setShowPopup(false);
+            sessionStorage.setItem('popupShown', 'true');
         } catch (error) {
             console.error('Failed to submit patient details:', error);
         }
     };
-
-
-    useEffect(() => {
-        const maxDate = new Date();
-        maxDate.setFullYear(maxDate.getFullYear() - 18);
-        setMaxBirthDate(maxDate.toISOString().split('T')[0]);
-    }, []);
 
     return (
         <>
@@ -166,9 +185,9 @@ function Home() {
                                     required
                                 >
                                     <option value="">Select Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
                                 </select>
 
                                 <label htmlFor="dob">Date of Birth:</label>
@@ -221,7 +240,7 @@ function Home() {
                         <p className='hero-p'>A repudiandae ipsam labore ipsa voluptatum quidem quae laudantium quisquam aperiam maiores sunt fugit,</p>
                         <p className='hero-p'>deserunt rem suscipit placeat.</p>
                     </div>
-                    
+
                 </div>
             </section>
             <section className="why-us mt-5 mt-md-0">

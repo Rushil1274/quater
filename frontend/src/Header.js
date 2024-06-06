@@ -20,6 +20,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
+    sessionStorage.removeItem('popupShown'); // Clear popupShown flag on logout
     navigate("/login");
   };
 
