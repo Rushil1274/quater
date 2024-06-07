@@ -13,7 +13,7 @@ const Detail = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:8081/doctors');
-        setDoctors(response.data); // Assuming the API response is an array of doctor objects
+        setDoctors(response.data);
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -32,37 +32,36 @@ const Detail = () => {
     return <div>Error: {error}</div>;
   }
 
+  const selectedDoctor = doctors[0];
+
   return (
     <div className="container mt-5">
-      {doctors.map(doctor => (
-        <div key={doctor.doctor_id} className="row d-flex justify-content-center">
-          <div className="col-12 col-md-8 col-lg-7">
-            <div className={`card p-3 py-4 ${styles.card}`}>
-              <div className="text-center">
-                <img src={doctor.doc_pic} width="100" className="rounded-circle" alt="Profile" />
-              </div>
-              <div className="text-center mt-3">
-                <h5 className="mt-2 mb-0">Dr. {doctor.name}</h5>
-                <span>{doctor.specialization}</span>
-                <div className="px-4 mt-1">
-                  <p className={styles.fonts} align='justify'>
-                    {/* Assuming description is not provided in the API data */}
-                    {/* {doctor.description} */}
-                  </p>
-                  <p align='left'>Email: {doctor.email}</p>
-                  <p align='left'>Hospital: {doctor.hospital}</p>
-                  <p align='left'>Experience: {doctor.experience}</p>
-                  <p align='left'>Fees: {doctor.fees} INR</p>
-                  {/* Add more details if needed */}
-                  <Link to="/appointment" className="bookButton" style={{ textDecoration: 'none' }}>
-                    Book Appointment
-                  </Link>
-                </div>
+      <div className="row d-flex justify-content-center">
+        <div className="col-12 col-md-8 col-lg-7">
+          <div className={`card p-3 py-4 ${styles.card}`}>
+            <div className="text-center">
+              <img src={selectedDoctor.doc_pic} width="100" className="rounded-circle" alt="Profile" />
+            </div>
+            <div className="text-center mt-3">
+              <h5 className="mt-2 mb-0">Dr. {selectedDoctor.name}</h5>
+              <span>{selectedDoctor.education}</span>
+              <div className="px-4 mt-1">
+                <p className={styles.fonts} align='justify'>
+                </p>
+                <p align='left'>Email: {selectedDoctor.email}</p>
+                <p align='left'>Hospital: {selectedDoctor.hospital}</p>
+                <p align='left'>Specialization: {selectedDoctor.specialization}</p>
+                <p align='left'>Experience: {selectedDoctor.experience}</p>
+                <p align='left'>Fees: {selectedDoctor.fees} INR</p>
+                <p align='left'>Address: {selectedDoctor.location} </p>
+                <Link to="/appointment" className="bookButton" style={{ textDecoration: 'none' }}>
+                  Book Appointment
+                </Link>
               </div>
             </div>
           </div>
         </div>
-      ))}
+      </div>
     </div>
   );
 };
