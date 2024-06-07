@@ -3,6 +3,7 @@ import styles from './Detail.module.css';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import { BASE_URL } from "./config";
 
 const Detail = () => {
   const [doctors, setDoctors] = useState([]);
@@ -12,7 +13,7 @@ const Detail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8081/doctors');
+        const response = await axios.get(`${BASE_URL}/doctors`);
         setDoctors(response.data);
         setLoading(false);
       } catch (error) {

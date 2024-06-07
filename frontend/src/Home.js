@@ -9,6 +9,8 @@ import img3 from "./images/specialities-03.png";
 import img4 from "./images/specialities-04.png";
 import img5 from "./images/specialities-05.png";
 import axios from 'axios';
+import { BASE_URL } from "./config";
+
 
 function Home() {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -26,7 +28,7 @@ function Home() {
     useEffect(() => {
         const fetchDoctors = async () => {
             try {
-                const response = await axios.get('http://localhost:8081/doctors');
+                const response = await axios.get(`${BASE_URL}/doctors`);
                 setDoctors(response.data);
             } catch (error) {
                 console.error('Failed to fetch doctors:', error);
@@ -48,7 +50,7 @@ function Home() {
                     return;
                 }
                 const { email } = JSON.parse(userString);
-                const response = await axios.get(`http://localhost:8081/patients/email/${email}`);
+                const response = await axios.get(`${BASE_URL}/patients/email/${email}`);
                 const { number, adhar_no, gender, dob, address } = response.data;
                 setMobile(number || '');
                 setAadhaar(adhar_no || '');
@@ -138,7 +140,7 @@ function Home() {
                 return;
             }
             const { email } = JSON.parse(userString);
-            const response = await axios.post('http://localhost:8081/patients/saveProfile', {
+            const response = await axios.post(`${BASE_URL}/patients/saveProfile`, {
                 mobile,
                 aadhaar,
                 gender,

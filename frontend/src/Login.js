@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Validation from "./LoginValidation";
 import axios from "axios";
+import { BASE_URL } from "./config";
+
 import { useUser } from "./UserContext";
 
 function Login() {
@@ -27,7 +29,7 @@ function Login() {
 
     if (Object.keys(validationErrors).length === 0) {
       axios
-        .post("http://localhost:8081/login", values)
+        .post('{BASE_URL}/login', values)
         .then((res) => {
           if (res.data.status === "Success") {
             // Ensure the structure of the user object is correct
@@ -41,7 +43,7 @@ function Login() {
               navigate("/home");
             }
           } else {
-            alert("No record exist");
+            alert("No record exist , Please Create Your Account ...! ");
           }
         })
         .catch((err) => console.log(err));

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Validation from "./SignupValidation";
 import axios from "axios";
+import { BASE_URL } from "./config";
+
 
 export default function Signup() {
   const [values, setValues] = useState({
@@ -25,7 +27,7 @@ export default function Signup() {
 
     if (Object.keys(validationErrors).length === 0) {
       axios
-        .post("http://localhost:8081/signup", values)
+        .post(`${BASE_URL}/signup`, values)
         .then(() => navigate("/"))
         .catch((err) => console.log(err));
     }

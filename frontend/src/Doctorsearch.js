@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './doctorsearch.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { BASE_URL } from "./config";
 
 
 const Doctors = () => {
@@ -13,7 +14,7 @@ const Doctors = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get('http://localhost:8081/doctors');
+        const response = await axios.get(`${BASE_URL}/doctors`);
         setDoctors(response.data);
       } catch (error) {
         console.error('Failed to fetch doctors:', error);
