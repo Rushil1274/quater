@@ -1,4 +1,3 @@
-// Login.js
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Validation from "./LoginValidation";
@@ -6,6 +5,7 @@ import axios from "axios";
 import { BASE_URL } from "./config";
 
 import { useUser } from "./UserContext";
+import { toast } from 'react-toastify';
 
 function Login() {
   const [values, setValues] = useState({
@@ -42,6 +42,9 @@ function Login() {
             } else {
               navigate("/home");
             }
+
+            // Show toast message
+            toast.success("Successfully logged in");
           } else {
             alert("No record exist , Please Create Your Account ...! ");
           }

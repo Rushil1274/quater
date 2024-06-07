@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Validation from "./SignupValidation";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { BASE_URL } from "./config";
-
 
 export default function Signup() {
   const [values, setValues] = useState({
@@ -24,12 +24,17 @@ export default function Signup() {
     event.preventDefault();
     const validationErrors = Validation(values);
     setErrors(validationErrors);
-
+  
     if (Object.keys(validationErrors).length === 0) {
       axios
         .post(`${BASE_URL}/signup`, values)
-        .then(() => navigate("/"))
+        .then(() => {
+          toast.success('Account created');
+          navigate("/");
+        })
         .catch((err) => console.log(err));
+    } else {
+      toast.error('Signup failed. Please check your inputs.');
     }
   };
 

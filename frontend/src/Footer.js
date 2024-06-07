@@ -12,7 +12,7 @@ const Footer = () => {
       <div className="row">
         <div className="col-lg-3 col-md-6">
           <img src={Logo} alt="" width={230} className='footer-image' />
-          <div className='footer-o-text d-block mt-3 mb-3'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. In, vero fuga quis odit laboriosam soluta deserunt vel vitae?</div>
+          <div className='footer-o-text d-block mt-3 mb-3'>"Your partner in optimal health. Connect with top doctors, manage appointments, and access personalized healthcare solutions seamlessly."</div>
           <div className="social-icons">
             <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
               <FaFacebookF />
@@ -33,8 +33,8 @@ const Footer = () => {
           <ul className='footer-ul'>
           <Link to = "/doctors" style={{ textDecoration: "none", color: "black"}}> <li>Search for Doctors</li> </Link>
           <Link to = "/Login" style={{ textDecoration: "none", color: "black"}}><li>Login</li> </Link>
-          <Link to = "/signup" style={{ textDecoration: "none", color: "black"}}><li>Register</li></Link>
-          <li>Book Appointment</li>
+          <Link to = "/signup" style={{ textDecoration: "none", color: "black"}}><li>Signup</li></Link>
+          <Link to = "/" style={{ textDecoration: "none", color: "black"}}><li>Book Appointment</li></Link>
           <Link to = "myprofile/*" style={{ textDecoration: "none", color: "black"}}><li>My Profile</li></Link>
           </ul>
         </div>
@@ -43,8 +43,8 @@ const Footer = () => {
           <ul className="footer-ul">
           <Link to = "myprofile/*" style={{ textDecoration: "none", color: "black"}}><li>My Profile</li></Link>
           <Link to = "/Login" style={{ textDecoration: "none", color: "black"}}><li>Login</li> </Link>
-          <Link to = "/signup" style={{ textDecoration: "none", color: "black"}}><li>Register</li></Link>
-            <li>Doctor Dashboard</li>
+          <Link to = "/signup" style={{ textDecoration: "none", color: "black"}}><li>Signup</li></Link>
+          <Link to = "/doctorsdashboard" style={{ textDecoration: "none", color: "black"}}><li>Doctor Dashboard</li></Link>
           </ul>
         </div>
         <div className="col-lg-3 col-md-6">
