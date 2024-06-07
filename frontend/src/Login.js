@@ -29,7 +29,7 @@ function Login() {
 
     if (Object.keys(validationErrors).length === 0) {
       axios
-        .post('{BASE_URL}/login', values)
+        .post(`${BASE_URL}/login`, values)
         .then((res) => {
           if (res.data.status === "Success") {
             // Ensure the structure of the user object is correct
