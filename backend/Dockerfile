@@ -17,7 +17,7 @@ COPY routes/ ./routes/
 COPY Controller/ ./Controller
 
 # Expose the port your app runs on
-EXPOSE 8081
+EXPOSE 8085:8081
 
 # Set environment variables
 ENV DB_HOST="localhost"
