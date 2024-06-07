@@ -4,14 +4,14 @@ services:
   frontend:
     image: jainam05/healthnest:frontend
     ports:
-      - "3000:3000"
+      - "3001:3000"
     depends_on:
       - backend
 
   backend:
     image: jainam05/healthnest:backend
     ports:
-      - "8081:8081"
+      - "8085:8081"
     depends_on:
       mysql:
         condition: service_healthy

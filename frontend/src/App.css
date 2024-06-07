@@ -242,7 +242,7 @@ iframe {
 
 /* Footer.css */
 .footer {
-  background-color: #f5f5f5; /* Light grey background */
+  background-color: #ffffff; /* Light grey background */
   color: #333; /* Dark grey text */
   padding: 40px 0;
 }
@@ -972,8 +972,11 @@ ul {
   font-size: 16px;
 }
 
-.update-profile form label input {
+.update-profile form label input,
+.update-profile form label .update-email {
   border-radius: 5px;
+  background-color: white;
+  width: 100%;
   border: 1px solid #c3c3c3;
   padding: 5px;
   margin: 5px;
@@ -1226,47 +1229,6 @@ ul {
   background-color: #00246B;
   color: white;
 }
-
-/* Details Page Start */
-
-.details-main-con {
-  display: flex;
-}
-
-.details-doc-img img {
-  width: 100%;
-  height: auto;
-  border-radius: 50%; 
-  margin-bottom: 20px;
-  box-shadow: 2px 2px 13px rgba(0, 0, 0, 0.1);
-}
-
-.details-con1, .details-con2 {
-  padding: 15px;
-  box-sizing: border-box;
-}
-
-.details-doc-info {
-  box-shadow: 2px 2px 13px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  padding: 10px;
-}
-
-.details-doc-info p {
-  margin: 7px 0;
-  font-size: 16px;
-  color: #333;
-}
-
-.details-sch-header h2 {
-  font-size: 33px;
-  margin-bottom: 20px;
-  font-family: "Poppins";
-  font-weight: 400;
-}
-
-/* Details Page End */
-
 
 /* Appointment Page Start */
 

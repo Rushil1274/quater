@@ -7,7 +7,7 @@ const AccountDetails = ({ user }) => {
   const [patient, setPatient] = useState(null);
 
   useEffect(() => {
-
+    setPatient(user); // Assuming the user object has the same structure as the patient data
   }, [user]);
 
   if (!patient) {
@@ -16,7 +16,7 @@ const AccountDetails = ({ user }) => {
 
   const formatDate = (isoDate) => {
     const date = new Date(isoDate);
-    return date.toLocaleDateString(); 
+    return date.toLocaleDateString(); // Formats date to 'MM/DD/YYYY' by default
   };
 
   return (
@@ -35,6 +35,8 @@ const AccountDetails = ({ user }) => {
     </div>
   );
 };
+
+
 
 const MyAppointments = ({ user }) => {
   const [Appointments, setAppointments] = useState([]);

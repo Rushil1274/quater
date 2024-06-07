@@ -54,7 +54,7 @@ const Footer = () => {
               <div className="footer-info-i">
                 <FaMapMarkerAlt />
               </div>
-              <span> 907 , Enblitz Technologies <br /> Gujrat, Ahmedabad - 382480 </span>
+              <span> 907 , Enblitz Technologies <br /> Gujarat, Ahmedabad - 382480 </span>
             </li>
             <li className='d-flex'>
               <div className="footer-info-i">

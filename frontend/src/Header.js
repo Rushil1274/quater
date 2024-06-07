@@ -20,18 +20,22 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
+    sessionStorage.removeItem('popupShown'); // Clear popupShown flag on logout
     navigate("/login");
   };
 
   let nav_links = [
     { path: "home", display: "Home" },
     { path: "about", display: "About" },
-    { path: "contact", display: "Contact" },
+    { path: "contact", display: "Help" },
   ];
 
   if (!user || !(user.role === "Doctor" || user.role === "receptionist")) {
     nav_links.splice(2, 0, { path: "doctors", display: "Doctors" });
   }
+  if (user && user.role === "Doctor") {
+    nav_links.splice(2, 0, { path: "doctorsdashboard", display: "Doctors Dashboard" });
+  }  
 
   return (
     <header className="header sticky-header">
