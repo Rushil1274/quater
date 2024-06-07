@@ -5,6 +5,7 @@ import { Container, Row } from "reactstrap";
 import Logo from "./images/Logo.jpg";
 import userIcon from "./images/userIcon.jpg";
 import { useUser } from "./UserContext";
+import { toast } from 'react-toastify';
 
 const Header = () => {
   const menuRef = useRef(null);
@@ -22,12 +23,13 @@ const Header = () => {
     logout();
     sessionStorage.removeItem('popupShown'); // Clear popupShown flag on logout
     navigate("/login");
+    toast.success('Logged out')
   };
 
   let nav_links = [
     { path: "home", display: "Home" },
     { path: "about", display: "About" },
-    { path: "contact", display: "Help" },
+    // { path: "contact", display: "Help" },
   ];
 
   if (!user || !(user.role === "Doctor" || user.role === "receptionist")) {
@@ -35,7 +37,7 @@ const Header = () => {
   }
   if (user && user.role === "Doctor") {
     nav_links.splice(2, 0, { path: "doctorsdashboard", display: "Doctors Dashboard" });
-  }  
+  }
 
   return (
     <header className="header sticky-header">
@@ -84,15 +86,19 @@ const Header = () => {
                   ref={profileActionRef}
                 >
                   <div className="profile_link">
-                    <Link
-                      to="/myprofile"
-                      style={{
-                        textDecoration: "none",
-                        color: "var(--primary-color)",
-                      }}
-                    >
-                      My Profile
-                    </Link>
+                    {user && (
+                      <div>
+                        <Link
+                          to="/myprofile"
+                          style={{
+                            textDecoration: "none",
+                            color: "var(--primary-color)",
+                          }}
+                        >
+                          My Profile
+                        </Link>
+                      </div>
+                    )}
                     {!user ? (
                       <>
                         <Link

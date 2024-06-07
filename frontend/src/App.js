@@ -16,30 +16,34 @@ import MyProfile from './MyProfile'
 import DoctorsProfile from './DoctorsProfile'
 import ReceptionistProfile from './ReceptionistProfile';
 
+import ProtectedRoute from './ProtectedRoute';
+
 import Appointment from './Appointment';
 
 
 function App() {
   // Assuming you have access to the user's role
   const userRole = "doctor"; // Example role, replace it with the actual user role
-  
+
   return (
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path='/' element={<Login />}></Route>
-        <Route path='/signup' element={<Signup />}></Route>
-        <Route path='/Login' element={<Login />}></Route>
-        <Route path='/home' element={<Home />}></Route>
-        <Route path='/about' element={<AboutPage />}></Route>
-        <Route path='/contact' element={<Contact />}></Route>
-        <Route path='/doctors' element={<Doctors />}></Route>
-        <Route path='/doctorsdashboard' element={<DoctorsDashboard />}></Route>
-        {/* Conditionally render MyProfile or DoctorsProfile based on user's role */}
-        <Route path='myprofile/*' element={userRole === "doctor" ? <DoctorsProfile /> : userRole === "receptionist" ? <ReceptionistProfile /> : <MyProfile />}></Route>
-        <Route path='/forgotpassword' element={<ForgotPassword />}></Route>
-        <Route path='/details' element={<Details />}></Route>
-        <Route path='/appointment' element={<Appointment />}></Route>
+        <Route path='/' element={<ProtectedRoute />}>
+          <Route path='/appointment' element={<Appointment />}></Route>
+          <Route path='/doctorsdashboard' element={<DoctorsDashboard />}></Route>
+          <Route path='/contact' element={<Contact />}></Route>
+        </Route>
+          <Route path='myprofile/*' element={userRole === "doctor" ? <DoctorsProfile /> : userRole === "receptionist" ? <ReceptionistProfile /> : <MyProfile />}></Route>
+          <Route path='/' element={<Login />}></Route>
+          <Route path='/signup' element={<Signup />}></Route>
+          <Route path='/Login' element={<Login />}></Route>
+          <Route path='/home' element={<Home />}></Route>
+          <Route path='/about' element={<AboutPage />}></Route>
+          <Route path='/doctors' element={<Doctors />}></Route>
+          {/* Conditionally render MyProfile or DoctorsProfile based on user's role */}
+          <Route path='/forgotpassword' element={<ForgotPassword />}></Route>
+          <Route path='/details' element={<Details />}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>

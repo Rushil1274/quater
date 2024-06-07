@@ -7,10 +7,26 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { UserProvider } from './UserContext';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <UserProvider>
+      <ToastContainer
+        // theme="dark"
+        position="top-right"
+        autoClose={3000}
+        // hideProgressBar={false}
+        // newestOnTop={false}
+        closeOnClick
+        // rtl={false}
+        // pauseOnFocusLoss
+        // draggable
+        pauseOnHover={false}
+      />
+
       <App />
     </UserProvider>
   </React.StrictMode>
