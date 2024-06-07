@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './doctorsearch.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { BASE_URL } from "./config";
 
 
 const Doctors = () => {
@@ -13,7 +14,7 @@ const Doctors = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get('http://localhost:8081/doctors');
+        const response = await axios.get(`${BASE_URL}/doctors`);
         setDoctors(response.data);
       } catch (error) {
         console.error('Failed to fetch doctors:', error);
@@ -101,7 +102,7 @@ const Doctors = () => {
           {filteredDoctors.map((doctor, index) => (
             <div key={index} className="card">
               <Link to={{ pathname: '/details', state: { doctor } }} style={{ textDecoration: "none", color: "black" }} >
-                <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
+                {/* <img src={data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}} alt={doctor.name} className="image" /> */}
                 <h3>Dr. {doctor.name}</h3>
                 <p><strong>Specialization:</strong> {doctor.specialization}</p>
                 <p><strong>Fees:</strong> {doctor.fees}</p>

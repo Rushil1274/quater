@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Link } from 'react-router-dom';
-
+import { BASE_URL } from "./config";
 import Logo from './images/Logo.jpg'
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";

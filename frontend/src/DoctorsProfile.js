@@ -3,6 +3,8 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
 import axios from 'axios';
 import "./App.css"
+import { BASE_URL } from "./config";
+
 const AccountDetails = ({ user }) => {
   const [patient, setPatient] = useState(null);
 
@@ -110,7 +112,7 @@ const UpdateProfile = ({ user }) => {
     e.preventDefault();
     try {
       const storedUser = JSON.parse(localStorage.getItem("user"));
-      const response = await axios.put(`http://localhost:8081/patients/email/${storedUser.email}`, formData);
+      const response = await axios.put(`${BASE_URL}/patients/email/${storedUser.email}`, formData);
       console.log("Update response:", response);
       if (response.status === 200) {
         alert("Profile updated successfully");
@@ -253,7 +255,7 @@ const MyProfile = () => {
         try {
           setIsLoading(true);
           // Use the email to fetch the login_id and user details
-          const response = await axios.get(`http://localhost:8081/patients/email/${storedUser.email}`);
+          const response = await axios.get(`${BASE_URL}/patients/email/${storedUser.email}`);
           setUser(response.data);
         } catch (error) {
           console.error("Error fetching user details:", error);

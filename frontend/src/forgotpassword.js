@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ForgotPasswordValidation from "./ForgotPasswordValidation";
+import { BASE_URL } from "./config";
 
 function ForgotPassword() {
   const [values, setValues] = useState({
@@ -12,10 +13,38 @@ function ForgotPassword() {
   });
 
   const [errors, setErrors] = useState({});
+  const [isVerified, setIsVerified] = useState(false);
   const navigate = useNavigate();
 
   const handleInput = (event) => {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+  };
+
+  const handleVerification = (event) => {
+    event.preventDefault();
+    const { email, role } = values;
+
+    if (!email || !role) {
+      setErrors({ email: "Email is required", role: "Role is required" });
+      return;
+    }
+
+    // Replace with your existing verification logic
+    axios
+      .post(`${BASE_URL}/forgotpassword`, { email, role })
+      .then((res) => {
+        console.log("Verification response:", res.data); // Log server response
+        if (res.data.status === "Success") {
+          setIsVerified(true);
+          setErrors({});
+        } else {
+          alert(res.data.message || "Verification failed");
+        }
+      })
+      .catch((err) => {
+        console.error("Error in Axios request:", err);
+        alert("Error verifying email and role");
+      });
   };
 
   const handleSubmit = (event) => {
@@ -25,7 +54,7 @@ function ForgotPassword() {
 
     if (Object.keys(validationErrors).length === 0) {
       axios
-        .post("http://localhost:8081/forgotpassword", {
+        .post(`${BASE_URL}/forgotpassword`, {
           email: values.email,
           password: values.newPassword,
           role: values.role,
@@ -49,7 +78,7 @@ function ForgotPassword() {
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="bg-white p-3 rounded w-25">
         <h2>Forgot Password</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={isVerified ? handleSubmit : handleVerification}>
           <div className="mb-3">
             <label htmlFor="email">Email</label>
             <input
@@ -74,35 +103,42 @@ function ForgotPassword() {
               <option value="Patient">Patient</option>
               <option value="Receptionist">Receptionist</option>
             </select>
-          </div>
-          <div className="mb-3">
-            <label htmlFor="newPassword">New Password</label>
-            <input
-              type="password"
-              name="newPassword"
-              placeholder="Enter New Password"
-              onChange={handleInput}
-              className="form-control rounded-0"
-            />
-            {errors.newPassword && (
-              <span className="text-danger">{errors.newPassword}</span>
+            {errors.role && (
+              <span className="text-danger">{errors.role}</span>
             )}
           </div>
-          <div className="mb-3">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm New Password"
-              onChange={handleInput}
-              className="form-control rounded-0"
-            />
-            {errors.confirmPassword && (
-              <span className="text-danger">{errors.confirmPassword}</span>
-            )}
-          </div>
+          {isVerified && (
+            <>
+              <div className="mb-3">
+                <label htmlFor="newPassword">New Password</label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  placeholder="Enter New Password"
+                  onChange={handleInput}
+                  className="form-control rounded-0"
+                />
+                {errors.newPassword && (
+                  <span className="text-danger">{errors.newPassword}</span>
+                )}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="Confirm New Password"
+                  onChange={handleInput}
+                  className="form-control rounded-0"
+                />
+                {errors.confirmPassword && (
+                  <span className="text-danger">{errors.confirmPassword}</span>
+                )}
+              </div>
+            </>
+          )}
           <button type="submit" className="btn btn-success w-100">
-            <strong>Update Password</strong>
+            <strong>{isVerified ? "Update Password" : "Verify"}</strong>
           </button>
           <br />
           <br />
