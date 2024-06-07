@@ -156,16 +156,32 @@ app.use("/patients", patientRoutes);
 app.post('/appointments', (req, res) => {
   const { doctor_id, patient_id, appointment_date, appointment_time } = req.body;
 
-  const sql = 'INSERT INTO appointments (doctor_id, patient_id, appointment_date, appointment_time) VALUES (?, ?, ?, ?)';
-  const values = [doctor_id, patient_id, appointment_date, appointment_time];
-
-  db.query(sql, values, (err, result) => {
+  // Fetch patient data from patients table based on login_id
+  db.query(`SELECT name, email, number FROM patient WHERE login_id =?`, [patient_id], (err, patientData) => {
     if (err) {
-      console.error('Error creating appointment:', err);
+      console.error('Error fetching patient data:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
 
-    return res.json({ message: 'Appointment created successfully' });
+    if (patientData.length === 0) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    const patientName = patientData[0].name;
+    const patientEmail = patientData[0].email;
+    const patientNumber = patientData[0].number;
+
+    const sql = 'INSERT INTO appointments (doctor_id, patient_id, appointment_date, appointment_time, patient_name, patient_email, patient_number) VALUES (?,?,?,?,?,?,?)';
+    const values = [doctor_id, patient_id, appointment_date, appointment_time, patientName, patientEmail, patientNumber];
+
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        console.error('Error creating appointment:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+
+      return res.json({ message: 'Appointment created successfully' });
+    });
   });
 });
 
