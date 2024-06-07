@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Steps } from 'antd';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 import chip from './images/chip.png'
 import './App.css';
 
@@ -39,24 +39,55 @@ const AppointmentScheduler = () => {
     });
   };
 
-  const handleNext = () => {
-    if (currentStep === 0) {
-      if (!selectedDate || !selectedTime) {
-        alert("Please select both a date and a time before proceeding.");
-        return;
-      }
+const handleNext = async () => {
+    // Retrieve patient data from localStorage
+    const user = JSON.parse(localStorage.getItem('user'));
+    const patientId = user?.login_id;
+    const name = user?.name;
+    const email = user?.email;
+
+    // Retrieve doctor_id from localStorage
+    const selectedDoctorId = localStorage.getItem('doctor_id');
+
+    if (!patientId) {
+      console.error('Patient ID not found.');
+      // Handle the case where patient ID is not available
+      return;
     }
 
-    if (currentStep === 1) {
-      const { firstName, email, phone, reasonForVisit, description, address } = formValues;
-      if (!firstName || !email || !phone || !reasonForVisit || !description || !address) {
-        alert('Please fill out all required fields.');
-        return;
-      }
+    if (!selectedDoctorId) {
+      console.error('Doctor ID not found.');
+      // Handle the case where doctor ID is not available
+      return;
     }
 
-    setCurrentStep(currentStep + 1);
+    if (!selectedDate || !selectedTime) {
+      alert("Please select both a date and a time before proceeding.");
+      return;
+    }
+
+    try {
+      // Send form values along with selected date, time, doctor ID, and patient ID to the backend
+      await axios.post('http://localhost:8081/appointments', {
+        doctor_id: selectedDoctorId,
+        receptionist_id: 12,
+        patient_id: patientId,
+        status: 'pending',
+        notes: "Patient needs a follow-up.",
+        fees: 10,
+        appointment_date: selectedDate,
+        appointment_time: selectedTime,
+        time_period: "30 minutes",
+        patient_name: name,
+        patient_email: email
+      });
+      setCurrentStep(currentStep + 1);
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+      // Handle error here
+    }
   };
+
 
   const handlePrev = () => {
     setCurrentStep(currentStep - 1);
