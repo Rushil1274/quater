@@ -1,5 +1,0 @@
-2024-06-06T08:52:22.304Z [ctureModificationListener$Companion.initForProject] INFO ProjectStructureModificationListener is init for project quater
-2024-06-06T08:52:22.313Z [s.AiToolwindowsInitializer.reinitializeToolWindows] INFO AI state ENABLED
-2024-06-06T08:52:22.328Z [intellij.services.AiInitializeManager.initializeAI] INFO IntelliJ listens web server on port: 63342
-2024-06-06T08:52:22.460Z [y.aiintellij.ui.panels.AIToolWindowLogPanel.<init>] INFO initializing a logs panel
-2024-06-06T08:52:22.578Z [y.aiintellij.ui.panels.AIToolWindowLogPanel.<init>] INFO initializing a logs panel
