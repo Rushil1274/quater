@@ -16,7 +16,7 @@ services:
   backend:
     image: jainam05/healthnest:backend
     ports:
-      - "8085:8081"
+      - "49350:8081"
     depends_on:
       mysql:
         condition: service_healthy
@@ -29,7 +29,7 @@ services:
       - healthnest-network
 
   mysql:
-    image: jainam05/healthnest:mysql
+    image: jainam05/healthnest:database
     ports:
       - "3306:3306"
     environment:
