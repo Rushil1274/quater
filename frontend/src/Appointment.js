@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import
+   React, { useState, useEffect, useRef } from 'react';
 import { Steps } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -11,7 +12,7 @@ const { Step } = Steps;
 const AppointmentScheduler = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null); 
+  const [selectedTime, setSelectedTime] = useState(null);
 
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
@@ -47,8 +48,11 @@ const AppointmentScheduler = () => {
     const name = user?.name;
     const email = user?.email;
 
+
     // Retrieve doctor_id from localStorage
     const selectedDoctorId = localStorage.getItem('doctor_id');
+
+
 
     if (!patientId) {
       console.error('Patient ID not found.');
@@ -74,7 +78,7 @@ const AppointmentScheduler = () => {
         receptionist_id: 12,
         patient_id: patientId,
         status: 'pending',
-        notes: "Patient needs a follow-up.",
+        notes: formValues.reasonForVisit,
         fees: 10,
         appointment_date: selectedDate,
         appointment_time: selectedTime,
@@ -331,19 +335,21 @@ const AppointmentScheduler = () => {
                     }}
                     required
                   />
-                  <label>Reason For Visit</label>
+                  <label>Reason for Visit</label>
                   <input
                     className='ap-form-input'
                     name="reasonForVisit"
                     value={formValues.reasonForVisit}
                     onChange={(event) => {
                       const inputValue = event.target.value;
-                      const regex = /^[A-Za-z]*$/;
+                      const regex = /^[A-Za-z ]*$/;  // Updated regex to allow spaces
                       if (regex.test(inputValue)) {
                         handleInputChange(event);
                       }
-                    }} required
+                    }}
+                    required
                   />
+
                 </form>
               </div>
             </div>
