@@ -44,8 +44,8 @@ function App() {
 
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} allowedRoles={['doctor', 'receptionist']} userRole={userRole} />}>
           <Route path="/contact" element={<Contact />} />
-          <Route path="/doctorsdashboard" element={<DoctorsDashboard />} />
         </Route>
+        <Route path="/doctorsdashboard" element={<DoctorsDashboard />} />
         <Route path="/appointment" element={<Appointment />} />
         <Route path="myprofile/*" element={userRole === 'doctor' ? (<DoctorsProfile />) : userRole === 'receptionist' ? (<ReceptionistProfile />) : (<MyProfile />)} />
       </Routes>
