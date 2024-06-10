@@ -17,13 +17,13 @@ COPY routes/ ./routes/
 COPY Controller/ ./Controller
 
 # Expose the port your app runs on
-EXPOSE 8085:8081
+EXPOSE 49350:8081
 
 # Set environment variables
-ENV DB_HOST="localhost"
-ENV DB_USER="user"
-ENV DB_PASSWORD="password"
-ENV DB_DATABASE="default"
+ENV DB_HOST="mysql"
+ENV DB_USER="example_user"
+ENV DB_PASSWORD="example_password"
+ENV DB_DATABASE="test"
 
 # Command to run your application
 CMD ["node", "server.js"]

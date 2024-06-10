@@ -1,5 +1,4 @@
-import
-   React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Steps } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
