@@ -31,7 +31,7 @@ services:
   mysql:
     image: jainam05/healthnest:mysql
     ports:
-      - "3306:3306"
+      - "3307:3306"  # Change this line to avoid port conflict
     environment:
       MYSQL_DATABASE: test
       MYSQL_USER: example_user

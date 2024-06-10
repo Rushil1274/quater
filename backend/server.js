@@ -152,12 +152,11 @@ app.put("/patients/email/:email", (req, res) => {
 });
 
 app.use("/patients", patientRoutes);
-
 app.post('/appointments', (req, res) => {
-  const { doctor_id, patient_id, appointment_date, appointment_time } = req.body;
+  const { doctor_id, patient_id, appointment_date, appointment_time, notes } = req.body;
 
   // Fetch patient data from patients table based on login_id
-  db.query(`SELECT name, email, number FROM patient WHERE login_id =?`, [patient_id], (err, patientData) => {
+  db.query(`SELECT name, email, number FROM patient WHERE login_id = ?`, [patient_id], (err, patientData) => {
     if (err) {
       console.error('Error fetching patient data:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -167,12 +166,10 @@ app.post('/appointments', (req, res) => {
       return res.status(404).json({ error: 'Patient not found' });
     }
 
-    const patientName = patientData[0].name;
-    const patientEmail = patientData[0].email;
-    const patientNumber = patientData[0].number;
+    const { name: patientName, email: patientEmail, number: patientNumber } = patientData[0];
 
-    const sql = 'INSERT INTO appointments (doctor_id, patient_id, appointment_date, appointment_time, patient_name, patient_email, patient_number) VALUES (?,?,?,?,?,?,?)';
-    const values = [doctor_id, patient_id, appointment_date, appointment_time, patientName, patientEmail, patientNumber];
+    const sql = 'INSERT INTO appointments (doctor_id, patient_id, appointment_date, appointment_time, patient_name, patient_email, patient_number, notes) VALUES (?,?,?,?,?,?,?,?)';
+    const values = [doctor_id, patient_id, appointment_date, appointment_time, patientName, patientEmail, patientNumber, notes];
 
     db.query(sql, values, (err, result) => {
       if (err) {
