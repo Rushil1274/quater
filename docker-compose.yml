@@ -4,7 +4,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "8080:3000"
+      - "7000:3000"
     depends_on:
       - backend
     networks:
@@ -31,7 +31,7 @@ services:
   mysql:
     build: ./database
     ports:
-      - "3306:3306"
+      - "3307:3306"  # Change this line to avoid port conflict
     environment:
       MYSQL_DATABASE: test
       MYSQL_USER: example_user
