@@ -33,3 +33,22 @@ Start the server
 ```bash
 npm start
 ```
+
+# DATABASE
+
+Setting up the MySQL Database
+Start XAMPP:
+
+Open XAMPP Control Panel.
+Start Apache and MySQL.
+Create the Database:
+
+Open your web browser and go to http://localhost/phpmyadmin. or click on admin near the mysql button in controller of xampp.
+Click on the "Databases" tab.
+In the "Create database" field, enter test and click "Create".
+Import the SQL Schema:
+
+Click on the "test" database you just created.
+Go to the "SQL" tab in the navbar.
+Paste your SQL code into the text area provided.
+Click "Go" to execute the SQL code and create the necessary tables.
