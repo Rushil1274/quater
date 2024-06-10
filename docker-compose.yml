@@ -29,7 +29,7 @@ services:
       - healthnest-network
 
   mysql:
-    image: jainam05/healthnest:database
+    image: jainam05/healthnest:mysql
     ports:
       - "3306:3306"
     environment:
