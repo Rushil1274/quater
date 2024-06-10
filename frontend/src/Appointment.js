@@ -46,12 +46,12 @@ const AppointmentScheduler = () => {
     const patientId = user?.login_id;
     const name = user?.name;
     const email = user?.email;
-    
+
 
     // Retrieve doctor_id from localStorage
     const selectedDoctorId = localStorage.getItem('doctor_id');
 
-   
+
 
     if (!patientId) {
       console.error('Patient ID not found.');
