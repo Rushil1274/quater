@@ -10,8 +10,8 @@ services:
     networks:
       - healthnest-network
     environment:
-      - REACT_APP_BACKEND_URL=http://backend:8081
-      - WEBSOCKET_URL=ws://backend:8081/ws
+      - REACT_APP_BACKEND_URL=http://backend:49350
+      - WEBSOCKET_URL=ws://backend:49350/ws
 
   backend:
     image: jainam05/healthnest:backend
