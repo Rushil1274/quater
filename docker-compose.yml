@@ -4,19 +4,19 @@ services:
   frontend:
     image: jainam05/healthnest:frontend
     ports:
-      - "8080:3000"
+      - "8080:3000"  # Host port 8080 mapped to container port 3000
     depends_on:
       - backend
     networks:
       - healthnest-network
     environment:
-      - REACT_APP_BACKEND_URL=http://backend:49350
-      - WEBSOCKET_URL=ws://backend:49350/ws
+      - REACT_APP_BACKEND_URL=http://backend:8081
+      - WEBSOCKET_URL=ws://backend:8081/ws
 
   backend:
     image: jainam05/healthnest:backend
     ports:
-      - "49350:8081"
+      - "49350:8081"  # Host port 49350 mapped to container port 8081
     depends_on:
       mysql:
         condition: service_healthy
@@ -31,7 +31,7 @@ services:
   mysql:
     image: jainam05/healthnest:mysql
     ports:
-      - "3306:3306"
+      - "3306:3306"  # Host port 3306 mapped to container port 3306
     environment:
       MYSQL_DATABASE: test
       MYSQL_USER: example_user
