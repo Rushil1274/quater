@@ -8,24 +8,43 @@ exports.getAllPatients = (req, res) => {
   db.query(sql, (err, data) => {
     if (err) {
       console.error("Database error:", err);
-      return res.status(500).json("Error");
+      return res.status(500).json({
+        status: "error",
+        statusCode: 500,
+        message: "Database error"
+      });
     }
-    return res.json(data);
+    return res.status(200).json({
+      status: "success",
+      statusCode: 200,
+      data
+    });
   });
 };
-
 // Get patient by patient_id
 exports.getPatientById = (req, res) => {
   const sql = "SELECT * FROM patient WHERE patient_id = ?";
   db.query(sql, [req.params.id], (err, data) => {
     if (err) {
       console.error("Database error:", err);
-      return res.status(500).json("Error");
+      return res.status(500).json({
+        status: "error",
+        statusCode: 500,
+        message: "Database error"
+      });
     }
     if (data.length > 0) {
-      return res.json(data[0]);
+      return res.status(200).json({
+        status: "success",
+        statusCode: 200,
+        data: data[0]
+      });
     } else {
-      return res.status(404).json("Patient not found");
+      return res.status(404).json({
+        status: "error",
+        statusCode: 404,
+        message: "Patient not found"
+      });
     }
   });
 };

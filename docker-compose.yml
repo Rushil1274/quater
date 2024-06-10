@@ -4,9 +4,14 @@ services:
   frontend:
     image: jainam05/healthnest:frontend
     ports:
-      - "3001:3000"
+      - "65483:3000"
     depends_on:
       - backend
+    networks:
+      - healthnest-network
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:8081
+      - WEBSOCKET_URL=ws://backend:8081/ws
 
   backend:
     image: jainam05/healthnest:backend
@@ -20,6 +25,8 @@ services:
       DB_USER: example_user
       DB_PASSWORD: example_password
       DB_DATABASE: test
+    networks:
+      - healthnest-network
 
   mysql:
     image: jainam05/healthnest:mysql
@@ -37,6 +44,12 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
+    networks:
+      - healthnest-network
 
 volumes:
   mysql-data:
+
+networks:
+  healthnest-network:
+    driver: bridge
