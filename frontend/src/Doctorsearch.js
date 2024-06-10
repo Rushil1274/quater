@@ -89,10 +89,10 @@ const Doctors = () => {
             <option value="Gandhinagar">Gandhinagar</option>
             <option value="Chennai">Chennai</option>
             <option value="Mumbai">Mumbai</option>
-            <option value="Benglore">Benglore</option>
+            <option value="Bengaluru">Bengaluru</option>
             <option value="Delhi">Delhi</option>
             <option value="Kolkata">Kolkata</option>
-            <option value="Lakhnow">Lakhnow</option>
+            <option value="Lucknow">Lucknow</option>
           </select>
         </div>
       </div>
@@ -102,13 +102,13 @@ const Doctors = () => {
           {filteredDoctors.map((doctor, index) => (
             <div key={index} className="card">
               <Link to={{ pathname: '/details', state: { doctor } }} style={{ textDecoration: "none", color: "black" }} >
-                {/* <img src={data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}} alt={doctor.name} className="image" /> */}
+                <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
                 <h3>Dr. {doctor.name}</h3>
                 <p><strong>Specialization:</strong> {doctor.specialization}</p>
                 <p><strong>Fees:</strong> {doctor.fees}</p>
                 <p>{doctor.description}</p>
               </Link>
-              <Link to="/appointment" className="bookButton" style={{textDecoration: 'none'}} >Book Appointment</Link>
+              <Link to="/appointment" className="bookButton" style={{ textDecoration: 'none' }} >Book Appointment</Link>
             </div>
           ))}
         </div>

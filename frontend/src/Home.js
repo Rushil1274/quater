@@ -326,8 +326,7 @@ function Home() {
                                     <p><strong>Fees:</strong> {doctor.fees}</p>
                                     <p><strong>Location:</strong> {doctor.location}</p>
                                     <p>{doctor.description}</p>
-                                    <button className="bookButton">Book Appointment</button>
-                                </div>
+                                    <Link to="/doctors" className="bookButton" style={{ textDecoration: 'none' }} >Book Appointment</Link>                                </div>
                             ))}
                         </div>
                     </div>
