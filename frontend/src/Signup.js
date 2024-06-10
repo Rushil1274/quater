@@ -30,7 +30,7 @@ export default function Signup() {
         .post(`${BASE_URL}/signup`, values)
         .then(() => {
           toast.success('Account created');
-          navigate("/");
+          navigate("/login");
         })
         .catch((err) => console.log(err));
     } else {

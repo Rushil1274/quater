@@ -23,7 +23,8 @@ const Header = () => {
     logout();
     sessionStorage.removeItem('popupShown'); // Clear popupShown flag on logout
     navigate("/login");
-    toast.success('Logged out')
+    toast.success('Logged out');
+    closeProfileActions(); // Close profile actions after logout
   };
 
   let nav_links = [
@@ -87,17 +88,17 @@ const Header = () => {
                 >
                   <div className="profile_link">
                     {user && (
-                      <div>
-                        <Link
-                          to="/myprofile"
-                          style={{
-                            textDecoration: "none",
-                            color: "var(--primary-color)",
-                          }}
-                        >
-                          My Profile
-                        </Link>
-                      </div>
+                      <Link
+                        className="myprofile"
+                        to="/myprofile"
+                        style={{
+                          textDecoration: "none",
+                          color: "var(--primary-color)",
+                        }}
+                        onClick={closeProfileActions}
+                      >
+                        My Profile
+                      </Link>
                     )}
                     {!user ? (
                       <>
@@ -107,6 +108,7 @@ const Header = () => {
                             textDecoration: "none",
                             color: "var(--primary-color)",
                           }}
+                          onClick={closeProfileActions}
                         >
                           SignUp
                         </Link>
@@ -116,6 +118,7 @@ const Header = () => {
                             textDecoration: "none",
                             color: "var(--primary-color)",
                           }}
+                          onClick={closeProfileActions}
                         >
                           Login
                         </Link>
@@ -129,6 +132,7 @@ const Header = () => {
                               textDecoration: "none",
                               color: "var(--primary-color)",
                             }}
+                            onClick={closeProfileActions}
                           >
                             Dashboard
                           </Link>

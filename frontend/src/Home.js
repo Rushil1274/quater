@@ -11,7 +11,6 @@ import img5 from "./images/specialities-05.png";
 import axios from 'axios';
 import { BASE_URL } from "./config";
 
-
 function Home() {
     const user = JSON.parse(localStorage.getItem('user'));
     const userRole = user ? user.role : ''; // Extract user role from the user object
@@ -161,7 +160,7 @@ function Home() {
                         <h2>Complete Your Profile</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
-                                {userRole === 'patient' && userRole === 'doctor' && (
+                                {(userRole === 'Patient' || userRole === 'Doctor') && (
                                     <>
                                         <label htmlFor="mobile">Mobile No:</label>
                                         <input
@@ -178,7 +177,7 @@ function Home() {
                                         )}
                                     </>
                                 )}
-                                {userRole === 'patient' && (
+                                {(userRole === 'Patient' || userRole === 'Doctor') && (
                                     <>
                                         <label htmlFor="gender">Gender:</label>
                                         <select
@@ -195,7 +194,7 @@ function Home() {
                                         </select>
                                     </>
                                 )}
-                                {userRole === 'patient' && (
+                                {(userRole === 'Patient' || userRole === 'Doctor') && (
                                     <>
                                         <label htmlFor="dob">Date of Birth:</label>
                                         <input
@@ -212,7 +211,7 @@ function Home() {
                                         )}
                                     </>
                                 )}
-                                {userRole === 'patient' && (
+                                {(userRole === 'Patient' || userRole === 'Doctor') && (
                                     <>
                                         <label htmlFor="aadhaar">Aadhaar Card No:</label>
                                         <input
@@ -229,7 +228,24 @@ function Home() {
                                         )}
                                     </>
                                 )}
-                                {userRole === 'patient' && (
+                                {(userRole === 'Doctor') && (
+                                    <>
+                                        <label htmlFor="aadhaar">Aadhaar Card No:</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="aadhaar"
+                                            placeholder="Enter Your Aadhaar Number"
+                                            value={aadhaar}
+                                            onChange={handleAadhaarChange}
+                                            required
+                                        />
+                                        {aadhaar.replace(/\s/g, '').length > 0 && aadhaar.replace(/\s/g, '').length < 12 && (
+                                            <small className="text-danger">Aadhaar number must be exactly 12 digits long</small>
+                                        )}
+                                    </>
+                                )}
+                                {(userRole === 'Patient' || userRole === 'Doctor') && (
                                     <>
                                         <label htmlFor="address">Address:</label>
                                         <input
@@ -244,7 +260,7 @@ function Home() {
                                     </>
                                 )}
                             </div>
-                            <button type="submit" className="btn btn-primary">Submit</button>
+                            <button type="submit" className="pop-up-btn">Submit</button>
                         </form>
                     </div>
                 </div>
@@ -314,24 +330,28 @@ function Home() {
                 </div>
             </section>
             <section className='reco-doc'>
-                <div className="container-fluid">
-                    <div className='mb-5 mt-100 section-title text-center reco-doc-card'>
-                        <h2>Recommended Doctors</h2>
-                        <div className="cardContainer">
-                            {filteredDoctors.slice(0, 5).map((doctor, index) => (
-                                <div key={index} className="card">
-                                    <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
-                                    <h3>{doctor.name}</h3>
-                                    <p><strong>Specialization:</strong> {doctor.specialization}</p>
-                                    <p><strong>Fees:</strong> {doctor.fees}</p>
-                                    <p><strong>Location:</strong> {doctor.location}</p>
-                                    <p>{doctor.description}</p>
-                                    <Link to="/doctors" className="bookButton" style={{ textDecoration: 'none' }} >Book Appointment</Link>                                </div>
-                            ))}
+    <div className="container-fluid">
+        {userRole === 'Patient' && (
+            <div className='mb-5 mt-100 section-title text-center reco-doc-card'>
+                <h2>Recommended Doctors</h2>
+                <div className="cardContainer">
+                    {filteredDoctors.slice(0, 5).map((doctor, index) => (
+                        <div key={index} className="card">
+                            <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
+                            <h3>{doctor.name}</h3>
+                            <p><strong>Specialization:</strong> {doctor.specialization}</p>
+                            <p><strong>Fees:</strong> {doctor.fees}</p>
+                            <p><strong>Location:</strong> {doctor.location}</p>
+                            <p>{doctor.description}</p>
+                            <Link to="/doctors" className="bookButton" style={{ textDecoration: 'none' }}>Book Appointment</Link>
                         </div>
-                    </div>
+                    ))}
                 </div>
-            </section>
+            </div>
+        )}
+    </div>
+</section>
+
             <section className="section section-specialities position-relative">
                 <div className="container-fluid">
                     <div className='mb-5 section-title text-center spec-header'>
