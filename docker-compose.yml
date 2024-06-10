@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    image: jainam05/healthnest:frontend
+    build: ./frontend
     ports:
       - "8080:3000"
     depends_on:
@@ -14,7 +14,7 @@ services:
       - WEBSOCKET_URL=ws://backend:49350/ws
 
   backend:
-    image: jainam05/healthnest:backend
+    build: ./backend
     ports:
       - "49350:8081"
     depends_on:
@@ -29,7 +29,7 @@ services:
       - healthnest-network
 
   mysql:
-    image: jainam05/healthnest:mysql
+    build: ./database
     ports:
       - "3306:3306"
     environment:
