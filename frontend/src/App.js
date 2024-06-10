@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Home from './Home';
@@ -19,10 +20,14 @@ import ReceptionistProfile from './ReceptionistProfile';
 import ProtectedRoute from './ProtectedRoute';
 import Appointment from './Appointment';
 
+// Importing useUser hook assuming you have a UserContext
+import { useUser } from './UserContext';
+
 function App() {
   // Assuming you have access to the user's role and authentication status
-  const userRole = 'doctor'; // Example role, replace it with the actual user role
-  const isAuthenticated = true; // Example authentication status, replace it with the actual status
+  const { user } = useUser(); // Access user data from context
+  const isAuthenticated = user !== null;
+  const userRole = user?.role; // Assuming user object has a 'role' property
 
   return (
     <BrowserRouter>
@@ -38,23 +43,11 @@ function App() {
         <Route path="/details" element={<Details />} />
 
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} allowedRoles={['doctor', 'receptionist']} userRole={userRole} />}>
-          <Route path="/appointment" element={<Appointment />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/doctorsdashboard" element={<DoctorsDashboard />} />
         </Route>
-
-        <Route
-          path="myprofile/*"
-          element={
-            userRole === 'doctor' ? (
-              <DoctorsProfile />
-            ) : userRole === 'receptionist' ? (
-              <ReceptionistProfile />
-            ) : (
-              <MyProfile />
-            )
-          }
-        />
+        <Route path="/appointment" element={<Appointment />} />
+        <Route path="myprofile/*" element={userRole === 'doctor' ? (<DoctorsProfile />) : userRole === 'receptionist' ? (<ReceptionistProfile />) : (<MyProfile />)} />
       </Routes>
       <Footer />
     </BrowserRouter>

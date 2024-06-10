@@ -39,7 +39,7 @@ const AppointmentScheduler = () => {
     });
   };
 
-const handleNext = async () => {
+  const handleNext = async () => {
     // Retrieve patient data from localStorage
     const user = JSON.parse(localStorage.getItem('user'));
     const patientId = user?.login_id;
@@ -60,7 +60,6 @@ const handleNext = async () => {
       // Handle the case where doctor ID is not available
       return;
     }
-
     if (!selectedDate || !selectedTime) {
       alert("Please select both a date and a time before proceeding.");
       return;
