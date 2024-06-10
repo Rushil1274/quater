@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import chip from './images/chip.png'
 import './App.css';
+import { BASE_URL } from "./config";
 
 const { Step } = Steps;
 
 const AppointmentScheduler = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null); 
 
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
@@ -60,6 +61,7 @@ const AppointmentScheduler = () => {
       // Handle the case where doctor ID is not available
       return;
     }
+
     if (!selectedDate || !selectedTime) {
       alert("Please select both a date and a time before proceeding.");
       return;
@@ -67,7 +69,7 @@ const AppointmentScheduler = () => {
 
     try {
       // Send form values along with selected date, time, doctor ID, and patient ID to the backend
-      await axios.post('http://localhost:8081/appointments', {
+      await axios.post(`${BASE_URL}/appointments`, {
         doctor_id: selectedDoctorId,
         receptionist_id: 12,
         patient_id: patientId,
