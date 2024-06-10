@@ -3,13 +3,13 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
 import axios from 'axios';
 import "./App.css"
-import { BASE_URL } from "./config";
+import { BASE_URL } from './config';
 
 const AccountDetails = ({ user }) => {
   const [patient, setPatient] = useState(null);
 
   useEffect(() => {
-
+    setPatient(user); // Assuming the user object has the same structure as the patient data
   }, [user]);
 
   if (!patient) {
@@ -18,7 +18,7 @@ const AccountDetails = ({ user }) => {
 
   const formatDate = (isoDate) => {
     const date = new Date(isoDate);
-    return date.toLocaleDateString(); 
+    return date.toLocaleDateString(); // Formats date to 'MM/DD/YYYY' by default
   };
 
   return (
@@ -37,6 +37,8 @@ const AccountDetails = ({ user }) => {
     </div>
   );
 };
+
+
 
 const MyAppointments = ({ user }) => {
   const [Appointments, setAppointments] = useState([]);
@@ -106,28 +108,30 @@ const UpdateProfile = ({ user }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      const response = await axios.put(`${BASE_URL}/patients/email/${storedUser.email}`, formData);
-      console.log("Update response:", response);
-      if (response.status === 200) {
-        alert("Profile updated successfully");
-      } else {
-        console.error("Failed to update profile:", response.data);
-        alert(`Failed to update profile: ${response.data.message || response.status}`);
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      if (error.response) {
-        console.error("Error response data:", error.response.data);
-        alert(`Failed to update profile: ${error.response.data.message || error.response.status}`);
-      } else {
-        alert("Failed to update profile: An unknown error occurred.");
-      }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const response = await axios.put(`${BASE_URL}/patients/email/${storedUser.email}`, formData);
+    console.log("Update response:", response);
+    if (response.status === 200) {
+      alert("Profile updated successfully");
+    } else {
+      console.error("Failed to update profile:", response.data);
+      alert("Failed to update profile:" `${response.data.message || response.status}`);
     }
-  };
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      alert("Failed to update profile:" `${error.response.data.message || error.response.status}`);
+    } else {
+      alert("Failed to update profile: An unknown error occurred.");
+    }
+  }
+};
+
+
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -148,7 +152,12 @@ const UpdateProfile = ({ user }) => {
         <div>
           <label>
             Email Id:
-            <p className='update-email' style={{ fontWeight: '400', padding: '8px' }}>{formData.email}</p>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
           </label>
         </div>
         <div>
@@ -163,9 +172,6 @@ const UpdateProfile = ({ user }) => {
               minLength="10"
               maxLength="10"
               pattern="[0-9]{10}"
-              onInput={(e) => {
-                e.target.value = e.target.value.replace(/[^0-9]/g, '');
-              }}
             />
           </label>
         </div>
@@ -305,6 +311,3 @@ const MyProfile = () => {
 
 
 export default MyProfile;
-
-
-
