@@ -1999,13 +1999,7 @@ ul {
  /* Payment End */
 
  /* Doctor Dashboard */
-
-/* General container styles */
-.container {
-  margin-top: 20px;
-}
-
-/* Grid item styles */
+ 
 .grid-item {
   padding: 20px;
   text-align: center;
@@ -2015,7 +2009,7 @@ ul {
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Calendar styles */
+
 .calendar-container {
   padding: 20px;
   text-align: center;
@@ -2023,7 +2017,6 @@ ul {
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Calendar navigation styles */
 .calendar-navigation {
   display: flex;
   justify-content: space-between;
@@ -2062,4 +2055,5 @@ ul {
   color: #d3d3d3;
 }
 
-/* Doctor Dashboard End */
+ /* Doctor Dashboard end */
+e
