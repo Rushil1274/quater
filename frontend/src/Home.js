@@ -330,27 +330,35 @@ function Home() {
                 </div>
             </section>
             <section className='reco-doc'>
-    <div className="container-fluid">
-        {userRole === 'Patient' && (
-            <div className='mb-5 mt-100 section-title text-center reco-doc-card'>
-                <h2>Recommended Doctors</h2>
-                <div className="cardContainer">
-                    {filteredDoctors.slice(0, 5).map((doctor, index) => (
-                        <div key={index} className="card">
-                            <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
-                            <h3>{doctor.name}</h3>
-                            <p><strong>Specialization:</strong> {doctor.specialization}</p>
-                            <p><strong>Fees:</strong> {doctor.fees}</p>
-                            <p><strong>Location:</strong> {doctor.location}</p>
-                            <p>{doctor.description}</p>
-                            <Link to="/doctors" className="bookButton" style={{ textDecoration: 'none' }}>Book Appointment</Link>
+                <div className="container-fluid">
+                    {(userRole === 'Patient' || userRole === 'Admin') && (
+                        <div className='mb-5 mt-100 section-title text-center reco-doc-card'>
+                            <h2>Recommended Doctors</h2>
+                            <div className="cardContainer">
+                                {filteredDoctors.slice(0, 5).map((doctor, index) => (
+                                    <div key={index} className="card">
+                                        <img src={`data:image/jpeg;base64,${bufferToBase64(doctor.doc_pic)}`} alt={doctor.name} className="image" />
+                                        <h3>{doctor.name}</h3>
+                                        <p><strong>Specialization:</strong> {doctor.specialization}</p>
+                                        <p><strong>Fees:</strong> {doctor.fees}</p>
+                                        <p><strong>Location:</strong> {doctor.location}</p>
+                                        <p>{doctor.description}</p>
+                                        {/* {userRole === 'Admin' && }
+                                        <Link to="/doctors" className="bookButton" style={{ textDecoration: 'none' }}>Book Appointment</Link> */}
+                                        {userRole !== 'Admin' ? (
+                                            <Link to="/doctors" className="bookButton" style={{ textDecoration: 'none' }}>
+                                                Book Appointment
+                                            </Link>
+                                        ) : (
+                                            <p className='bookButton'>Admins cannot book appointments</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    ))}
+                    )}
                 </div>
-            </div>
-        )}
-    </div>
-</section>
+            </section>
 
             <section className="section section-specialities position-relative">
                 <div className="container-fluid">

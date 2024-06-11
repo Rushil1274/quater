@@ -28,12 +28,14 @@ const Doctors = () => {
     setFilter({ ...filter, [name]: value });
   };
 
-  const filteredDoctors = doctors.filter((doctor) =>
-    doctor.name.toLowerCase().includes(filter.name.toLowerCase()) &&
-    doctor.specialization.toLowerCase().includes(filter.specialization.toLowerCase()) &&
-    (filter.fees === '' || doctor.fees.includes(filter.fees)) &&
-    (filter.location === '' || doctor.hospital_loc.toLowerCase().includes(filter.location.toLowerCase()))
-  );
+  const filteredDoctors = doctors.filter((doctor) => {
+    const matchesName = doctor.name.toLowerCase().includes(filter.name.toLowerCase());
+    const matchesSpecialization = filter.specialization === 'all' || doctor.specialization.toLowerCase().includes(filter.specialization.toLowerCase());
+    const matchesFees = filter.fees === '' || doctor.fees.includes(filter.fees);
+    const matchesLocation = filter.location === 'all' || doctor.hospital_loc.toLowerCase().includes(filter.location.toLowerCase());
+
+    return matchesName && matchesSpecialization && matchesFees && matchesLocation;
+  });
 
   const bufferToBase64 = (buffer) => {
     let binary = '';
@@ -89,7 +91,6 @@ const Doctors = () => {
             <button onClick={handleSubmit} className="price-go">Go</button>
           </div>
         </div>
-        {/* <input type="text" name="location" placeholder="Filter by Location" value={filter.location} onChange={handleFilterChange} className="input" /> */}
         <div>
           <select id="location" name="location" onChange={handleFilterChange} className='input'>
             <option value="all">Filter by location</option>
