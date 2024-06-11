@@ -1331,15 +1331,21 @@ ul {
 }
 
 .ap-form input,
-.ap-form textarea {
+.ap-form textarea,
+.ap-form div p {
   /* width: 100%; */
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 5px;
   margin-bottom: 10px;
+  background-color: white;
 }
 
-.ap-form textarea {
+.ap-form ul li p {
+  width: 100%;
+}
+
+.ap-form textarea, {
   display: flex;
   width: 100%;
 }
@@ -1994,7 +2000,9 @@ ul {
 
  /* Doctor Dashboard */
 
+
 /* Grid item styles */
+
 .grid-item {
   padding: 20px;
   text-align: center;
@@ -2004,7 +2012,7 @@ ul {
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Calendar styles */
+
 .calendar-container {
   padding: 20px;
   text-align: center;
@@ -2012,7 +2020,6 @@ ul {
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Calendar navigation styles */
 .calendar-navigation {
   display: flex;
   justify-content: space-between;
@@ -2051,4 +2058,5 @@ ul {
   color: #d3d3d3;
 }
 
-/* Doctor Dashboard End */
+ /* Doctor Dashboard end */
+e
