@@ -40,7 +40,19 @@ const AppointmentScheduler = () => {
     });
   };
 
-  const handleNext = async () => {
+  const handleNext = () => {
+    setCurrentStep(currentStep + 1);
+  } 
+
+  const handlePrev = () => {
+    setCurrentStep(currentStep - 1);
+  };
+
+  const handleBack = () => {
+    navigate('/doctors');
+  }
+
+  const handleSubmit = async () => {
     // Retrieve patient data from localStorage
     const user = JSON.parse(localStorage.getItem('user'));
     const patientId = user?.login_id;
@@ -85,20 +97,12 @@ const AppointmentScheduler = () => {
         patient_name: name,
         patient_email: email
       });
-      setCurrentStep(currentStep + 1);
+      // setCurrentStep(currentStep + 1);
     } catch (error) {
       console.error('Error creating appointment:', error);
       // Handle error here
     }
   };
-
-  const handlePrev = () => {
-    setCurrentStep(currentStep - 1);
-  };
-
-  const handleBack = () => {
-    navigate('/doctors');
-  }
 
   const getNext8Days = () => {
     const dates = [];
@@ -477,7 +481,7 @@ const AppointmentScheduler = () => {
                         </div>
                       </div>
                     </div>
-                    <button className="card-form__button">Submit</button>
+                    <button className="card-form__button" onClick={handleSubmit}>Submit</button>
                   </div>
                 </div>
               </div>
