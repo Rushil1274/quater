@@ -13,11 +13,22 @@ export default function Signup() {
     role: "Doctor", // Default role
   });
 
+  const [availableRoles, setAvailableRoles] = useState(["Doctor", "Patient", "Receptionist"]);
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
 
   const handleInput = (event) => {
-    setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+    const { name, value } = event.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "email") {
+      // Check if the email is the admin email and update roles accordingly
+      if (value === "admin.healthnest@gmail.com") {
+        setAvailableRoles(["Doctor", "Patient", "Receptionist", "Admin"]);
+      } else {
+        setAvailableRoles(["Doctor", "Patient", "Receptionist"]);
+      }
+    }
   };
 
   const handleSubmit = (event) => {
@@ -87,9 +98,11 @@ export default function Signup() {
               onChange={handleInput}
               className="form-control rounded-0"
             >
-              <option value="Doctor">Doctor</option>
-              <option value="Patient">Patient</option>
-              <option value="Receptionist">Receptionist</option>
+              {availableRoles.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
             </select>
           </div>
           <button type="submit" className="btn btn-success w-100">
