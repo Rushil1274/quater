@@ -182,6 +182,21 @@ const AppointmentScheduler = () => {
     setFocusElementStyle(null);
   };
 
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/appointments`);
+        setAppointments(response.data);
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
   return (
     <div className="container" style={{ marginBottom: '5rem', marginTop: '2rem' }}>
       <Steps current={currentStep}>
@@ -285,48 +300,16 @@ const AppointmentScheduler = () => {
             <div className='container-ap'>
               <div className='appointment-form'>
                 <form className='ap-form'>
-                  <label>Name</label>
-                  <input
-                    className='ap-form-input'
-                    name="firstName"
-                    value={formValues.firstName}
-                    onChange={(event) => {
-                      const inputValue = event.target.value;
-                      const regex = /^[A-Za-z]*$/;
-                      if (regex.test(inputValue)) {
-                        handleInputChange(event);
-                      }
-                    }}
-                    required
-                  />
-                  <label>Email</label>
-                  <input
-                    className='ap-form-input'
-                    type="email"
-                    name="email"
-                    value={formValues.email}
-                    onChange={handleInputChange}
-                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-                    required
-                  />
-                  <label>Mobile</label>
-                  <input
-                    className='ap-form-input'
-                    name="phone"
-                    value={formValues.phone}
-                    onChange={(event) => {
-                      let inputValue = event.target.value;
-                      inputValue = inputValue.replace(/\D/g, '');
-                      inputValue = inputValue.slice(0, 10);
-                      handleInputChange({
-                        target: {
-                          name: 'phone',
-                          value: inputValue
-                        }
-                      });
-                    }}
-                    required
-                  />
+                  {appointments.map(appointment => (
+                    <div key={appointment.appointment_id}>
+                      <label>Name: </label>
+                      <p>{appointment.patient_name}</p>
+                      <label>Email: </label>
+                      <p>{appointment.patient_email}</p>
+                      <label>Number: </label>
+                      <p>{appointment.patient_number}</p>
+                    </div>
+                  ))}
                   <label>Reason for Visit</label>
                   <input
                     className='ap-form-input'
