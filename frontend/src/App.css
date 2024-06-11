@@ -1990,3 +1990,70 @@ ul {
     box-shadow: 0px 17px 20px -6px rgba(36, 52, 70, 0.36);
   }
 }
+ /* Payment End */
+
+ /* Doctor Dashboard */
+
+/* General container styles */
+.container {
+  margin-top: 20px;
+}
+
+/* Grid item styles */
+.grid-item {
+  padding: 20px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.87);
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Calendar styles */
+.calendar-container {
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Calendar navigation styles */
+.calendar-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.calendar-navigation .icon {
+  cursor: pointer;
+}
+
+.react-calendar {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.react-calendar__navigation button {
+  color: #007bff;
+  background: none;
+  border: none;
+}
+
+.react-calendar__tile--now {
+  background: #007bff;
+  color: white;
+}
+
+.react-calendar__tile--active {
+  background: #007bff;
+  color: white;
+}
+
+.react-calendar__tile--disabled {
+  background: #f0f0f0;
+  color: #d3d3d3;
+}
+
+/* Doctor Dashboard End */
