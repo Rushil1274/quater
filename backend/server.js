@@ -181,5 +181,16 @@ app.post('/appointments', (req, res) => {
     });
   });
 });
+app.get('/appointments', (req, res) => {
+  const sql = 'SELECT * FROM appointments';
 
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error fetching appointments:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+    res.json(result);
+  });
+});
 app.listen(port, () => console.log(`Server running on port ${port}`));
