@@ -1345,7 +1345,7 @@ ul {
   width: 100%;
 }
 
-.ap-form textarea, {
+.ap-form textarea{
   display: flex;
   width: 100%;
 }
@@ -2059,4 +2059,3 @@ ul {
 }
 
  /* Doctor Dashboard end */
-e
