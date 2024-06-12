@@ -20,18 +20,22 @@ import ReceptionistProfile from './ReceptionistProfile';
 import ProtectedRoute from './ProtectedRoute';
 import Appointment from './Appointment';
 
+import AdminDashboard from './Admin/AdminDashboard';
+import AdminHeader from './Admin/AdminHeader'
+
 // Importing useUser hook assuming you have a UserContext
 import { useUser } from './UserContext';
 
 function App() {
   // Assuming you have access to the user's role and authentication status
   const { user } = useUser(); // Access user data from context
-  const isAuthenticated = user !== null;
+  // const isAuthenticated = user !== null;
   const userRole = user?.role; // Assuming user object has a 'role' property
 
   return (
     <BrowserRouter>
-      <Header />
+      {/* <Header /> */}
+      {userRole === 'Admin' ? <AdminHeader /> : <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -42,11 +46,21 @@ function App() {
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/details" element={<Details />} />
 
-        <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} allowedRoles={['doctor', 'receptionist']} userRole={userRole} />}>
+        {/* {user && user.email === 'admin@gmail.com' && ( */}
+        <Route path="admindashboard" element={<AdminDashboard />} />
+        {/* <Route path="/*" element={<ProtectedRoute />}>
+          <Route path="dashboard/all-products" element={<AllProducts />} />
+          <Route path="dashboard/add-products" element={<AddProducts />} />
+          <Route path="dashboard/users" element={<Users />} />
+          <Route path="dashboard/orders" element={<Orders />} /> 
+        </Route> */}
+        {/* )} */}
+
+        <Route element={<ProtectedRoute userRole={userRole} />}>
           <Route path="/contact" element={<Contact />} />
-          <Route path="/doctorsdashboard" element={<DoctorsDashboard />} />
+          <Route path="/appointment" element={<Appointment />} />
         </Route>
-        <Route path="/appointment" element={<Appointment />} />
+        <Route path="/doctorsdashboard" element={<DoctorsDashboard />} />
         <Route path="myprofile/*" element={userRole === 'doctor' ? (<DoctorsProfile />) : userRole === 'receptionist' ? (<ReceptionistProfile />) : (<MyProfile />)} />
       </Routes>
       <Footer />

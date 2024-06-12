@@ -181,6 +181,17 @@ app.post('/appointments', (req, res) => {
     });
   });
 });
+app.get('/appointments/:login_id', (req, res) => {
+  const login_id = req.params.login_id;
+  const sql = 'SELECT * FROM appointments WHERE patient_id = ?';
 
-
+  db.query(sql, [login_id], (err, result) => {
+    if (err) {
+      console.error('Error fetching appointments:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+    res.json(result);
+  });
+});
 app.listen(port, () => console.log(`Server running on port ${port}`));

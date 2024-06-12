@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
-import "./App.css";
+import "../App.css";
 import { Container, Row } from "reactstrap";
-import Logo from "./images/Logo.jpg";
-import userIcon from "./images/userIcon.jpg";
-import { useUser } from "./UserContext";
+import Logo from "../images/Logo.jpg";
+import userIcon from "../images/userIcon.jpg";
+import { useUser } from "../UserContext";
 import { toast } from 'react-toastify';
 
 const Header = () => {
@@ -22,25 +22,16 @@ const Header = () => {
   const handleLogout = () => {
     logout();
     sessionStorage.removeItem('popupShown'); // Clear popupShown flag on logout
+    navigate("/login");
     toast.success('Logged out');
     closeProfileActions(); // Close profile actions after logout
-    navigate("/");
   };
 
   let nav_links = [
-    { path: "home", display: "Home" },
-    { path: "about", display: "About" },
-    // { path: "contact", display: "Help" }
+    { display: 'Dashboard', path: '/admindashboard' },
+    { display: 'Users', path: '/dashboard/users' },
+    { display: 'All Appointments', path: '/dashboard/all-products' },
   ];
-  if (!user || !(user.role === "Doctor" || user.role === "Receptionist")) {
-    nav_links.push({ path: "doctors", display: "Doctors" });
-  }
-  if (user && user.role === "Doctor") {
-    nav_links.push({ path: "doctorsdashboard", display: "Doctors Dashboard" });
-  }
-  if (user && user.role === "Receiptionist") {
-    nav_links.push({ path: "receiptionistdashboard", display: "Receiptionist Dashboard" });
-  }
 
   return (
     <header className="header sticky-header">

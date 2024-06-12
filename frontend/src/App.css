@@ -464,7 +464,6 @@ ul {
 
 .profile_link a:hover {
   background: #CADCFC;
-  /* color: white;  */
 }
 
 .profile_link a:not(:last-child) {
@@ -875,18 +874,30 @@ ul {
 
 .popup-content .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  /* margin-bottom: 0.5rem; */
 }
 
-.popup-content .form-group input {
+.popup-content .form-group input,
+.popup-content .form-group select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin-bottom: 0.5rem;
 }
 
-.popup-content button {
-  margin-top: 1rem;
+.popup-content .pop-up-btn {
+  /* margin-top: 1rem; */
+  padding: 5px 7px;
+  background-color: #CADCFC;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+}
+
+.popup-content .pop-up-btn:hover {
+  background-color: #00246B;
+  color: white;
 }
 
 .close-popup {
@@ -1320,15 +1331,21 @@ ul {
 }
 
 .ap-form input,
-.ap-form textarea {
+.ap-form textarea,
+.ap-form div p {
   /* width: 100%; */
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 5px;
   margin-bottom: 10px;
+  background-color: white;
 }
 
-.ap-form textarea {
+.ap-form ul li p {
+  width: 100%;
+}
+
+.ap-form textarea{
   display: flex;
   width: 100%;
 }
@@ -1366,8 +1383,37 @@ ul {
   font-weight: 600;
 }
 
-/* Payment CSS Start */
+.os-maincon {
+  margin: 0;
+  padding: 0;
+}
 
+.os-maincon .right-icon {
+  font-size: 200px;
+  color: #4CAF50;
+}
+
+.os-maincon div p {
+  font-size: 17px;
+}
+
+.home-link-btn {
+  color: black;
+  background-color: #CADCFC;
+  padding: 7px 10px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.home-link-btn:hover {
+  color: white;
+  background-color: #00246B;
+}
+
+/* Appointment CSS End  */
+
+
+/* Payment CSS Start */
 .wrapper {
   min-height: 100vh;
   display: flex;
@@ -1979,3 +2025,66 @@ ul {
     box-shadow: 0px 17px 20px -6px rgba(36, 52, 70, 0.36);
   }
 }
+ /* Payment End */
+
+ /* Doctor Dashboard */
+
+
+/* Grid item styles */
+
+.grid-item {
+  padding: 20px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.87);
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+.calendar-container {
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.calendar-navigation .icon {
+  cursor: pointer;
+}
+
+.react-calendar {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.react-calendar__navigation button {
+  color: #007bff;
+  background: none;
+  border: none;
+}
+
+.react-calendar__tile--now {
+  background: #007bff;
+  color: white;
+}
+
+.react-calendar__tile--active {
+  background: #007bff;
+  color: white;
+}
+
+.react-calendar__tile--disabled {
+  background: #f0f0f0;
+  color: #d3d3d3;
+}
+
+ /* Doctor Dashboard end */
