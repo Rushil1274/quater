@@ -183,7 +183,7 @@ app.post('/appointments', (req, res) => {
 });
 app.get('/appointments/:login_id', (req, res) => {
   const login_id = req.params.login_id;
-  const sql = 'SELECT * FROM appointments WHERE patient_id = ?';
+  const sql = 'SELECT patient_name, patient_email, patient_number FROM appointments WHERE patient_id = ?';
 
   db.query(sql, [login_id], (err, result) => {
     if (err) {
@@ -195,6 +195,19 @@ app.get('/appointments/:login_id', (req, res) => {
   });
 });
 
+app.get('/appointments/doctor/:doctor_id', (req, res) => {
+  const doctor_id = req.params.doctor_id; // Corrected
+  const sql = 'SELECT * FROM appointments WHERE doctor_id = ?';
+
+  db.query(sql, [doctor_id], (err, result) => {
+    if (err) {
+      console.error('Error fetching appointments:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+    res.json(result);
+  });
+});
 
 
 // Fetch doctors details by email
