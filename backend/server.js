@@ -194,4 +194,49 @@ app.get('/appointments/:login_id', (req, res) => {
     res.json(result);
   });
 });
+
+
+
+// Fetch doctors details by email
+app.get("/doctors/email/:email", (req, res) => {
+  const email = req.params.email;
+  const sql = "SELECT * FROM doctor WHERE email = ?";
+
+  db.query(sql, [email], (err, data) => {
+    if (err) {
+      console.error("Error fetching doctors details:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "Doctor not found" });
+    }
+
+    const patient = data[0];
+    return res.json(patient);
+  });
+});
+
+
+// Update doctor details by email
+app.put("/doctors/email/:email", (req, res) => {
+  const email = req.params.email;
+  const { name, email: newEmail, number, experience, dob, gender, specialization, fees, address } = req.body;
+
+  const sql = "UPDATE doctor SET name =?, email =?, number =?, specialization =?, dob=?, gender =?, experience =?, address =?, fees =? WHERE email =?";
+
+  db.query(sql, [name, newEmail, number, experience, dob, gender, specialization, address, fees, email], (err, data) => {
+    if (err) {
+      console.error("Error updating doctor details:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (data.affectedRows > 0) {
+      return res.json({ message: "Doctor details updated successfully" });
+    } else {
+      return res.status(404).json({ error: "Doctor not found" });
+    }
+  });
+});
+
 app.listen(port, () => console.log(`Server running on port ${port}`));

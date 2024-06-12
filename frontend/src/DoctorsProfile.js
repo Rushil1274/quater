@@ -3,89 +3,48 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
 import axios from 'axios';
 import "./App.css"
-import { BASE_URL } from "./config";
+import { BASE_URL } from './config';
 
 const AccountDetails = ({ user }) => {
-  const [patient, setPatient] = useState(null);
+  const [doctor, setDoctor] = useState(null);
 
   useEffect(() => {
-    setPatient(user); // Assuming the user object has the same structure as the patient data
+    setDoctor(user); // Assuming the user object has the same structure as the doctor data
   }, [user]);
 
-  if (!patient) {
+  if (!doctor) {
     return <div>Loading...</div>;
   }
-
-  const formatDate = (isoDate) => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString(); // Formats date to 'MM/DD/YYYY' by default
-  };
 
   return (
     <div className="account-details">
       <AiOutlineUser className="user-icon" />
-      <h4>Name: {patient.name}</h4>
-      <p>Role: {patient.role}</p>
-      <p>Email: {patient.email}</p>
-      <p>Mobile: {patient.number}</p>
-      <p>Adhar No: {patient.adhar_no}</p>
-      <p>Date of Birth: {formatDate(patient.dob)}</p>
-      <p>Age: {patient.age}</p>
-      <p>Gender: {patient.gender}</p>
-      <p>Insurance: {patient.insurance}</p>
-      <p>Address: {patient.address}</p>
+      <h4>Name: {doctor.name}</h4>
+      <p>Role: {doctor.role}</p>
+      <p>Email: {doctor.email}</p>
+      <p>Mobile: {doctor.number}</p>
+      <p>Age: {doctor.age}</p>
+      <p>Gender: {doctor.gender}</p>
+      <p>Hospital Address: {doctor.hospital}</p>
+      <p>Specialization: {doctor.specialization}</p>
+      <p>Experience: {doctor.experience}</p>
+      <p>Fees: {doctor.fees}</p>
     </div>
   );
 };
 
-
-
-const MyAppointments = ({ user }) => {
-  const [Appointments, setAppointments] = useState([]);
-
-  return (
-    <div className="my-appointments">
-      {/* <h4>My Orders</h4> */}
-      {Appointments.length === 0 ? (
-        <p>You have not make any appointments.</p>
-      ) : (
-        <ul>
-          {Appointments.map(order => (
-            <li key={order.id}>
-              <p>Appointments ID: {Appointments.id}</p>
-              <p>Total: {Appointments.totalAmount}</p>
-              <p>Items:</p>
-              <ul>
-                {order.cartItems.map(item => (
-                  <li key={item.id}>
-                    <img src={item.image} alt={item.productName} style={{ maxWidth: '100px' }} />
-                    <div>
-                      <p>Appointment Id: { }</p>
-                      <p>Doctor's name: { }</p>
-                      <p>Price: { }</p>
-                      <p>Quantity: { }</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-};
 
 const UpdateProfile = ({ user }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     number: "",
-    adhar_no: "",
-    dob: "",
+    // dob: "",
     gender: "",
-    insurance: "",
+    Experience: "",
+    Specialization: "",
     address: "",
+    fees: "",
   });
 
   useEffect(() => {
@@ -94,11 +53,12 @@ const UpdateProfile = ({ user }) => {
         name: user.name || "",
         email: user.email || "",
         number: user.number || "",
-        adhar_no: user.adhar_no || "",
-        dob: user.dob ? new Date(user.dob).toISOString().split('T')[0] : "",
+        // dob: user.dob ? new Date(user.dob).toISOString().split('T')[0] : "",
         gender: user.gender || "",
-        insurance: user.insurance || "",
-        address: user.address || "",
+        Experience: user.experience || "",
+        Specialization: user.specialization || "",
+        address: user.hospital || "",
+        fees: user.fees || "",
       });
     }
   }, [user]);
@@ -112,7 +72,7 @@ const UpdateProfile = ({ user }) => {
     e.preventDefault();
     try {
       const storedUser = JSON.parse(localStorage.getItem("user"));
-      const response = await axios.put(`${BASE_URL}/patients/email/${storedUser.email}`, formData);
+      const response = await axios.put(`${BASE_URL}/doctor/email/${storedUser.email}`, formData);
       console.log("Update response:", response);
       if (response.status === 200) {
         alert("Profile updated successfully");
@@ -171,22 +131,7 @@ const UpdateProfile = ({ user }) => {
             />
           </label>
         </div>
-        <div>
-          <label>
-            Aadhaar No:
-            <input
-              type="text"
-              name="adhar_no"
-              value={formData.adhar_no}
-              onChange={handleChange}
-              required
-              minLength="12"
-              maxLength="12"
-              pattern="\d{12}"
-            />
-          </label>
-        </div>
-        <div>
+        {/* <div>
           <label>
             Date of Birth:
             <input
@@ -197,7 +142,7 @@ const UpdateProfile = ({ user }) => {
               onChange={handleChange}
             />
           </label>
-        </div>
+        </div> */}
         <div className="gender">
           <label>Gender:</label>
           <select
@@ -212,19 +157,44 @@ const UpdateProfile = ({ user }) => {
             <option value="Others">Others</option>
           </select>
         </div>
-        <div className="insurance">
-          <label>Insurance:</label>
-          <select
-            name="insurance"
-            value={formData.insurance}
-            onChange={handleChange}
-            className="input"
-          >
-            <option value=""></option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
+        <div>
+          <label>
+            Experience:
+            <input
+              type="text"
+              name="Experience"
+              value={formData.Experience}
+              onChange={handleChange}
+              required
+            />
+          </label>
         </div>
+        <div>
+          <label>
+          Specialization:
+            <input
+              type="text"
+              name="Specialization"
+              value={formData.Specialization}
+              onChange={handleChange}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Fees:
+            <input
+              type="text"
+              name="fees"
+              value={formData.fees}
+              onChange={handleChange}
+              required
+              maxLength={4}
+            />
+          </label>
+        </div>
+
         <div className="address-text">
           <label>
             Address:
@@ -243,7 +213,8 @@ const UpdateProfile = ({ user }) => {
   );
 };
 
-const MyProfile = () => {
+
+const DoctorsProfile = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -254,8 +225,8 @@ const MyProfile = () => {
       const fetchUserDetails = async () => {
         try {
           setIsLoading(true);
-          // Use the email to fetch the login_id and user details
-          const response = await axios.get(`${BASE_URL}/patients/email/${storedUser.email}`);
+          const role = storedUser.role;
+          const response = await axios.get(`${BASE_URL}/${role}s/email/${storedUser.email}`);
           setUser(response.data);
         } catch (error) {
           console.error("Error fetching user details:", error);
@@ -286,9 +257,6 @@ const MyProfile = () => {
             <Link to="">Account Details</Link>
           </li>
           <li>
-            <Link to="myappointments">My Appointments</Link>
-          </li>
-          <li>
             <Link to="updateprofile">Update Profile</Link>
           </li>
         </ul>
@@ -297,7 +265,6 @@ const MyProfile = () => {
       <div className="profile-content">
         <Routes>
           <Route path="/" element={<AccountDetails user={user} />} />
-          <Route path="myappointments" element={<MyAppointments user={user} />} />
           <Route path="updateprofile" element={<UpdateProfile user={user} />} />
         </Routes>
       </div>
@@ -305,8 +272,4 @@ const MyProfile = () => {
   );
 };
 
-
-export default MyProfile;
-
-
-
+export default DoctorsProfile;
