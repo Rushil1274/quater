@@ -22,7 +22,7 @@ const Header = () => {
   const handleLogout = () => {
     logout();
     sessionStorage.removeItem('popupShown'); // Clear popupShown flag on logout
-    navigate("/login");
+    navigate("/");
     toast.success('Logged out');
     closeProfileActions(); // Close profile actions after logout
   };
@@ -37,6 +37,9 @@ const Header = () => {
   }
   if (user && user.role === "Doctor") {
     nav_links.push({ path: "doctorsdashboard", display: "Doctors Dashboard" });
+  }
+  if (user && user.role === "Receiptionist") {
+    nav_links.push({ path: "receiptionistdashboard", display: "Receiptionist Dashboard" });
   }
 
   return (
