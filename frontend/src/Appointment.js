@@ -6,12 +6,17 @@ import chip from './images/chip.png'
 import './App.css';
 import { BASE_URL } from "./config";
 
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { Row, Col } from 'reactstrap';
+import { Link } from 'react-router-dom';
+
 const { Step } = Steps;
 
 const AppointmentScheduler = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
@@ -41,8 +46,13 @@ const AppointmentScheduler = () => {
   };
 
   const handleNext = () => {
+
+    if (!selectedDate || !selectedTime) {
+      alert("Please select both a date and a time before proceeding.");
+      return;
+    }
     setCurrentStep(currentStep + 1);
-  } 
+  }
 
   const handlePrev = () => {
     setCurrentStep(currentStep - 1);
@@ -53,6 +63,28 @@ const AppointmentScheduler = () => {
   }
 
   const handleSubmit = async () => {
+
+    if (!cardNumber || cardNumber.length < 19) { // cardNumber should be 16 digits, which translates to 19 characters including spaces
+      alert("Please enter a valid card number.");
+      return;
+    }
+    if (!cardName) {
+      alert("Please enter the card holder's name.");
+      return;
+    }
+    if (!cardMonth) {
+      alert("Please select the card expiration month.");
+      return;
+    }
+    if (!cardYear) {
+      alert("Please select the card expiration year.");
+      return;
+    }
+    if (!cardCvv || cardCvv.length < 3) { // CVV should be 3 digits
+      alert("Please enter a valid CVV.");
+      return;
+    }
+
     // Retrieve patient data from localStorage
     const user = JSON.parse(localStorage.getItem('user'));
     const patientId = user?.login_id;
@@ -97,6 +129,7 @@ const AppointmentScheduler = () => {
         patient_name: name,
         patient_email: email
       });
+      setSubmitted(true);
       // setCurrentStep(currentStep + 1);
     } catch (error) {
       console.error('Error creating appointment:', error);
@@ -188,18 +221,18 @@ const AppointmentScheduler = () => {
 
   const [appointments, setAppointments] = useState([]);
 
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/appointments`);
-        setAppointments(response.data);
-      } catch (error) {
-        console.error('Error fetching appointments:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchAppointments = async () => {
+  //     try {
+  //       const response = await axios.get(`${BASE_URL}/appointments`);
+  //       setAppointments(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching appointments:', error);
+  //     }
+  //   };
 
-    fetchAppointments();
-  }, []);
+  //   fetchAppointments();
+  // }, []);
 
   return (
     <div className="container" style={{ marginBottom: '5rem', marginTop: '2rem' }}>
@@ -222,12 +255,6 @@ const AppointmentScheduler = () => {
                     </svg>
                     <p>With {localStorage.getItem('doctor_id')}</p>
                   </div>
-                  {/* <div className='info-item'>
-                    <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" className="icon" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path>
-                    </svg>
-                    <p>30 Min</p>
-                  </div> */}
                   <div className='info-item'>
                     <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" className="icon" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
                       <path d="M444.52 3.52L28.74 195.42c-47.97 22.39-31.98 92.75 19.19 92.75h175.91v175.91c0 51.17 70.36 67.17 92.75 19.19l191.9-415.78c15.99-38.39-25.59-79.97-63.97-63.97z"></path>
@@ -292,8 +319,8 @@ const AppointmentScheduler = () => {
             </div>
           </div>
           <div className="appointment-btn">
-            <button onClick={handleBack}>Back</button>
-            <button type="primary" onClick={handleNext} className="next">Next</button>
+            <button onClick={handleBack} >Back</button>
+            <button type="primary" onClick={handleNext} disabled={!selectedDate || !selectedTime} className="next">Next</button>
           </div>
         </>
       )}
@@ -304,7 +331,7 @@ const AppointmentScheduler = () => {
             <div className='container-ap'>
               <div className='appointment-form'>
                 <form className='ap-form'>
-                  {appointments.map(appointment => (
+                  {/* {appointments.map(appointment => (
                     <div key={appointment.appointment_id}>
                       <label>Name: </label>
                       <p>{appointment.patient_name}</p>
@@ -313,7 +340,7 @@ const AppointmentScheduler = () => {
                       <label>Number: </label>
                       <p>{appointment.patient_number}</p>
                     </div>
-                  ))}
+                  ))} */}
                   <label>Reason for Visit</label>
                   <input
                     className='ap-form-input'
@@ -328,190 +355,217 @@ const AppointmentScheduler = () => {
                     }}
                     required
                   />
-
                 </form>
               </div>
             </div>
             <div className="appointment-btn">
               <button onClick={handlePrev}>Previous</button>
-              <button type="primary" onClick={handleNext} className="next">Next</button>
+              <button type="primary" onClick={handleNext} disabled={!formValues.reasonForVisit.trim()} className="next">Next</button>
             </div>
           </div>
         </>
       )}
       {currentStep === 2 && (
         <>
-          <div className='main-div-payment'>
-            <div className="wrapper">
-              <div className="card-form">
-                <div className="card-list">
-                  <div className={`card-item ${isCardFlipped ? '-active' : ''}`}>
-                    <div className="card-item__side -front">
-                      <div className={`card-item__focus ${focusElementStyle ? '-active' : ''}`} style={focusElementStyle}></div>
-                      <div className="card-item__cover">
-                        <img src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${currentCardBackground}.jpeg`} className="card-item__bg" alt="Card Background" />
+          {submitted ? (
+            <Row>
+              <Col>
+                {/* <h2>Order Successful</h2> */}
+                <div className="os-maincon">
+                  <div style={{ textAlign: 'center' }} className='right-icon'>
+                    <IoMdCheckmarkCircleOutline />
+                  </div>
+                  <div class="bg-white p-6  md:mx-auto ">
+                    <div class="text-center">
+                      <h2 class="md:text-2xl text-base text-gray-900 font-semibold text-center">Payment Done!</h2>
+                      <p class="text-gray-600 my-2">Thank you for completing your secure online payment.</p>
+                      <p> Have a great day!  </p>
+                      <div class="link-btn">
+                        <Link to="/" className="home-link-btn" style={{ textDecoration: 'none' }}>
+                          GO BACK
+                        </Link>
                       </div>
-                      <div className="card-item__wrapper">
-                        <div className="card-item__top">
-                          <img src={chip} alt="Card Chip" className="card-item__chip" />
-                          <div className="card-item__type"></div>
+                    </div>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          ) : (
+            <div className='main-div-payment'>
+              <div className="wrapper">
+                <div className="card-form">
+                  <div className="card-list">
+                    <div className={`card-item ${isCardFlipped ? '-active' : ''}`}>
+                      <div className="card-item__side -front">
+                        <div className={`card-item__focus ${focusElementStyle ? '-active' : ''}`} style={focusElementStyle}></div>
+                        <div className="card-item__cover">
+                          <img src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${currentCardBackground}.jpeg`} className="card-item__bg" alt="Card Background" />
                         </div>
-                        <label className="card-item__number">{cardNumber || '#### #### #### ####'}</label>
-                        <div className="card-item__content">
-                          <label className="card-item__info">
-                            <div className="card-item__holder">Card Holder</div>
-                            <div className="card-item__name">{cardName || 'FULL NAME'}</div>
-                          </label>
-                          <div className="card-item__date">
-                            <label className="card-item__dateTitle">Expires</label>
-                            <label className="card-item__dateItem">{cardMonth || 'MM'}/{cardYear || 'YY'}</label>
+                        <div className="card-item__wrapper">
+                          <div className="card-item__top">
+                            <img src={chip} alt="Card Chip" className="card-item__chip" />
+                            <div className="card-item__type"></div>
+                          </div>
+                          <label className="card-item__number">{cardNumber || '#### #### #### ####'}</label>
+                          <div className="card-item__content">
+                            <label className="card-item__info">
+                              <div className="card-item__holder">Card Holder</div>
+                              <div className="card-item__name">{cardName || 'FULL NAME'}</div>
+                            </label>
+                            <div className="card-item__date">
+                              <label className="card-item__dateTitle">Expires</label>
+                              <label className="card-item__dateItem">{cardMonth || 'MM'}/{cardYear || 'YY'}</label>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="card-item__side -back">
-                      <div className="card-item__cover">
-                        <img src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${currentCardBackground}.jpeg`} className="card-item__bg" alt="Card Background" />
-                      </div>
-                      <div className="card-item__band"></div>
-                      <div className="card-item__cvv">
-                        <div className="card-item__cvvTitle">CVV</div>
-                        <div className="card-item__cvvBand">{cardCvv}</div>
-                        <div className="card-item__type"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="">
-                  <div className="card-form__inner">
-                    <div className="card-input">
-                      <label htmlFor="cardNumber" className="card-input__label">Card Number</label>
-                      <input
-                        type="text"
-                        id="cardNumber"
-                        className="card-input__input"
-                        ref={cardNumberInput}
-                        value={cardNumber}
-                        onChange={handleCardNumberChange}
-                        onFocus={() => setFocusElementStyle(cardNumberInput.current.getBoundingClientRect())}
-                        onBlur={handleBlur}
-                        autoComplete="off"
-                      />
-                    </div>
-                    <div className="card-input">
-                      <label htmlFor="cardName" className="card-input__label">Card Holder</label>
-                      <input
-                        type="text"
-                        id="cardName"
-                        className="card-input__input"
-                        ref={cardNameInput}
-                        value={cardName}
-                        onChange={(event) => {
-                          const inputValue = event.target.value;
-                          const regex = /^[A-Za-z\s]*$/;
-                          if (regex.test(inputValue)) {
-                            handleCardNameChange(event);
-                          }
-                        }}
-                        onFocus={() => handleFocus(cardNameInput.current.getBoundingClientRect())}
-                        onBlur={handleBlur}
-                        autoComplete="off"
-                      />
-
-                    </div>
-                    <div className="card-form__row">
-                      <div className="card-form__col">
-                        <div className="card-form__group">
-                          <label htmlFor="cardMonth" className="card-input__label">Expiration Date</label>
-                          <select
-                            className="card-input__input -select"
-                            id="cardMonth"
-                            ref={cardMonthInput}
-                            value={cardMonth}
-                            onChange={handleCardMonthChange}
-                            onFocus={() => handleFocus(cardMonthInput.current.getBoundingClientRect())}
-                            onBlur={handleBlur}
-                          >
-                            <option value="" disabled>Month</option>
-                            {[...Array(12).keys()].map((n) => (
-                              <option key={n + 1} value={n + 1 < 10 ? '0' + (n + 1) : n + 1}>
-                                {n + 1 < 10 ? '0' + (n + 1) : n + 1}
-                              </option>
-                            ))}
-                          </select>
-                          <select
-                            className="card-input__input -select"
-                            id="cardYear"
-                            ref={cardYearInput}
-                            value={cardYear}
-                            onChange={handleCardYearChange}
-                            onFocus={() => handleFocus(cardYearInput.current.getBoundingClientRect())}
-                            onBlur={handleBlur}
-                          >
-                            <option value="" disabled>Year</option>
-                            {[...Array(12).keys()].map((n) => (
-                              <option key={minCardYear + n} value={minCardYear + n}>
-                                {minCardYear + n}
-                              </option>
-                            ))}
-                          </select>
+                      <div className="card-item__side -back">
+                        <div className="card-item__cover">
+                          <img src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${currentCardBackground}.jpeg`} className="card-item__bg" alt="Card Background" />
                         </div>
-                      </div>
-                      <div className="card-form__col -cvv">
-                        <div className="card-input">
-                          <label htmlFor="cardCvv" className="card-input__label">CVV</label>
-                          <input
-                            type="text"
-                            className="card-input__input"
-                            id="cardCvv"
-                            value={cardCvv}
-                            onChange={(event) => {
-                              const inputValue = event.target.value;
-                              // Regular expression to match only numbers
-                              const regex = /^[0-9]*$/;
-                              if (regex.test(inputValue)) {
-                                handleCardCvvChange(event);
-                              }
-                            }}
-                            onFocus={() => flipCard(true)}
-                            onBlur={() => flipCard(false)}
-                            autoComplete="off"
-                          />
-
+                        <div className="card-item__band"></div>
+                        <div className="card-item__cvv">
+                          <div className="card-item__cvvTitle">CVV</div>
+                          <div className="card-item__cvvBand">{cardCvv}</div>
+                          <div className="card-item__type"></div>
                         </div>
                       </div>
                     </div>
-                    <button className="card-form__button" onClick={handleSubmit}>Submit</button>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div className='appointment-schedule'>
-              <div className='container-ap'>
-                <div className='appointment-payment'>
-                  <div className="ap-booking-details">
-                    <div className="booking-item">
-                      <ul className="booking-date">
-                        <li>Date <span>{selectedDate}</span></li>
-                        <li>Time <span>{selectedTime}</span></li>
-                      </ul>
-                      <ul className="booking-fee">
-                        <li>Consulting Fee <span>$60</span></li>
-                        <li>Booking Fee <span>$10</span></li>
-                        <li>Vat (Including 15%) <span>$9</span></li>
-                      </ul>
-                      <ul className="booking-total">
-                        <li className="booking-total-li">
-                          <span>Total</span>
-                          <span className="total-cost"> $79</span>
-                        </li>
-                      </ul>
+                  <div className="">
+                    <div className="card-form__inner">
+                      <div className="card-input">
+                        <label htmlFor="cardNumber" className="card-input__label">Card Number</label>
+                        <input
+                          type="text"
+                          id="cardNumber"
+                          className="card-input__input"
+                          ref={cardNumberInput}
+                          value={cardNumber}
+                          onChange={handleCardNumberChange}
+                          onFocus={() => setFocusElementStyle(cardNumberInput.current.getBoundingClientRect())}
+                          onBlur={handleBlur}
+                          autoComplete="off"
+                          required
+                        />
+                      </div>
+                      <div className="card-input">
+                        <label htmlFor="cardName" className="card-input__label">Card Holder</label>
+                        <input
+                          type="text"
+                          id="cardName"
+                          className="card-input__input"
+                          ref={cardNameInput}
+                          value={cardName}
+                          onChange={(event) => {
+                            const inputValue = event.target.value;
+                            const regex = /^[A-Za-z\s]*$/;
+                            if (regex.test(inputValue)) {
+                              handleCardNameChange(event);
+                            }
+                          }}
+                          onFocus={() => handleFocus(cardNameInput.current.getBoundingClientRect())}
+                          onBlur={handleBlur}
+                          autoComplete="off"
+                          required
+                        />
+                      </div>
+                      <div className="card-form__row">
+                        <div className="card-form__col">
+                          <div className="card-form__group">
+                            <label htmlFor="cardMonth" className="card-input__label">Expiration Date</label>
+                            <select
+                              className="card-input__input -select"
+                              id="cardMonth"
+                              ref={cardMonthInput}
+                              value={cardMonth}
+                              onChange={handleCardMonthChange}
+                              onFocus={() => handleFocus(cardMonthInput.current.getBoundingClientRect())}
+                              onBlur={handleBlur}
+                              required
+                            >
+                              <option value="" disabled>Month</option>
+                              {[...Array(12).keys()].map((n) => (
+                                <option key={n + 1} value={n + 1 < 10 ? '0' + (n + 1) : n + 1}>
+                                  {n + 1 < 10 ? '0' + (n + 1) : n + 1}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              className="card-input__input -select"
+                              id="cardYear"
+                              ref={cardYearInput}
+                              value={cardYear}
+                              onChange={handleCardYearChange}
+                              onFocus={() => handleFocus(cardYearInput.current.getBoundingClientRect())}
+                              onBlur={handleBlur}
+                              required
+                            >
+                              <option value="" disabled>Year</option>
+                              {[...Array(12).keys()].map((n) => (
+                                <option key={minCardYear + n} value={minCardYear + n}>
+                                  {minCardYear + n}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        <div className="card-form__col -cvv">
+                          <div className="card-input">
+                            <label htmlFor="cardCvv" className="card-input__label">CVV</label>
+                            <input
+                              type="text"
+                              className="card-input__input"
+                              id="cardCvv"
+                              value={cardCvv}
+                              onChange={(event) => {
+                                const inputValue = event.target.value;
+                                // Regular expression to match only numbers
+                                const regex = /^[0-9]*$/;
+                                if (regex.test(inputValue)) {
+                                  handleCardCvvChange(event);
+                                }
+                              }}
+                              onFocus={() => flipCard(true)}
+                              onBlur={() => flipCard(false)}
+                              autoComplete="off"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <button className="card-form__button" onClick={handleSubmit}>Submit</button>
                     </div>
                   </div>
                 </div>
               </div>
+              <div className='appointment-schedule'>
+                <div className='container-ap'>
+                  <div className='appointment-payment'>
+                    <div className="ap-booking-details">
+                      <div className="booking-item">
+                        <ul className="booking-date">
+                          <li>Date <span>{selectedDate}</span></li>
+                          <li>Time <span>{selectedTime}</span></li>
+                        </ul>
+                        <ul className="booking-fee">
+                          <li>Consulting Fee <span>$60</span></li>
+                          <li>Booking Fee <span>$10</span></li>
+                          <li>Vat (Including 15%) <span>$9</span></li>
+                        </ul>
+                        <ul className="booking-total">
+                          <li className="booking-total-li">
+                            <span>Total</span>
+                            <span className="total-cost"> $79</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
     </div>

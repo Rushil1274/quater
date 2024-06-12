@@ -22,11 +22,11 @@ const Header = () => {
   const handleLogout = () => {
     logout();
     sessionStorage.removeItem('popupShown'); // Clear popupShown flag on logout
-    navigate("/");
     toast.success('Logged out');
     closeProfileActions(); // Close profile actions after logout
+    navigate("/");
   };
-  
+
   let nav_links = [
     { path: "home", display: "Home" },
     { path: "about", display: "About" },

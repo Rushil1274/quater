@@ -1383,8 +1383,37 @@ ul {
   font-weight: 600;
 }
 
-/* Payment CSS Start */
+.os-maincon {
+  margin: 0;
+  padding: 0;
+}
 
+.os-maincon .right-icon {
+  font-size: 200px;
+  color: #4CAF50;
+}
+
+.os-maincon div p {
+  font-size: 17px;
+}
+
+.home-link-btn {
+  color: black;
+  background-color: #CADCFC;
+  padding: 7px 10px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.home-link-btn:hover {
+  color: white;
+  background-color: #00246B;
+}
+
+/* Appointment CSS End  */
+
+
+/* Payment CSS Start */
 .wrapper {
   min-height: 100vh;
   display: flex;
