@@ -61,7 +61,7 @@ function App() {
           <Route path="/appointment" element={<Appointment />} />
         </Route>
         <Route path="/doctorsdashboard" element={<DoctorsDashboard />} />
-        <Route path="myprofile/*" element={userRole === 'doctor' ? (<DoctorsProfile />) : userRole === 'receptionist' ? (<ReceptionistProfile />) : (<MyProfile />)} />
+        <Route path="myprofile/*" element={userRole === 'Doctor' ? (<DoctorsProfile />) : userRole === 'receptionist' ? (<ReceptionistProfile />) : (<MyProfile />)} />
       </Routes>
       <Footer />
     </BrowserRouter>
