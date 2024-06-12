@@ -46,12 +46,12 @@ const AppointmentScheduler = () => {
   };
 
   const handleNext = () => {
+    setCurrentStep(currentStep + 1);
 
     if (!selectedDate || !selectedTime) {
       alert("Please select both a date and a time before proceeding.");
       return;
     }
-    setCurrentStep(currentStep + 1);
   }
 
   const handlePrev = () => {
@@ -360,7 +360,15 @@ const AppointmentScheduler = () => {
             </div>
             <div className="appointment-btn">
               <button onClick={handlePrev}>Previous</button>
-              <button type="primary" onClick={handleNext} disabled={!formValues.reasonForVisit.trim()} className="next">Next</button>
+              {/* <button type="primary" onClick={handleNext} className="next">Next</button> */}
+              <button
+                type="button"
+                onClick={handleNext}
+                className="next"
+                disabled={!formValues.reasonForVisit.trim()} // Disable if input is empty or only whitespace  
+              >
+                Next
+              </button>
             </div>
           </div>
         </>
