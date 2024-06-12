@@ -183,7 +183,7 @@ app.post('/appointments', (req, res) => {
 });
 app.get('/appointments/:login_id', (req, res) => {
   const login_id = req.params.login_id;
-  const sql = 'SELECT patient_name, patient_email, patient_number FROM appointments WHERE patient_id = ?';
+  const sql = 'SELECT * FROM appointments WHERE patient_id = ?';
 
   db.query(sql, [login_id], (err, result) => {
     if (err) {
