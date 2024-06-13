@@ -36,33 +36,40 @@ app.use("/patients", patientRoutes);
 
 app.post("/login", (req, res) => {
   const sql =
-    "SELECT * FROM login WHERE `email`=? AND `password`=? AND `role`=?";
+    "SELECT * FROM login WHERE email=? AND role=?";
   db.query(
     sql,
-    [req.body.email, req.body.password, req.body.role],
+    [req.body.email, req.body.role],
     (err, data) => {
       if (err) {
         console.error("Database error:", err);
         return res.json({ status: "Error", message: "Database error" });
       }
       if (data.length > 0) {
+        // If there is a user with the given email and role, check the password
         const user = data[0];
-        return res.json({
-          status: "Success",
-          user: {
-            login_id: user.login_id,
-            name: user.name,
-            role: user.role,
-            email: user.email,
-          },
-        });
+        if (user.password === req.body.password) {
+          // Password matches, login successful
+          return res.json({
+            status: "Success",
+            user: {
+              login_id: user.login_id,
+              name: user.name,
+              role: user.role,
+              email: user.email,
+            },
+          });
+        } else {
+          // Password does not match
+          return res.json({ status: "Failed", message: "Password does not match" });
+        }
       } else {
+        // No user found with the given email and role
         return res.json({ status: "Failed", message: "Invalid credentials" });
       }
     }
   );
 });
-
 
 app.post("/signup", (req, res) => {
   const sql =
@@ -278,4 +285,3 @@ app.put("/doctors/email/:email", (req, res) => {
 });
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
-
