@@ -4,7 +4,8 @@ import Validation from "./LoginValidation";
 import axios from "axios";
 import { BASE_URL } from "./config";
 import { useUser } from "./UserContext";
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
   const [values, setValues] = useState({
@@ -53,11 +54,16 @@ function Login() {
 
             // Show toast message
             toast.success("Successfully logged in");
+          } else if (res.data.message === "Password does not match") {
+            toast.error("Password does not match");
           } else {
-            alert("No record exist , Please Create Your Account ...! ");
+            toast.error("No record exists, please create your account");
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.error(err);
+          toast.error("An error occurred. Please try again.");
+        });
     }
   };
 
@@ -122,6 +128,7 @@ function Login() {
             <strong>Forgot Password</strong>
           </Link>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );

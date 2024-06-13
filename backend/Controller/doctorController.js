@@ -108,3 +108,54 @@ exports.deleteDoctorById = (req, res) => {
     }
   });
 };
+
+
+exports.saveDoctorProfile = (req, res) => {
+  const { name, mobile, gender, experience, specialization, fees, hospital, email } = req.body;
+
+  // Check if the user exists in the login table
+  const checkUserSql = "SELECT login_id, name, email, password, role FROM login WHERE email = ?";
+  db.query(checkUserSql, [email], (err, result) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Failed to save profile" });
+    }
+
+    if (result.length === 0) {
+      // User not found in the login table
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const { login_id } = result[0];
+
+    // Check if the doctor already exists
+    const checkDoctorSql = "SELECT * FROM doctor WHERE login_id = ?";
+    db.query(checkDoctorSql, [login_id], (err, existingDoctor) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: "Failed to save profile" });
+      }
+
+      if (existingDoctor.length > 0) {
+        const doctor = existingDoctor[0];
+
+        // Update the existing doctor record
+        const updateSql =
+          "UPDATE doctor SET name = ?, number = ?, gender = ?, experience = ?, specialization = ?, fees = ?,hospital = ? WHERE login_id = ?";
+        const updateValues = [name, mobile, gender, experience, specialization, fees, hospital, login_id];
+
+        db.query(updateSql, updateValues, (err, updateResult) => {
+          if (err) {
+            console.error("Error updating doctor details:", err);
+            return res.status(500).json({ error: "Internal Server Error" });
+          }
+
+          return res.json({ message: "Doctor details updated successfully" });
+        });
+      } else {
+        return res.status(404).json({ error: "Doctor not found" });
+      }
+    });
+  });
+};
+

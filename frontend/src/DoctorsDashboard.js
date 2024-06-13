@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Grid, Paper, Typography, Button, Divider } from '@mui/material';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Import the calendar styles
@@ -19,6 +19,63 @@ const DoctorsDashboard = () => {
   const [monthOffset, setMonthOffset] = useState(0);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [appointments, setAppointments] = useState([]);
+  const [totalAppointments, setTotalAppointments] = useState(0);
+  const [todayAppointments, setTodayAppointments] = useState(0);
+  const [upcomingAppointments, setUpcomingAppointments] = useState(0);
+  const [pastAppointments, setPastAppointments] = useState(0);
+
+  const doctorId = 3; // Replace with the actual doctor ID
+
+  useEffect(() => {
+    fetchAllAppointments();
+  }, []);
+
+  useEffect(() => {
+    fetchAppointments(selectedDate);
+  }, [selectedDate]);
+
+  const fetchAllAppointments = async () => {
+    try {
+      const response = await fetch(`http://localhost:8081/appointments/doctor/${doctorId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setAppointments(data);
+        calculateAppointmentCounts(data);
+      } else {
+        console.error('Failed to fetch appointments');
+        setAppointments([]);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setAppointments([]);
+    }
+  };
+
+  const calculateAppointmentCounts = (data) => {
+    const today = new Date();
+    const todayStr = today.toDateString();
+
+    let total = data.length;
+    let todayCount = 0;
+    let upcoming = 0;
+    let past = 0;
+
+    data.forEach(appointment => {
+      const appointmentDate = new Date(appointment.appointment_date);
+      if (appointmentDate.toDateString() === todayStr) {
+        todayCount++;
+      } else if (appointmentDate > today) {
+        upcoming++;
+      } else {
+        past++;
+      }
+    });
+
+    setTotalAppointments(total);
+    setTodayAppointments(todayCount);
+    setUpcomingAppointments(upcoming);
+    setPastAppointments(past);
+  };
 
   const getMonth = (offset) => {
     const date = new Date();
@@ -48,15 +105,14 @@ const DoctorsDashboard = () => {
 
   const handleDateClick = (value) => {
     setSelectedDate(value);
-    fetchAppointments(value);
   };
 
-  const fetchAppointments = (date) => {
-    // Here you would fetch appointments for the selected date from your data source
-    // For demonstration, I'll just retrieve appointments from the appointmentData object
-    const formattedDate = formatDate(date);
-    const selectedAppointments = appointmentData[formattedDate] || [];
-    setAppointments(selectedAppointments);
+  const fetchAppointments = async (date) => {
+    const filteredAppointments = appointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.appointment_date).toDateString();
+      return appointmentDate === date.toDateString();
+    });
+    setAppointments(filteredAppointments);
   };
 
   const formatDate = (date) => {
@@ -75,34 +131,10 @@ const DoctorsDashboard = () => {
     setAppointments(updatedAppointments);
   };
 
-  const appointmentData = {
-    "2024-06-10": [
-      { patient: 'chintan', time: '10:00 AM', Reason: 'Test' },
-      { patient: 'kushal', time: '11:00 AM', Reason: 'Test' },
-    ],
-    "2024-06-11": [
-      { patient: 'rushil', time: '10:00 AM', Reason: 'Test' },
-      { patient: 'tirth', time: '11:00 AM', Reason: 'Test' },
-    ],
-    "2024-06-14": [
-      { patient: 'deep', time: '10:00 AM', Reason: 'Test' },
-      { patient: 'jay', time: '11:00 AM', Reason: 'Test' },
-    ],
-    "2024-06-15": [
-      { patient: 'nachiketa', time: '10:00 AM', Reason: 'Test' },
-      { patient: 'dhairya', time: '11:00 AM', Reason: 'Test' },
-    ],
-    "2024-06-07": [
-      { patient: 'monish', time: '10:00 AM', Reason: 'Test' },
-      { patient: 'jainam', time: '11:00 AM', Reason: 'Test' },
-    ],
-  };
-
   const isPastDate = (date) => {
     const today = new Date();
     return date < today.setHours(0, 0, 0, 0);
   };
-
 
   const isToday = (date) => {
     const today = new Date();
@@ -117,7 +149,7 @@ const DoctorsDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Total Appointments</Typography>
-              <Typography variant="body1">25</Typography>
+              <Typography variant="body1">{totalAppointments}</Typography>
             </Paper>
           </Grid>
 
@@ -125,7 +157,7 @@ const DoctorsDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Today's Appointments</Typography>
-              <Typography variant="body1">5</Typography>
+              <Typography variant="body1">{todayAppointments}</Typography>
             </Paper>
           </Grid>
 
@@ -133,7 +165,7 @@ const DoctorsDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Upcoming Appointments</Typography>
-              <Typography variant="body1">15</Typography>
+              <Typography variant="body1">{upcomingAppointments}</Typography>
             </Paper>
           </Grid>
 
@@ -141,7 +173,7 @@ const DoctorsDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Past Appointments</Typography>
-              <Typography variant="body1">5</Typography>
+              <Typography variant="body1">{pastAppointments}</Typography>
             </Paper>
           </Grid>
 
@@ -177,32 +209,31 @@ const DoctorsDashboard = () => {
               {appointments.length > 0 ? (
                 appointments.map((appointment, index) => (
                   <React.Fragment key={index}>
-                  <div className="appointment-details" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-                      {appointment.time} - {appointment.patient} - {appointment.Reason}
-                    </Typography>
-                    {!isPastDate(selectedDate) && !isToday(selectedDate) && (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => cancelAppointment(index)}
-                      >
-                        Cancel
-                      </Button>
-                    )}
-                  </div>
-                </React.Fragment>
-              ))
-            ) : (
-              <Typography variant="body1">No appointments for this date</Typography>
-            )}
-          </Paper>
+                    <div className="appointment-details" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                      <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+                        {appointment.appointment_time} - {appointment.patient_name} - {appointment.notes}
+                      </Typography>
+                      {!isPastDate(selectedDate) && !isToday(selectedDate) && (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => cancelAppointment(index)}
+                        >
+                          Cancel
+                        </Button>
+                      )}
+                    </div>
+                  </React.Fragment>
+                ))
+              ) : (
+                <Typography variant="body1">No appointments for this date</Typography>
+              )}
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
-  </ThemeProvider>
-);
+      </Container>
+    </ThemeProvider>
+  );
 };
 
 export default DoctorsDashboard;
-
