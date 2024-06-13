@@ -63,10 +63,18 @@ const UpdateProfile = ({ user }) => {
           <input type="text" name="email" value={user.email} readOnly />
         </label>
         <label>
-          Mobile:
-          <input type="text" name="number" value={formData.number} onChange={handleChange} />
-        </label>
-        
+            Mobile No:
+            <input
+              type="tel"
+              name="number"
+              value={formData.number}
+              onChange={handleChange}
+              required
+              minLength="10"
+              maxLength="10"
+              pattern="[0-9]{10}"
+            />
+          </label>
         <label>
           Gender:
           <select name="gender" value={formData.gender} onChange={handleChange}>
