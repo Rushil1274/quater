@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 07, 2024 at 12:03 PM
+-- Generation Time: Jun 13, 2024 at 01:28 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -54,8 +54,19 @@ CREATE TABLE `appointments` (
   `appointment_time` varchar(50) NOT NULL,
   `patient_name` varchar(50) NOT NULL,
   `patient_email` varchar(50) NOT NULL,
-  `patient_number` varchar(50) NOT NULL
+  `patient_number` varchar(50) NOT NULL,
+  `status` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `appointments`
+--
+
+INSERT INTO `appointments` (`appointment_id`, `doctor_id`, `patient_id`, `notes`, `created_at`, `updated_at`, `appointment_date`, `appointment_time`, `patient_name`, `patient_email`, `patient_number`, `status`) VALUES
+(19, 1, 1, 'First appointment', '2024-06-11 10:27:54', '2024-06-11 10:27:54', '2024-06-20', '10:00', 'John Doe', 'john.doe@example.com', '1234567890', 'Scheduled'),
+(20, 2, 2, 'Second appointment', '2024-06-11 10:28:05', '2024-06-11 10:28:05', '2024-06-21', '11:00', 'Jane Smith', 'jane.smith@example.com', '0987654321', 'Scheduled'),
+(21, 3, 3, 'Third appointment', '2024-06-11 10:28:28', '2024-06-11 10:28:28', '2024-06-23', '13:00', 'Alice Brown', 'alice.brown@example.com', '5556667777', 'Scheduled'),
+(22, 1, 19, 'fever', '2024-06-12 10:10:57', '2024-06-12 10:10:57', 'Jun 12, 2024', '09:00 AM', 'kushal', 'hello@gmail.com', '5154498484', NULL);
 
 -- --------------------------------------------------------
 
@@ -70,7 +81,7 @@ CREATE TABLE `doctor` (
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `role` varchar(50) NOT NULL,
-  `age` int(11) NOT NULL,
+  `age` varchar(11) DEFAULT NULL,
   `gender` varchar(10) NOT NULL,
   `hospital` varchar(100) NOT NULL,
   `number` varchar(20) NOT NULL,
@@ -80,22 +91,31 @@ CREATE TABLE `doctor` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `doc_pic` varchar(255) NOT NULL,
   `hospital_loc` varchar(255) NOT NULL,
-  `fees` int(7) NOT NULL,
-  `education` varchar(100) NOT NULL
+  `fees` varchar(7) NOT NULL,
+  `education` varchar(100) NOT NULL,
+  `dob` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `doctor`
 --
 
-INSERT INTO `doctor` (`doctor_id`, `login_id`, `name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `created_at`, `updated_at`, `doc_pic`, `hospital_loc`, `fees`, `education`) VALUES
-(1, 1, 'Dr. John Doe', 'johndoe@example.com', 'Password@1234', 'Doctor', 35, 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', '2024-05-22 11:09:36', '2024-06-03 07:11:53', 'path_to_doc_pic', '', 0, ''),
-(2, 2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'Doctor', 42, 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', '2024-05-22 11:09:36', '2024-05-30 05:02:26', 'path_to_doc_pic', '', 0, ''),
-(3, 3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'Doctor', 40, 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', '2024-05-22 11:09:36', '2024-05-30 05:02:11', 'path_to_doc_pic', '', 0, '');
+INSERT INTO `doctor` (`doctor_id`, `login_id`, `name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `created_at`, `updated_at`, `doc_pic`, `hospital_loc`, `fees`, `education`, `dob`) VALUES
+(1, 1, 'Dr. John Doe', 'johndoe@example.com', 'Password@1234', 'Doctor', '21', 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', '2024-05-22 11:09:36', '2024-06-12 08:48:40', 'path_to_doc_pic', '', '0', '', '2003-06-12'),
+(2, 2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'Doctor', '20', 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', '2024-05-22 11:09:36', '2024-06-12 08:50:27', 'path_to_doc_pic', '', '0', '', '2004-06-12'),
+(3, 3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'Doctor', '38', 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', '2024-05-22 11:09:36', '2024-06-12 08:51:24', 'path_to_doc_pic', '', '0', '', '1985-11-12');
 
 --
 -- Triggers `doctor`
 --
+DELIMITER $$
+CREATE TRIGGER `calculate_age_trigger_doctor` BEFORE UPDATE ON `doctor` FOR EACH ROW BEGIN
+    IF NEW.dob <> OLD.dob THEN
+        SET NEW.age = TIMESTAMPDIFF(YEAR, STR_TO_DATE(NEW.dob, '%Y-%m-%d'), CURDATE());
+    END IF;
+END
+$$
+DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `update_doctor1` BEFORE UPDATE ON `doctor` FOR EACH ROW BEGIN
     DECLARE v_ignore_trigger INT DEFAULT 0;
@@ -126,7 +146,7 @@ CREATE TABLE `login` (
   `login_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `password` varchar(100) NOT NULL,
+  `password` varchar(100) DEFAULT NULL,
   `role` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -143,7 +163,8 @@ INSERT INTO `login` (`login_id`, `name`, `email`, `password`, `role`) VALUES
 (6, 'Alex Brown', 'alex@example.com', 'Password@789', 'Patient'),
 (7, 'Alice Johnson', 'alice@example.com', 'Alice@1234', 'Receptionist'),
 (8, 'Bob Smith', 'bob@example.com', 'Bob@123456', 'Receptionist'),
-(9, 'Charlie Brown', 'charlie@example.com', 'Charlie@123', 'Receptionist');
+(9, 'Charlie Brown', 'charlie@example.com', 'Charlie@123', 'Receptionist'),
+(19, 'kushal', 'hello@gmail.com', 'Kushal@123', 'Patient');
 
 --
 -- Triggers `login`
@@ -268,9 +289,10 @@ CREATE TABLE `patient` (
 --
 
 INSERT INTO `patient` (`patient_id`, `login_id`, `email`, `password`, `role`, `age`, `gender`, `address`, `number`, `insurance`, `adhar_no`, `created_at`, `updated_at`, `name`, `dob`, `patient_pic`) VALUES
-(1, 4, 'john@example.com', 'Password@123', 'Patient', '30', 'Male', '123 Main St', '987-654-32', 'Yes', '123444678590', '2024-05-22 16:44:14', '2024-06-03 07:12:43', 'John Potter', '2001-12-31', ''),
-(2, 5, 'jane@example.com', 'Password@456', 'Patient', '25', 'Female', '456 Elm St', '123-456-78', 'Yes', '987645432210', '2024-05-22 16:44:14', '2024-05-30 11:03:48', 'Jane Smith', '2001-12-31', ''),
-(3, 6, 'alex@example.com', 'Password@789', 'Patient', '40', 'Male', '789 Oak St', '4567789901', 'No', '5678-9012-34', '2024-05-22 16:44:14', '2024-05-30 11:03:29', 'Alex Brown', '2001-12-31', '');
+(1, 4, 'john@example.com', 'Password@123', 'Patient', '23', 'Male', '123 Main St', '987-654-32', 'Yes', '123444678590', '2024-05-22 16:44:14', '2024-06-12 08:51:59', 'John Potter', '2000-12-31', ''),
+(2, 5, 'jane@example.com', 'Password@456', 'Patient', '21', 'Female', '456 Elm St', '123-456-78', 'Yes', '987645432210', '2024-05-22 16:44:14', '2024-06-12 08:51:44', 'Jane Smith', '2002-12-31', ''),
+(3, 6, 'alex@example.com', 'Password@789', 'Patient', '24', 'Male', '789 Oak St', '4567789901', 'No', '5678-9012-34', '2024-05-22 16:44:14', '2024-06-12 08:52:14', 'Alex Brown', '1999-12-31', ''),
+(9, 19, 'hello@gmail.com', 'Kushal@123', 'Patient', '21', 'Male', 'jjhvyvtyvtcty', '5154498484', 'Yes', '845151151515', '2024-06-12 15:38:52', '2024-06-12 10:10:01', 'kushal', '2002-11-17', '');
 
 --
 -- Triggers `patient`
@@ -486,7 +508,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `doctor`
@@ -498,13 +520,13 @@ ALTER TABLE `doctor`
 -- AUTO_INCREMENT for table `login`
 --
 ALTER TABLE `login`
-  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `ratings_reviews`
