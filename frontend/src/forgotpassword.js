@@ -13,13 +13,11 @@ function ForgotPassword() {
   });
 
   const [errors, setErrors] = useState({});
-  const [isVerified, setIsVerified] = useState(false); // State to track verification status
+  const [isVerified, setIsVerified] = useState(false);
   const navigate = useNavigate();
 
   const handleInput = (event) => {
-    if (!isVerified) { // Only allow input changes if not verified
-      setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
-    }
+    setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
   };
 
   const handleVerification = (event) => {
@@ -87,10 +85,8 @@ function ForgotPassword() {
               type="email"
               placeholder="Enter Email"
               name="email"
-              value={values.email}
               onChange={handleInput}
               className="form-control rounded-0"
-              disabled={isVerified} // Disable input if verified
             />
             {errors.email && (
               <span className="text-danger">{errors.email}</span>
@@ -100,10 +96,8 @@ function ForgotPassword() {
             <label htmlFor="role">Role</label>
             <select
               name="role"
-              value={values.role}
               onChange={handleInput}
               className="form-control rounded-0"
-              disabled={isVerified} // Disable input if verified
             >
               <option value="Doctor">Doctor</option>
               <option value="Patient">Patient</option>

@@ -24,7 +24,8 @@ const DoctorsDashboard = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState(0);
   const [pastAppointments, setPastAppointments] = useState(0);
 
-  const doctorId = 3; // Replace with the actual doctor ID
+  
+  const doctorId = 1;
 
   useEffect(() => {
     fetchAllAppointments();
