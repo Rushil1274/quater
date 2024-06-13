@@ -109,7 +109,7 @@ export default function Signup() {
             <strong>Signup</strong>
           </button>
           <p>You agree to TnC</p>
-          <Link to="/" className="btn btn-default border w-100 bg-light">
+          <Link to="/Login" className="btn btn-default border w-100 bg-light">
             <strong>Login</strong>
           </Link>
         </form>
