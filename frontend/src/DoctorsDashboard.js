@@ -8,13 +8,14 @@ import "./App.css";
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#000080', 
+      main: '#000080',
     },
   },
 });
 
 const DoctorsDashboard = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [allAppointments, setAllAppointments] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [totalAppointments, setTotalAppointments] = useState(0);
   const [todayAppointments, setTodayAppointments] = useState(0);
@@ -28,7 +29,7 @@ const DoctorsDashboard = () => {
   }, []);
 
   useEffect(() => {
-    fetchAppointments(selectedDate);
+    filterAppointmentsByDate(selectedDate);
   }, [selectedDate]);
 
   const fetchAllAppointments = async () => {
@@ -36,15 +37,15 @@ const DoctorsDashboard = () => {
       const response = await fetch(`http://localhost:8081/appointments/doctor/${doctorId}`);
       if (response.ok) {
         const data = await response.json();
-        setAppointments(data);
+        setAllAppointments(data);
         calculateAppointmentCounts(data);
       } else {
         console.error('Failed to fetch appointments');
-        setAppointments([]);
+        setAllAppointments([]);
       }
     } catch (error) {
       console.error('Error:', error);
-      setAppointments([]);
+      setAllAppointments([]);
     }
   };
 
@@ -74,16 +75,16 @@ const DoctorsDashboard = () => {
     setPastAppointments(past);
   };
 
-  const handleDateClick = (value) => {
-    setSelectedDate(value);
-  };
-
-  const fetchAppointments = async (date) => {
-    const filteredAppointments = appointments.filter(appointment => {
+  const filterAppointmentsByDate = (date) => {
+    const filteredAppointments = allAppointments.filter(appointment => {
       const appointmentDate = new Date(appointment.appointment_date).toDateString();
       return appointmentDate === date.toDateString();
     });
     setAppointments(filteredAppointments);
+  };
+
+  const handleDateClick = (value) => {
+    setSelectedDate(value);
   };
 
   const formatDate = (date) => {
@@ -118,11 +119,10 @@ const DoctorsDashboard = () => {
   };
 
   const dayClassName = ({ date, view }) => {
-    // Check if the date is today and if we're in the same view (month view)
     if (isToday(date) && view === 'month') {
-      return 'today'; // Apply a class to style today's date
+      return 'today';
     }
-    return null; // No additional class for any other day
+    return null;
   };
 
   return (
@@ -173,7 +173,7 @@ const DoctorsDashboard = () => {
                 value={selectedDate}
                 onClickDay={handleDateClick}
                 showNavigation={false}
-                dayClassName={dayClassName} // Apply custom styling based on conditions
+                dayClassName={dayClassName}
               />
             </Paper>
           </Grid>
