@@ -2087,4 +2087,10 @@ ul {
   color: #d3d3d3;
 }
 
+.today {
+  background-color: unset !important; /* Override any default styling */
+  color: unset !important; /* Ensure text color is not overridden */
+}
+
+
  /* Doctor Dashboard end */

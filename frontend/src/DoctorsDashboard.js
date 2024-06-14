@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Grid, Paper, Typography, Button, Divider } from '@mui/material';
+import { Container, Grid, Paper, Typography, Divider, Button } from '@mui/material';
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css'; // Import the calendar styles
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import 'react-calendar/dist/Calendar.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import "./App.css"
+import "./App.css";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#00bcd4', // Cyan color
+      main: '#000080', 
     },
   },
 });
 
 const DoctorsDashboard = () => {
-  const [monthOffset, setMonthOffset] = useState(0);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [appointments, setAppointments] = useState([]);
   const [totalAppointments, setTotalAppointments] = useState(0);
@@ -24,7 +21,6 @@ const DoctorsDashboard = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState(0);
   const [pastAppointments, setPastAppointments] = useState(0);
 
-  
   const doctorId = 1;
 
   useEffect(() => {
@@ -78,32 +74,6 @@ const DoctorsDashboard = () => {
     setPastAppointments(past);
   };
 
-  const getMonth = (offset) => {
-    const date = new Date();
-    date.setMonth(date.getMonth() + offset);
-    return date;
-  };
-
-  const goToPreviousMonth = () => {
-    if (monthOffset > -1) {
-      setMonthOffset(monthOffset - 1);
-    }
-  };
-
-  const goToNextMonth = () => {
-    if (monthOffset < 1) {
-      setMonthOffset(monthOffset + 1);
-    }
-  };
-
-  const tileDisabled = ({ date }) => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    const selectedMonth = date.getMonth();
-
-    return !(selectedMonth === currentMonth + monthOffset || selectedMonth === currentMonth + monthOffset - 1 || selectedMonth === currentMonth + monthOffset + 1);
-  };
-
   const handleDateClick = (value) => {
     setSelectedDate(value);
   };
@@ -117,7 +87,6 @@ const DoctorsDashboard = () => {
   };
 
   const formatDate = (date) => {
-    // Format date as YYYY-MM-DD
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
@@ -125,8 +94,6 @@ const DoctorsDashboard = () => {
   };
 
   const cancelAppointment = (index) => {
-    // Here you would implement the logic to cancel the appointment
-    // For demonstration, let's just remove the appointment from the list
     const updatedAppointments = [...appointments];
     updatedAppointments.splice(index, 1);
     setAppointments(updatedAppointments);
@@ -140,6 +107,22 @@ const DoctorsDashboard = () => {
   const isToday = (date) => {
     const today = new Date();
     return date.toDateString() === today.toDateString();
+  };
+
+  const changeMonth = (monthsToAdd) => {
+    setSelectedDate(prevDate => {
+      const newDate = new Date(prevDate);
+      newDate.setMonth(newDate.getMonth() + monthsToAdd);
+      return newDate;
+    });
+  };
+
+  const dayClassName = ({ date, view }) => {
+    // Check if the date is today and if we're in the same view (month view)
+    if (isToday(date) && view === 'month') {
+      return 'today'; // Apply a class to style today's date
+    }
+    return null; // No additional class for any other day
   };
 
   return (
@@ -178,26 +161,19 @@ const DoctorsDashboard = () => {
             </Paper>
           </Grid>
 
-          {/* Combined Calendar with Arrows */}
+          {/* Calendar */}
           <Grid item xs={12} md={4}>
             <Paper className="calendar-container">
-              <div className="calendar-navigation">
-                <ArrowBackIcon onClick={goToPreviousMonth} className="icon" />
-                <Typography variant="h6" gutterBottom>
-                  {monthOffset === -1 && 'Past Month'}
-                  {monthOffset === 0 && 'Current Month'}
-                  {monthOffset === 1 && 'Next Month'}
-                </Typography>
-                <ArrowForwardIcon onClick={goToNextMonth} className="icon" />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <Button onClick={() => changeMonth(-1)}>&lt;</Button>
+                <Typography variant="h5">{selectedDate.toLocaleString('default', { month: 'long' })} {selectedDate.getFullYear()}</Typography>
+                <Button onClick={() => changeMonth(1)}>&gt;</Button>
               </div>
               <Calendar
-                value={getMonth(monthOffset)}
-                tileDisabled={tileDisabled}
-                prevLabel={null}
-                nextLabel={null}
-                prev2Label={null}
-                next2Label={null}
-                onClickDay={handleDateClick} // Add onClickDay prop to handle date clicks
+                value={selectedDate}
+                onClickDay={handleDateClick}
+                showNavigation={false}
+                dayClassName={dayClassName} // Apply custom styling based on conditions
               />
             </Paper>
           </Grid>
