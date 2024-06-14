@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Grid, Paper, Typography, Divider, Button } from '@mui/material';
+import { Container, Grid, Paper, Typography, Divider, Button, Table, TableContainer, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -100,6 +100,12 @@ const DoctorsDashboard = () => {
     setAppointments(updatedAppointments);
   };
 
+  const completeAppointment = (index) => {
+    const updatedAppointments = [...appointments];
+    updatedAppointments[index].status = 'Completed';
+    setAppointments(updatedAppointments);
+  };
+
   const isPastDate = (date) => {
     const today = new Date();
     return date < today.setHours(0, 0, 0, 0);
@@ -184,24 +190,54 @@ const DoctorsDashboard = () => {
               <Typography variant="h6" gutterBottom>Appointments for {selectedDate.toDateString()}</Typography>
               <Divider style={{ margin: '1rem 0', borderWidth: '2px', backgroundColor: theme.palette.primary.main }} />
               {appointments.length > 0 ? (
-                appointments.map((appointment, index) => (
-                  <React.Fragment key={index}>
-                    <div className="appointment-details" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                      <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-                        {appointment.appointment_time} - {appointment.patient_name} - {appointment.notes}
-                      </Typography>
-                      {!isPastDate(selectedDate) && !isToday(selectedDate) && (
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => cancelAppointment(index)}
-                        >
-                          Cancel
-                        </Button>
-                      )}
-                    </div>
-                  </React.Fragment>
-                ))
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Time</TableCell>
+                        <TableCell>Patient Name</TableCell>
+                        <TableCell>Reason</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>Actions</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {appointments.map((appointment, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{appointment.appointment_time}</TableCell>
+                          <TableCell>{appointment.patient_name}</TableCell>
+                          <TableCell>{appointment.notes}</TableCell>
+                          <TableCell>{appointment.status}</TableCell>
+                          <TableCell>
+                            {!isPastDate(selectedDate) && !isToday(selectedDate) && (
+                              <>
+                                {appointment.status !== 'Completed' ? (
+                                  <>
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      onClick={() => completeAppointment(index)}
+                                    >
+                                      Complete
+                                    </Button>
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      onClick={() => cancelAppointment(index)}
+                                      style={{ marginLeft: '8px' }}
+                                    >
+                                      Cancel
+                                    </Button>
+                                  </>
+                                ) : null}
+                              </>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               ) : (
                 <Typography variant="body1">No appointments for this date</Typography>
               )}
