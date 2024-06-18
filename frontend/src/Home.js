@@ -331,7 +331,7 @@ function Home() {
             </section>
             <section className='reco-doc'>
                 <div className="container-fluid">
-                    {(userRole === 'Patient' || userRole === 'Admin') && (
+                    {(!user || userRole === 'Patient' || userRole === 'Admin') && (
                         <div className='mb-5 mt-100 section-title text-center reco-doc-card'>
                             <h2>Recommended Doctors</h2>
                             <div className="cardContainer">

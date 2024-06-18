@@ -36,7 +36,29 @@ const AppointmentScheduler = () => {
   const handleTimeClick = (time) => {
     setSelectedTime(time);
   };
+  
+  const getNext8Days = () => {
+    const dates = [];
+    for (let i = 0; i < 8; i++) {
+      const currentDate = new Date();
+      currentDate.setDate(currentDate.getDate() + i);
+      const formattedDate = currentDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+      dates.push(formattedDate);
+    }
+    return dates;
+  };
 
+  const generateMorningSlots = () => {
+    return ['09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM'];
+  };
+  const generateEveningSlots = () => {
+    return ['03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM'];
+  };
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({
@@ -91,11 +113,8 @@ const AppointmentScheduler = () => {
     const name = user?.name;
     const email = user?.email;
 
-
     // Retrieve doctor_id from localStorage
     const selectedDoctorId = localStorage.getItem('doctor_id');
-
-
 
     if (!patientId) {
       console.error('Patient ID not found.');
@@ -137,28 +156,8 @@ const AppointmentScheduler = () => {
     }
   };
 
-  const getNext8Days = () => {
-    const dates = [];
-    for (let i = 0; i < 8; i++) {
-      const currentDate = new Date();
-      currentDate.setDate(currentDate.getDate() + i);
-      const formattedDate = currentDate.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-      dates.push(formattedDate);
-    }
-    return dates;
-  };
 
-  const generateMorningSlots = () => {
-    return ['09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM'];
-  };
-  const generateEveningSlots = () => {
-    return ['03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM'];
-  };
-
+  // Payment Function
   const [currentCardBackground, setCurrentCardBackground] = useState(Math.floor(Math.random() * 25 + 1));
   const [cardName, setCardName] = useState('');
   const [cardNumber, setCardNumber] = useState('');
@@ -218,21 +217,6 @@ const AppointmentScheduler = () => {
   const handleBlur = () => {
     setFocusElementStyle(null);
   };
-
-  const [appointments, setAppointments] = useState([]);
-
-  // useEffect(() => {
-  //   const fetchAppointments = async () => {
-  //     try {
-  //       const response = await axios.get(`${BASE_URL}/appointments`);
-  //       setAppointments(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching appointments:', error);
-  //     }
-  //   };
-
-  //   fetchAppointments();
-  // }, []);
 
   return (
     <div className="container" style={{ marginBottom: '5rem', marginTop: '2rem' }}>
