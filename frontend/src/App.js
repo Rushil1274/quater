@@ -44,7 +44,7 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/doctors" element={<Doctors />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/details" element={<Details />} />
+        <Route path="/details/:id" element={<Details />} />
 
         {/* {user && user.email === 'admin@gmail.com' && ( */}
         <Route path="admindashboard" element={<AdminDashboard />} />
