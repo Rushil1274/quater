@@ -22,24 +22,21 @@ const Header = () => {
   const handleLogout = () => {
     logout();
     sessionStorage.removeItem('popupShown'); // Clear popupShown flag on logout
-    toast.success('Logged out');
-    closeProfileActions(); // Close profile actions after logout
-    navigate("/");
+    navigate("/login");
+    toast.success('Logged out')
   };
 
   let nav_links = [
     { path: "home", display: "Home" },
     { path: "about", display: "About" },
-    // { path: "contact", display: "Help" }
+    // { path: "contact", display: "Help" },
   ];
-  if (!user || !(user.role === "Doctor" || user.role === "Receptionist")) {
-    nav_links.push({ path: "doctors", display: "Doctors" });
+
+  if (!user || !(user.role === "Doctor" || user.role === "receptionist")) {
+    nav_links.splice(2, 0, { path: "doctors", display: "Doctors" });
   }
   if (user && user.role === "Doctor") {
-    nav_links.push({ path: "doctorsdashboard", display: "My Dashboard" });
-  }
-  if (user && user.role === "Receiptionist") {
-    nav_links.push({ path: "receiptionistdashboard", display: "Receiptionist Dashboard" });
+    nav_links.splice(2, 0, { path: "doctorsdashboard", display: "Doctors Dashboard" });
   }
 
   return (
@@ -90,17 +87,17 @@ const Header = () => {
                 >
                   <div className="profile_link">
                     {user && (
-                      <Link
-                        className="myprofile"
-                        to="/myprofile"
-                        style={{
-                          textDecoration: "none",
-                          color: "var(--primary-color)",
-                        }}
-                        onClick={closeProfileActions}
-                      >
-                        My Profile
-                      </Link>
+                      <div>
+                        <Link
+                          to="/myprofile"
+                          style={{
+                            textDecoration: "none",
+                            color: "var(--primary-color)",
+                          }}
+                        >
+                          My Profile
+                        </Link>
+                      </div>
                     )}
                     {!user ? (
                       <>
@@ -110,7 +107,6 @@ const Header = () => {
                             textDecoration: "none",
                             color: "var(--primary-color)",
                           }}
-                          onClick={closeProfileActions}
                         >
                           SignUp
                         </Link>
@@ -120,27 +116,25 @@ const Header = () => {
                             textDecoration: "none",
                             color: "var(--primary-color)",
                           }}
-                          onClick={closeProfileActions}
                         >
                           Login
                         </Link>
                       </>
                     ) : (
                       <>
-                        {user.role === "Admin" && (
+                        {user.name === "Admin" && (
                           <Link
                             to="/dashboard"
                             style={{
                               textDecoration: "none",
                               color: "var(--primary-color)",
                             }}
-                            onClick={closeProfileActions}
                           >
                             Dashboard
                           </Link>
                         )}
                         <Link
-                          to="/"
+                          to="#"
                           onClick={handleLogout}
                           style={{
                             textDecoration: "none",

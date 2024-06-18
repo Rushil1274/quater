@@ -41,7 +41,7 @@ function Home() {
         const maxDate = new Date();
         maxDate.setFullYear(maxDate.getFullYear() - 18);
         setMaxBirthDate(maxDate.toISOString().split('T')[0]);
-
+    
         const fetchUserProfile = async () => {
             try {
                 const userString = localStorage.getItem('user');
@@ -57,7 +57,12 @@ function Home() {
                 setGender(gender || '');
                 setDob(dob || '');
                 setAddress(address || '');
-                if (!number || !adhar_no || !gender || !dob || !address) {
+                
+                // Check if any of the required fields are missing
+                const fields = [number, adhar_no, gender, dob, address];
+                const isAnyFieldMissing = fields.some(field => !field);
+                
+                if (isAnyFieldMissing) {
                     const popupShown = sessionStorage.getItem('popupShown');
                     if (!popupShown) {
                         setShowPopup(true);
@@ -69,7 +74,7 @@ function Home() {
             }
         };
         fetchUserProfile();
-    }, []);
+    }, []);    
 
     const bufferToBase64 = (buffer) => {
         let binary = '';
@@ -154,117 +159,85 @@ function Home() {
     return (
         <>
             {showPopup && (
-                <div className="popup">
-                    <div className="popup-content">
-                        <span className="close-popup" onClick={() => setShowPopup(false)}>&times;</span>
-                        <h2>Complete Your Profile</h2>
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-group">
-                                {(userRole === 'Patient' || userRole === 'Doctor') && (
-                                    <>
-                                        <label htmlFor="mobile">Mobile No:</label>
-                                        <input
-                                            type="tel"
-                                            className="form-control"
-                                            id="mobile"
-                                            placeholder="Enter Your Mobile Number"
-                                            value={mobile}
-                                            onChange={handleMobileChange}
-                                            required
-                                        />
-                                        {mobile.length > 0 && mobile.length < 10 && (
-                                            <small className="text-danger">Mobile number must be exactly 10 digits long</small>
-                                        )}
-                                    </>
-                                )}
-                                {(userRole === 'Patient' || userRole === 'Doctor') && (
-                                    <>
-                                        <label htmlFor="gender">Gender:</label>
-                                        <select
-                                            className="form-control"
-                                            id="gender"
-                                            value={gender}
-                                            onChange={handleGenderChange}
-                                            required
-                                        >
-                                            <option value="">Select Gender</option>
-                                            <option value="Male">Male</option>
-                                            <option value="Female">Female</option>
-                                            <option value="Other">Other</option>
-                                        </select>
-                                    </>
-                                )}
-                                {(userRole === 'Patient' || userRole === 'Doctor') && (
-                                    <>
-                                        <label htmlFor="dob">Date of Birth:</label>
-                                        <input
-                                            type="date"
-                                            className="form-control"
-                                            id="dob"
-                                            value={dob}
-                                            onChange={handleDobChange}
-                                            max={maxBirthDate}
-                                            required
-                                        />
-                                        {age !== null && (
-                                            <p>Age: {age} years</p>
-                                        )}
-                                    </>
-                                )}
-                                {(userRole === 'Patient' || userRole === 'Doctor') && (
-                                    <>
-                                        <label htmlFor="aadhaar">Aadhaar Card No:</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="aadhaar"
-                                            placeholder="Enter Your Aadhaar Number"
-                                            value={aadhaar}
-                                            onChange={handleAadhaarChange}
-                                            required
-                                        />
-                                        {aadhaar.replace(/\s/g, '').length > 0 && aadhaar.replace(/\s/g, '').length < 12 && (
-                                            <small className="text-danger">Aadhaar number must be exactly 12 digits long</small>
-                                        )}
-                                    </>
-                                )}
-                                {(userRole === 'Doctor') && (
-                                    <>
-                                        <label htmlFor="aadhaar">Aadhaar Card No:</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="aadhaar"
-                                            placeholder="Enter Your Aadhaar Number"
-                                            value={aadhaar}
-                                            onChange={handleAadhaarChange}
-                                            required
-                                        />
-                                        {aadhaar.replace(/\s/g, '').length > 0 && aadhaar.replace(/\s/g, '').length < 12 && (
-                                            <small className="text-danger">Aadhaar number must be exactly 12 digits long</small>
-                                        )}
-                                    </>
-                                )}
-                                {(userRole === 'Patient' || userRole === 'Doctor') && (
-                                    <>
-                                        <label htmlFor="address">Address:</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="address"
-                                            placeholder="Enter Your Address"
-                                            value={address}
-                                            onChange={handleAddressChange}
-                                            required
-                                        />
-                                    </>
-                                )}
-                            </div>
-                            <button type="submit" className="pop-up-btn">Submit</button>
-                        </form>
-                    </div>
+    <div className="popup">
+        <div className="popup-content">
+            <span className="close-popup" onClick={() => setShowPopup(false)}>&times;</span>
+            <h2>Complete Your Profile</h2>
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="mobile">Mobile No:</label>
+                    <input
+                        type="tel"
+                        className="form-control"
+                        id="mobile"
+                        placeholder="Enter Your Mobile Number"
+                        value={mobile}
+                        onChange={handleMobileChange}
+                        required
+                    />
+                    {mobile.length > 0 && mobile.length < 10 && (
+                        <small className="text-danger">Mobile number must be exactly 10 digits long</small>
+                    )}
+                    
+                    <label htmlFor="gender">Gender:</label>
+                    <select
+                        className="form-control"
+                        id="gender"
+                        value={gender}
+                        onChange={handleGenderChange}
+                        required
+                    >
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    
+                    <label htmlFor="dob">Date of Birth:</label>
+                    <input
+                        type="date"
+                        className="form-control"
+                        id="dob"
+                        value={dob}
+                        onChange={handleDobChange}
+                        max={maxBirthDate}
+                        required
+                    />
+                    {age !== null && (
+                        <p>Age: {age} years</p>
+                    )}
+                    
+                    <label htmlFor="aadhaar">Aadhaar Card No:</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="aadhaar"
+                        placeholder="Enter Your Aadhaar Number"
+                        value={aadhaar}
+                        onChange={handleAadhaarChange}
+                        required
+                    />
+                    {aadhaar.replace(/\s/g, '').length > 0 && aadhaar.replace(/\s/g, '').length < 12 && (
+                        <small className="text-danger">Aadhaar number must be exactly 12 digits long</small>
+                    )}
+                    
+                    <label htmlFor="address">Address:</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="address"
+                        placeholder="Enter Your Address"
+                        value={address}
+                        onChange={handleAddressChange}
+                        required
+                    />
                 </div>
-            )}
+                <button type="submit" className="pop-up-btn">Submit</button>
+            </form>
+        </div>
+    </div>
+)}
+
             <section id="hero" className="d-flex align-items-center">
                 <div className="container">
                     <div>

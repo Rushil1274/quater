@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Validation from "./LoginValidation";
 import axios from "axios";
 import { BASE_URL } from "./config";
+
 import { useUser } from "./UserContext";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 function Login() {
   const [values, setValues] = useState({
@@ -15,22 +15,11 @@ function Login() {
   });
 
   const [errors, setErrors] = useState({});
-  const [availableRoles, setAvailableRoles] = useState(["Doctor", "Patient", "Receptionist"]);
   const navigate = useNavigate();
   const { login } = useUser(); // Get login function from context
 
   const handleInput = (event) => {
-    const { name, value } = event.target;
-    setValues((prev) => ({ ...prev, [name]: value }));
-
-    if (name === "email") {
-      // Check if the email is the admin email and update roles accordingly
-      if (value === "admin.healthnest@gmail.com") {
-        setAvailableRoles(["Doctor", "Patient", "Receptionist", "Admin"]);
-      } else {
-        setAvailableRoles(["Doctor", "Patient", "Receptionist"]);
-      }
-    }
+    setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
   };
 
   const handleSubmit = (event) => {
@@ -46,10 +35,12 @@ function Login() {
             // Ensure the structure of the user object is correct
             login(res.data.user);
 
-            if (values.role === "Admin") {
-              navigate("/admindashboard"); // Redirect to admin dashboard
+            if (values.role === "Doctor") {
+              navigate("/home");
+            } else if (values.role === "Receptionist") {
+              navigate("/home");
             } else {
-              navigate("/home"); // Redirect to home for other roles
+              navigate("/home");
             }
 
             // Show toast message
@@ -57,13 +48,10 @@ function Login() {
           } else if (res.data.message === "Password does not match") {
             toast.error("Password does not match");
           } else {
-            toast.error("No record exists, please create your account");
+            toast.error("No record exists, Please create your account");
           }
         })
-        .catch((err) => {
-          console.error(err);
-          toast.error("An error occurred. Please try again.");
-        });
+        .catch((err) => console.log(err));
     }
   };
 
@@ -105,11 +93,9 @@ function Login() {
               onChange={handleInput}
               className="form-control rounded-0"
             >
-              {availableRoles.map((role) => (
-                <option key={role} value={role}>
-                  {role}
-                </option>
-              ))}
+              <option value="Doctor">Doctor</option>
+              <option value="Patient">Patient</option>
+              <option value="Receptionist">Receptionist</option>
             </select>
           </div>
           <button type="submit" className="btn btn-success w-100">
@@ -128,7 +114,6 @@ function Login() {
             <strong>Forgot Password</strong>
           </Link>
         </form>
-        <ToastContainer />
       </div>
     </div>
   );
