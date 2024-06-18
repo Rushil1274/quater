@@ -15,11 +15,22 @@ function Login() {
   });
 
   const [errors, setErrors] = useState({});
+  const [availableRoles, setAvailableRoles] = useState(["Doctor", "Patient", "Receptionist"]);
   const navigate = useNavigate();
   const { login } = useUser(); // Get login function from context
 
   const handleInput = (event) => {
-    setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+    const { name, value } = event.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "email") {
+      // Check if the email is the admin email and update roles accordingly
+      if (value === "admin.healthnest@gmail.com") {
+        setAvailableRoles(["Doctor", "Patient", "Receptionist", "Admin"]);
+      } else {
+        setAvailableRoles(["Doctor", "Patient", "Receptionist"]);
+      }
+    }
   };
 
   const handleSubmit = (event) => {
@@ -35,7 +46,9 @@ function Login() {
             // Ensure the structure of the user object is correct
             login(res.data.user);
 
-            if (values.role === "Doctor") {
+            if (values.role === "Admin") {
+              navigate("/admindashboard"); // Redirect to admin dashboard
+            } else if (values.role === "Doctor") {
               navigate("/home");
             } else if (values.role === "Receptionist") {
               navigate("/home");
@@ -60,7 +73,7 @@ function Login() {
       <div className="bg-white p-3 rounded w-25">
         <h2>Sign In</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
+        <div className="mb-3">
             <label htmlFor="email">Email</label>
             <input
               type="email"
@@ -93,9 +106,11 @@ function Login() {
               onChange={handleInput}
               className="form-control rounded-0"
             >
-              <option value="Doctor">Doctor</option>
-              <option value="Patient">Patient</option>
-              <option value="Receptionist">Receptionist</option>
+              {availableRoles.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
             </select>
           </div>
           <button type="submit" className="btn btn-success w-100">

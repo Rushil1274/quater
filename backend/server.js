@@ -238,6 +238,33 @@ app.get('/appointments/doctor/:doctor_id', (req, res) => {
   });
 });
 
+// Admin Users
+app.get("/users", (req, res) => {
+  const sql = "SELECT * FROM login";
+  db.query(sql, (err, data) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json("Error");
+    }
+    return res.json(data);
+  });
+});
+app.delete("/users/:id", (req, res) => {
+  const userId = req.params.id;
+  const sql = "DELETE FROM login WHERE login_id = ?";
+  
+  db.query(sql, [userId], (err, result) => {
+    if (err) {
+      console.error("Database error:", err); // Log the detailed error
+      return res.status(500).json({ error: "Error deleting user", details: err });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json("User not found");
+    }
+    return res.json("User deleted successfully");
+  });
+});
+
 
 // Fetch doctors details by email
 app.get("/doctors/email/:email", (req, res) => {
