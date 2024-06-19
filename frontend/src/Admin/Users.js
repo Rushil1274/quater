@@ -1,6 +1,3 @@
-
-
-
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import { toast } from 'react-toastify';
@@ -58,13 +55,6 @@ const Users = () => {
             <button className='user-btn' onClick={() => filterUsersByRole('all')}>All Users</button>
             <button className='user-btn' onClick={() => filterUsersByRole('Doctor')}>Doctors</button>
             <button className='user-btn' onClick={() => filterUsersByRole('Patient')}>Patients</button>
-          </Col>
-          <Col lg="12" className="pt-3">
-            <div className="">
-              {/* <Button onClick={() => filterUsersByRole('all')}>All Users</Button> */}
-              {/* <Button onClick={() => filterUsersByRole('Doctor')}>Doctors</Button> */}
-              {/* <Button onClick={() => filterUsersByRole('Patient')}>Patients</Button> */}
-            </div>
           </Col>
           <Col lg="12" className="pt-3">
             <table className="table">

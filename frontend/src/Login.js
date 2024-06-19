@@ -33,21 +33,59 @@ function Login() {
     }
   };
 
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   const validationErrors = Validation(values);
+  //   setErrors(validationErrors);
+
+  //   if (Object.keys(validationErrors).length === 0) {
+  //     axios
+  //       .post(`${BASE_URL}/login`, values)
+  //       .then((res) => {
+  //         if (res.data.status === "Success") {
+  //           // Ensure the structure of the user object is correct
+  //           login(res.data.user);
+
+  //           if (values.role === "Admin") {
+  //             navigate("/admindashboard"); // Redirect to admin dashboard
+  //           } else if (values.role === "Doctor") {
+  //             navigate("/home");
+  //           } else if (values.role === "Receptionist") {
+  //             navigate("/home");
+  //           } else {
+  //             navigate("/home");
+  //           }
+
+  //           // Show toast message
+  //           toast.success("Successfully logged in");
+  //         } else if (res.data.message === "Password does not match") {
+  //           toast.error("Password does not match");
+  //         } else {
+  //           toast.error("No record exists, Please create your account");
+  //         }
+  //       })
+  //       .catch((err) => console.log(err));
+  //   }
+  // };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const validationErrors = Validation(values);
     setErrors(validationErrors);
-
+  
     if (Object.keys(validationErrors).length === 0) {
       axios
         .post(`${BASE_URL}/login`, values)
         .then((res) => {
           if (res.data.status === "Success") {
-            // Ensure the structure of the user object is correct
-            login(res.data.user);
-
+            const { user } = res.data;
+  
+            // Store user details in localStorage
+            localStorage.setItem("user", JSON.stringify(user));
+  
+            // Redirect based on role
             if (values.role === "Admin") {
-              navigate("/dashboard"); // Redirect to admin dashboard
+              navigate("/adminDashboard");
             } else if (values.role === "Doctor") {
               navigate("/home");
             } else if (values.role === "Receptionist") {
@@ -55,19 +93,19 @@ function Login() {
             } else {
               navigate("/home");
             }
-
+  
             // Show toast message
             toast.success("Successfully logged in");
           } else if (res.data.message === "Password does not match") {
             toast.error("Password does not match");
           } else {
-            toast.error("No record exists, Please create your account");
+            toast.error("Invalid credentials");
           }
         })
         .catch((err) => console.log(err));
     }
   };
-
+  
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="bg-white p-3 rounded w-25">
