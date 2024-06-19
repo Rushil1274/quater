@@ -28,9 +28,9 @@ const Header = () => {
   };
 
   let nav_links = [
-    { display: 'Dashboard', path: '/admindashboard' },
+    { display: 'Dashboard', path: '/dashboard' },
     { display: 'Users', path: '/dashboard/users' },
-    { display: 'All Appointments', path: '/dashboard/all-products' },
+    { display: 'All Appointments', path: '/dashboard/all-appointments' },
   ];
 
   return (
@@ -118,18 +118,6 @@ const Header = () => {
                       </>
                     ) : (
                       <>
-                        {user.role === "Admin" && (
-                          <Link
-                            to="/dashboard"
-                            style={{
-                              textDecoration: "none",
-                              color: "var(--primary-color)",
-                            }}
-                            onClick={closeProfileActions}
-                          >
-                            Dashboard
-                          </Link>
-                        )}
                         <Link
                           to="#"
                           onClick={handleLogout}

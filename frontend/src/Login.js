@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Validation from "./LoginValidation";
 import axios from "axios";
 import { BASE_URL } from "./config";
+
 import { useUser } from "./UserContext";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 function Login() {
   const [values, setValues] = useState({
@@ -37,42 +37,47 @@ function Login() {
     event.preventDefault();
     const validationErrors = Validation(values);
     setErrors(validationErrors);
-
+  
     if (Object.keys(validationErrors).length === 0) {
       axios
         .post(`${BASE_URL}/login`, values)
         .then((res) => {
           if (res.data.status === "Success") {
-            // Ensure the structure of the user object is correct
+            const { user } = res.data;
             login(res.data.user);
-
+  
+            // Store user details in localStorage
+            localStorage.setItem("user", JSON.stringify(user));
+  
+            // Redirect based on role
             if (values.role === "Admin") {
-              navigate("/admindashboard"); // Redirect to admin dashboard
+              navigate("/dashboard");
+            } else if (values.role === "Doctor") {
+              navigate("/home");
+            } else if (values.role === "Receptionist") {
+              navigate("/home");
             } else {
-              navigate("/home"); // Redirect to home for other roles
+              navigate("/home");
             }
-
+  
             // Show toast message
             toast.success("Successfully logged in");
           } else if (res.data.message === "Password does not match") {
             toast.error("Password does not match");
           } else {
-            toast.error("No record exists, please create your account");
+            toast.error("Invalid credentials");
           }
         })
-        .catch((err) => {
-          console.error(err);
-          toast.error("An error occurred. Please try again.");
-        });
+        .catch((err) => console.log(err));
     }
   };
-
+  
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="bg-white p-3 rounded w-25">
         <h2>Sign In</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
+        <div className="mb-3">
             <label htmlFor="email">Email</label>
             <input
               type="email"
@@ -128,7 +133,6 @@ function Login() {
             <strong>Forgot Password</strong>
           </Link>
         </form>
-        <ToastContainer />
       </div>
     </div>
   );

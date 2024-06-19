@@ -62,7 +62,7 @@ exports.createDoctor = (req, res) => {
 exports.updateDoctorById = (req, res) => {
   const sql = `
     UPDATE doctor SET 
-      name=?, email=?, password=?, role=?, age=?, gender=?, hospital=?, number=?, specialization=?, experience=?, doc_pic=?
+      name=?, email=?, password=?, role=?, age=?, gender=?, hospital=?, hospital_loc=?, fees=?, education=?, number=?, specialization=?, experience=?, doc_pic=?
     WHERE doctor_id=?
   `;
   const values = [
@@ -73,9 +73,11 @@ exports.updateDoctorById = (req, res) => {
     req.body.age,
     req.body.gender,
     req.body.hospital,
+    req.body.hospital_loc,
     req.body.number,
     req.body.specialization,
     req.body.experience,
+    req.body.education,
     req.body.doc_pic,
     req.params.id
   ];
@@ -111,7 +113,7 @@ exports.deleteDoctorById = (req, res) => {
 
 
 exports.saveDoctorProfile = (req, res) => {
-  const { name, mobile, gender, experience, specialization, fees, hospital, email } = req.body;
+  const { name, mobile, gender, experience, specialization, fees, hospital, hospital_loc, education, email } = req.body;
 
   // Check if the user exists in the login table
   const checkUserSql = "SELECT login_id, name, email, password, role FROM login WHERE email = ?";
@@ -141,8 +143,8 @@ exports.saveDoctorProfile = (req, res) => {
 
         // Update the existing doctor record
         const updateSql =
-          "UPDATE doctor SET name = ?, number = ?, gender = ?, experience = ?, specialization = ?, fees = ?,hospital = ? WHERE login_id = ?";
-        const updateValues = [name, mobile, gender, experience, specialization, fees, hospital, login_id];
+          "UPDATE doctor SET name = ?, number = ?, gender = ?, experience = ?, education = ?, specialization = ?, fees = ? ,hospital = ?, hospital_loc = ? WHERE login_id = ?";
+        const updateValues = [name, mobile, dob, gender, experience, specialization, fees, hospital, hospital_loc, fees, education, login_id];
 
         db.query(updateSql, updateValues, (err, updateResult) => {
           if (err) {

@@ -22,6 +22,8 @@ import Appointment from './Appointment';
 
 import AdminDashboard from './Admin/AdminDashboard';
 import AdminHeader from './Admin/AdminHeader'
+import Users from './Admin/Users';
+import AllAppointments from './Admin/AllAppointments';
 
 // Importing useUser hook assuming you have a UserContext
 import { useUser } from './UserContext';
@@ -44,14 +46,14 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/doctors" element={<Doctors />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/details" element={<Details />} />
+        <Route path="/details/:id" element={<Details />} />
 
         {/* {user && user.email === 'admin@gmail.com' && ( */}
-        <Route path="admindashboard" element={<AdminDashboard />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="dashboard/users" element={<Users />} />
+        <Route path="dashboard/all-appointments" element={<AllAppointments />} />
         {/* <Route path="/*" element={<ProtectedRoute />}>
-          <Route path="dashboard/all-products" element={<AllProducts />} />
           <Route path="dashboard/add-products" element={<AddProducts />} />
-          <Route path="dashboard/users" element={<Users />} />
           <Route path="dashboard/orders" element={<Orders />} /> 
         </Route> */}
         {/* )} */}

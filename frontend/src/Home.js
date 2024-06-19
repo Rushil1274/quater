@@ -3,17 +3,18 @@ import { Link } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaCheckDouble, FaClock, FaHeadset, FaHouseUser } from "react-icons/fa";
+import axios from 'axios';
 import img1 from "./images/specialities-01.png";
 import img2 from "./images/specialities-02.png";
 import img3 from "./images/specialities-03.png";
 import img4 from "./images/specialities-04.png";
 import img5 from "./images/specialities-05.png";
-import axios from 'axios';
 import { BASE_URL } from "./config";
 
 function Home() {
     const user = JSON.parse(localStorage.getItem('user'));
-    const userRole = user ? user.role : ''; // Extract user role from the user object
+    const userRole = user ? user.role : '';
+    
     const [filter, setFilter] = useState({ name: '', specialization: '', fees: '', location: '' });
     const [doctors, setDoctors] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
@@ -24,6 +25,14 @@ function Home() {
     const [age, setAge] = useState(null);
     const [maxBirthDate, setMaxBirthDate] = useState('');
     const [address, setAddress] = useState('');
+    const [insurance, setInsurance] = useState('');
+
+    const [specialization, setSpecialization] = useState('');
+    const [experience, setExperience] = useState('');
+    const [education, setEducation] = useState('');
+    const [fees, setFees] = useState('');
+    const [hospitalName, setHospitalName] = useState('');
+    const [hospitalAddress, setHospitalAddress] = useState('');
 
     useEffect(() => {
         const fetchDoctors = async () => {
@@ -36,6 +45,13 @@ function Home() {
         };
         fetchDoctors();
     }, []);
+
+    const filteredDoctors = doctors.filter((doctor) =>
+        doctor.name.toLowerCase().includes(filter.name.toLowerCase()) &&
+        doctor.specialization.toLowerCase().includes(filter.specialization.toLowerCase()) &&
+        (filter.fees === '' || doctor.fees.includes(filter.fees)) &&
+        (filter.location === '' || doctor.location.toLowerCase().includes(filter.location.toLowerCase()))
+    );
 
     useEffect(() => {
         const maxDate = new Date();
@@ -50,18 +66,41 @@ function Home() {
                     return;
                 }
                 const { email } = JSON.parse(userString);
-                const response = await axios.get(`${BASE_URL}/patients/email/${email}`);
-                const { number, adhar_no, gender, dob, address } = response.data;
-                setMobile(number || '');
-                setAadhaar(adhar_no || '');
-                setGender(gender || '');
-                setDob(dob || '');
-                setAddress(address || '');
-                if (!number || !adhar_no || !gender || !dob || !address) {
-                    const popupShown = sessionStorage.getItem('popupShown');
-                    if (!popupShown) {
-                        setShowPopup(true);
-                        sessionStorage.setItem('popupShown', 'true');
+                
+                if (userRole === 'Patient') {
+                    const response = await axios.get(`${BASE_URL}/patients/email/${email}`);
+                    const { number, adhar_no, gender, dob, address, insurance } = response.data;
+                    setMobile(number || '');
+                    setAadhaar(adhar_no || '');
+                    setGender(gender || '');
+                    setDob(dob || '');
+                    setAddress(address || '');
+                    setInsurance(insurance || '');
+                    if (!number || !adhar_no || !gender || !dob || !address || !insurance) {
+                        const popupShown = sessionStorage.getItem('popupShown');
+                        if (!popupShown) {
+                            setShowPopup(true);
+                            sessionStorage.setItem('popupShown', 'true');
+                        }
+                    }
+                } else if (userRole === 'Doctor') {
+                    const response = await axios.get(`${BASE_URL}/doctors/email/${email}`);
+                    const { number, gender, dob, hospital_loc, education, experience, fees, hospital, specialization } = response.data;
+                    setMobile(number || '');
+                    setGender(gender || '');
+                    setDob(dob || '');
+                    setHospitalAddress(hospital_loc || '');
+                    setEducation(education || '');
+                    setExperience(experience || '');
+                    setFees(fees || '');
+                    setHospitalName(hospital || '');
+                    setSpecialization(specialization || '');
+                    if (!number || !gender || !dob || !hospital_loc || !education || !experience || !fees || !hospital || !specialization) {
+                        const popupShown = sessionStorage.getItem('popupShown');
+                        if (!popupShown) {
+                            setShowPopup(true);
+                            sessionStorage.setItem('popupShown', 'true');
+                        }
                     }
                 }
             } catch (error) {
@@ -69,7 +108,7 @@ function Home() {
             }
         };
         fetchUserProfile();
-    }, []);
+    }, [userRole]);
 
     const bufferToBase64 = (buffer) => {
         let binary = '';
@@ -81,16 +120,50 @@ function Home() {
         return window.btoa(binary);
     };
 
-    const filteredDoctors = doctors.filter((doctor) =>
-        doctor.name.toLowerCase().includes(filter.name.toLowerCase()) &&
-        doctor.specialization.toLowerCase().includes(filter.specialization.toLowerCase()) &&
-        (filter.fees === '' || doctor.fees.includes(filter.fees)) &&
-        (filter.location === '' || doctor.location.toLowerCase().includes(filter.location.toLowerCase()))
-    );
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const userString = localStorage.getItem('user');
+            if (!userString) {
+                console.error('User not found in localStorage');
+                return;
+            }
+            const { email } = JSON.parse(userString);
+            let postData = {
+                mobile,
+                gender,
+                dob,
+                email,
+            };
+            if (userRole === 'Patient') {
+                postData = {
+                    ...postData,
+                    aadhaar,
+                    address,
+                    insurance,
+                };
+            }
+            else if (userRole === 'Doctor') {
+                postData = {
+                    ...postData,
+                    education,
+                    experience,
+                    fees,
+                    hospitalName,
+                    hospitalAddress,
+                    specialization,
+                };
+            }
 
-    const handleAddressChange = (e) => {
-        setAddress(e.target.value);
+            const response = await axios.post(`${BASE_URL}/${userRole === 'Patient' ? 'patients' : 'doctors'}/saveProfile`, postData);
+            console.log(response.data);
+            setShowPopup(false);
+            sessionStorage.setItem('popupShown', 'true');
+        } catch (error) {
+            console.error(`Failed to submit ${userRole === 'Patient' ? 'patient' : 'doctor'} details:`, error);
+        }
     };
+
     const handleMobileChange = (e) => {
         const value = e.target.value;
         if (/^\d*$/.test(value) && value.length <= 10) {
@@ -111,6 +184,9 @@ function Home() {
         setDob(value);
         calculateAge(value);
     };
+    const handleInsuranceChange = (e) => {
+        setInsurance(e.target.value);
+    }
     const calculateAge = (dob) => {
         const birthDate = new Date(dob);
         const today = new Date();
@@ -125,29 +201,32 @@ function Home() {
             setAge(Math.min(age, 110));
         }
     };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const userString = localStorage.getItem('user');
-            if (!userString) {
-                console.error('User not found in localStorage');
-                return;
-            }
-            const { email } = JSON.parse(userString);
-            const response = await axios.post(`${BASE_URL}/patients/saveProfile`, {
-                mobile,
-                aadhaar,
-                gender,
-                dob,
-                address,
-                email,
-            });
-            console.log(response.data);
-            setShowPopup(false);
-            sessionStorage.setItem('popupShown', 'true');
-        } catch (error) {
-            console.error('Failed to submit patient details:', error);
+    
+    const handleAddressChange = (e) => {
+        setAddress(e.target.value);
+    };
+    const handleEducationChange = (e) => {
+        setEducation(e.target.value);
+    }
+    const handleSpecializationChange = (e) =>{
+        setSpecialization(e.target.value);
+    }
+    const handleHospitalNameChange = (e) => {
+        setHospitalName(e.target.value);
+    }
+    const handleHospitalAddressChange = (e) => {
+        setHospitalAddress(e.target.value);
+    }
+    const handleFeesChange = (e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value) && value.length <= 4) {
+            setFees(value);
+        }
+    };
+    const handleExperienceChange = (e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value) && value.length <= 2) {
+            setExperience(value);
         }
     };
 
@@ -177,6 +256,55 @@ function Home() {
                                         )}
                                     </>
                                 )}
+                                {(userRole === 'Doctor') && (
+                                    <>
+                                        <label htmlFor="specialization">Specialization:</label>
+                                        <select
+                                            className="form-control"
+                                            id="specialization"
+                                            value={specialization}
+                                            onChange={handleSpecializationChange}
+                                            required>
+                                            <option value="">Select Specialization</option>
+                                            <option value="Orthopedic">Orthopedic</option>
+                                            <option value="Cardiologist">Cardiologist</option>
+                                            <option value="Dentists">Dentists</option>
+                                            <option value="Pediatrician">Pediatrician</option>
+                                            <option value="Gynecologist">Gynecologist</option>
+                                            <option value="Psychiatrist">Psychiatrist</option>
+                                            <option value="Neurologist">Neurologist</option>
+                                        </select>
+                                    </>
+                                )}
+                                {(userRole === 'Doctor') && (
+                                    <>
+                                        <label htmlFor="experience">Experience:</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="experience"
+                                            placeholder="Enter Your Experience (In Year)"
+                                            value={experience}
+                                            onChange={handleExperienceChange}
+                                            required
+                                            maxLength={2}
+                                        />
+                                    </>
+                                )}
+                                {(userRole === 'Doctor') && (
+                                    <>
+                                        <label htmlFor="education">Education:</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="education"
+                                            placeholder="Enter Your Education"
+                                            value={education}
+                                            onChange={handleEducationChange}
+                                            required
+                                        />
+                                    </>
+                                )}
                                 {(userRole === 'Patient' || userRole === 'Doctor') && (
                                     <>
                                         <label htmlFor="gender">Gender:</label>
@@ -185,8 +313,7 @@ function Home() {
                                             id="gender"
                                             value={gender}
                                             onChange={handleGenderChange}
-                                            required
-                                        >
+                                            required>
                                             <option value="">Select Gender</option>
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
@@ -211,7 +338,7 @@ function Home() {
                                         )}
                                     </>
                                 )}
-                                {(userRole === 'Patient' || userRole === 'Doctor') && (
+                                {(userRole === 'Patient') && (
                                     <>
                                         <label htmlFor="aadhaar">Aadhaar Card No:</label>
                                         <input
@@ -228,24 +355,22 @@ function Home() {
                                         )}
                                     </>
                                 )}
-                                {(userRole === 'Doctor') && (
+                                {(userRole === 'Patient') && (
                                     <>
-                                        <label htmlFor="aadhaar">Aadhaar Card No:</label>
-                                        <input
-                                            type="text"
+                                        <label htmlFor="insurance">Insurance:</label>
+                                        <select
                                             className="form-control"
-                                            id="aadhaar"
-                                            placeholder="Enter Your Aadhaar Number"
-                                            value={aadhaar}
-                                            onChange={handleAadhaarChange}
-                                            required
-                                        />
-                                        {aadhaar.replace(/\s/g, '').length > 0 && aadhaar.replace(/\s/g, '').length < 12 && (
-                                            <small className="text-danger">Aadhaar number must be exactly 12 digits long</small>
-                                        )}
+                                            id="insurance"
+                                            value={insurance}
+                                            onChange={handleInsuranceChange}
+                                            required>
+                                            <option value="">Select Insurance</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
                                     </>
                                 )}
-                                {(userRole === 'Patient' || userRole === 'Doctor') && (
+                                {(userRole === 'Patient') && (
                                     <>
                                         <label htmlFor="address">Address:</label>
                                         <input
@@ -256,6 +381,49 @@ function Home() {
                                             value={address}
                                             onChange={handleAddressChange}
                                             required
+                                        />
+                                    </>
+                                )}
+                                {(userRole === 'Doctor') && (
+                                    <>
+                                        <label htmlFor="hospital-name">Hospital Name:</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="hospital-name"
+                                            placeholder="Enter Your Hospital Name"
+                                            value={hospitalName}
+                                            onChange={handleHospitalNameChange}
+                                            required
+                                        />
+                                    </>
+                                )}
+                                {(userRole === 'Doctor') && (
+                                    <>
+                                        <label htmlFor="hospital-address">Hospital Address:</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="hospital-address"
+                                            placeholder="Enter Your Hospital Address"
+                                            value={hospitalAddress}
+                                            onChange={handleHospitalAddressChange}
+                                            required
+                                        />
+                                    </>
+                                )}
+                                {(userRole === 'Doctor') && (
+                                    <>
+                                        <label htmlFor="fees">Fees:</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="fees"
+                                            placeholder="Enter Your Fees"
+                                            value={fees}
+                                            onChange={handleFeesChange}
+                                            required
+                                            maxLength={4}
                                         />
                                     </>
                                 )}
@@ -331,7 +499,7 @@ function Home() {
             </section>
             <section className='reco-doc'>
                 <div className="container-fluid">
-                    {(userRole === 'Patient' || userRole === 'Admin') && (
+                    {(!user || userRole === 'Patient' || userRole === 'Admin') && (
                         <div className='mb-5 mt-100 section-title text-center reco-doc-card'>
                             <h2>Recommended Doctors</h2>
                             <div className="cardContainer">

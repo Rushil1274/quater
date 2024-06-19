@@ -1,37 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Grid, Paper, Typography, Button, Divider } from '@mui/material';
+import { Container, Grid, Paper, Typography, Divider, Button, Table, TableContainer, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css'; // Import the calendar styles
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import 'react-calendar/dist/Calendar.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import "./App.css"
+import "./App.css";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#00bcd4', // Cyan color
+      main: '#000080',
     },
   },
 });
 
 const DoctorsDashboard = () => {
-  const [monthOffset, setMonthOffset] = useState(0);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [allAppointments, setAllAppointments] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [totalAppointments, setTotalAppointments] = useState(0);
   const [todayAppointments, setTodayAppointments] = useState(0);
   const [upcomingAppointments, setUpcomingAppointments] = useState(0);
   const [pastAppointments, setPastAppointments] = useState(0);
 
-  const doctorId = 3; // Replace with the actual doctor ID
+  const doctorId = JSON.parse(localStorage.getItem('user')).doctor_id;
 
   useEffect(() => {
     fetchAllAppointments();
   }, []);
 
   useEffect(() => {
-    fetchAppointments(selectedDate);
+    filterAppointmentsByDate(selectedDate);
   }, [selectedDate]);
 
   const fetchAllAppointments = async () => {
@@ -39,15 +37,19 @@ const DoctorsDashboard = () => {
       const response = await fetch(`http://localhost:8081/appointments/doctor/${doctorId}`);
       if (response.ok) {
         const data = await response.json();
-        setAppointments(data);
-        calculateAppointmentCounts(data);
+        const updatedData = data.map(appointment => ({
+          ...appointment,
+          status: 'Pending'
+        }));
+        setAllAppointments(updatedData);
+        calculateAppointmentCounts(updatedData);
       } else {
         console.error('Failed to fetch appointments');
-        setAppointments([]);
+        setAllAppointments([]);
       }
     } catch (error) {
       console.error('Error:', error);
-      setAppointments([]);
+      setAllAppointments([]);
     }
   };
 
@@ -77,58 +79,49 @@ const DoctorsDashboard = () => {
     setPastAppointments(past);
   };
 
-  const getMonth = (offset) => {
-    const date = new Date();
-    date.setMonth(date.getMonth() + offset);
-    return date;
-  };
-
-  const goToPreviousMonth = () => {
-    if (monthOffset > -1) {
-      setMonthOffset(monthOffset - 1);
-    }
-  };
-
-  const goToNextMonth = () => {
-    if (monthOffset < 1) {
-      setMonthOffset(monthOffset + 1);
-    }
-  };
-
-  const tileDisabled = ({ date }) => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    const selectedMonth = date.getMonth();
-
-    return !(selectedMonth === currentMonth + monthOffset || selectedMonth === currentMonth + monthOffset - 1 || selectedMonth === currentMonth + monthOffset + 1);
-  };
-
-  const handleDateClick = (value) => {
-    setSelectedDate(value);
-  };
-
-  const fetchAppointments = async (date) => {
-    const filteredAppointments = appointments.filter(appointment => {
+  const filterAppointmentsByDate = (date) => {
+    const filteredAppointments = allAppointments.filter(appointment => {
       const appointmentDate = new Date(appointment.appointment_date).toDateString();
       return appointmentDate === date.toDateString();
     });
     setAppointments(filteredAppointments);
   };
 
+  const handleDateClick = (value) => {
+    setSelectedDate(value);
+  };
+
   const formatDate = (date) => {
-    // Format date as YYYY-MM-DD
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
 
-  const cancelAppointment = (index) => {
-    // Here you would implement the logic to cancel the appointment
-    // For demonstration, let's just remove the appointment from the list
-    const updatedAppointments = [...appointments];
-    updatedAppointments.splice(index, 1);
-    setAppointments(updatedAppointments);
+  const updateAppointmentStatus = async (index, status) => {
+    const appointment = appointments[index];
+    try {
+      const response = await fetch(`http://localhost:8081/appointments/${appointment.appointment_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      });
+      if (response.ok) {
+        const updatedAppointments = [...appointments];
+        updatedAppointments[index].status = status;
+        setAppointments(updatedAppointments);
+        const updatedAllAppointments = allAppointments.map(appt => 
+          appt.appointment_id === appointment.appointment_id ? { ...appt, status } : appt
+        );
+        setAllAppointments(updatedAllAppointments);
+      } else {
+        console.error('Failed to update appointment status');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const isPastDate = (date) => {
@@ -141,92 +134,134 @@ const DoctorsDashboard = () => {
     return date.toDateString() === today.toDateString();
   };
 
+  const changeMonth = (monthsToAdd) => {
+    setSelectedDate(prevDate => {
+      const newDate = new Date(prevDate);
+      newDate.setMonth(newDate.getMonth() + monthsToAdd);
+      return newDate;
+    });
+  };
+
+  const dayClassName = ({ date, view }) => {
+    if (isToday(date) && view === 'month') {
+      return 'today';
+    }
+    return null;
+  };
+
   return (
     <ThemeProvider theme={theme}>
-      <Container maxWidth="lg" className="container">
-        <Grid container spacing={3}>
-          {/* Total Appointments */}
+      <Container maxWidth="lg" className="container-dd">
+        <Grid container spacing={3} className='dd-main-container'>
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Total Appointments</Typography>
               <Typography variant="body1">{totalAppointments}</Typography>
             </Paper>
           </Grid>
-
-          {/* Today's Appointments */}
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Today's Appointments</Typography>
               <Typography variant="body1">{todayAppointments}</Typography>
             </Paper>
           </Grid>
-
-          {/* Upcoming Appointments */}
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Upcoming Appointments</Typography>
               <Typography variant="body1">{upcomingAppointments}</Typography>
             </Paper>
           </Grid>
-
-          {/* Past Appointments */}
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Past Appointments</Typography>
               <Typography variant="body1">{pastAppointments}</Typography>
             </Paper>
           </Grid>
-
-          {/* Combined Calendar with Arrows */}
           <Grid item xs={12} md={4}>
             <Paper className="calendar-container">
-              <div className="calendar-navigation">
-                <ArrowBackIcon onClick={goToPreviousMonth} className="icon" />
-                <Typography variant="h6" gutterBottom>
-                  {monthOffset === -1 && 'Past Month'}
-                  {monthOffset === 0 && 'Current Month'}
-                  {monthOffset === 1 && 'Next Month'}
-                </Typography>
-                <ArrowForwardIcon onClick={goToNextMonth} className="icon" />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <Button onClick={() => changeMonth(-1)}>&lt;</Button>
+                <Typography variant="h5">{selectedDate.toLocaleString('default', { month: 'long' })} {selectedDate.getFullYear()}</Typography>
+                <Button onClick={() => changeMonth(1)}>&gt;</Button>
               </div>
               <Calendar
-                value={getMonth(monthOffset)}
-                tileDisabled={tileDisabled}
-                prevLabel={null}
-                nextLabel={null}
-                prev2Label={null}
-                next2Label={null}
-                onClickDay={handleDateClick} // Add onClickDay prop to handle date clicks
+                value={selectedDate}
+                onClickDay={handleDateClick}
+                showNavigation={false}
+                dayClassName={dayClassName}
               />
             </Paper>
           </Grid>
-
-          {/* Display Appointments */}
           <Grid item xs={12} md={8}>
             <Paper className="appointments-container">
-              <Typography variant="h6" gutterBottom>Appointments for {selectedDate.toDateString()}</Typography>
+              <Typography className='app-tyrography' variant="h6" gutterBottom>Appointments for {selectedDate.toDateString()}</Typography>
               <Divider style={{ margin: '1rem 0', borderWidth: '2px', backgroundColor: theme.palette.primary.main }} />
               {appointments.length > 0 ? (
-                appointments.map((appointment, index) => (
-                  <React.Fragment key={index}>
-                    <div className="appointment-details" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                      <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-                        {appointment.appointment_time} - {appointment.patient_name} - {appointment.notes}
-                      </Typography>
-                      {!isPastDate(selectedDate) && !isToday(selectedDate) && (
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => cancelAppointment(index)}
-                        >
-                          Cancel
-                        </Button>
-                      )}
-                    </div>
-                  </React.Fragment>
-                ))
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Time</TableCell>
+                        <TableCell>Patient Name</TableCell>
+                        <TableCell>Reason</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>Actions</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {appointments.map((appointment, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{appointment.appointment_time}</TableCell>
+                          <TableCell>{appointment.patient_name}</TableCell>
+                          <TableCell>{appointment.notes}</TableCell>
+                          <TableCell>{appointment.status}</TableCell>
+                          <TableCell>
+                            {appointment.status === 'Pending' && (
+                              <>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => updateAppointmentStatus(index, 'Approved')}
+                                >
+                                  Approve
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  color="secondary"
+                                  onClick={() => updateAppointmentStatus(index, 'Rejected')}
+                                  style={{ marginLeft: '8px' }}
+                                >
+                                  Reject
+                                </Button>
+                              </>
+                            )}
+                            {appointment.status === 'Approved' && (
+                              <>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => updateAppointmentStatus(index, 'Completed')}
+                                >
+                                  Complete
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  color="secondary"
+                                  onClick={() => updateAppointmentStatus(index, 'Canceled')}
+                                  style={{ marginLeft: '8px' }}
+                                >
+                                  Cancel
+                                </Button>
+                              </>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               ) : (
-                <Typography variant="body1">No appointments for this date</Typography>
+                <Typography className='appt-tyrography' variant="body1">No appointments for this date</Typography>
               )}
             </Paper>
           </Grid>

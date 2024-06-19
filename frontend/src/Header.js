@@ -127,18 +127,6 @@ const Header = () => {
                       </>
                     ) : (
                       <>
-                        {user.role === "Admin" && (
-                          <Link
-                            to="/dashboard"
-                            style={{
-                              textDecoration: "none",
-                              color: "var(--primary-color)",
-                            }}
-                            onClick={closeProfileActions}
-                          >
-                            Dashboard
-                          </Link>
-                        )}
                         <Link
                           to="/"
                           onClick={handleLogout}

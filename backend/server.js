@@ -34,42 +34,55 @@ const patientRoutes = require("./routes/patinetRoutes");
 app.use("/doctors", doctorRoutes);
 app.use("/patients", patientRoutes);
 
+
 app.post("/login", (req, res) => {
-  const sql =
-    "SELECT * FROM login WHERE email=? AND role=?";
-  db.query(
-    sql,
-    [req.body.email, req.body.role],
-    (err, data) => {
-      if (err) {
-        console.error("Database error:", err);
-        return res.json({ status: "Error", message: "Database error" });
-      }
-      if (data.length > 0) {
-        // If there is a user with the given email and role, check the password
-        const user = data[0];
-        if (user.password === req.body.password) {
-          // Password matches, login successful
-          return res.json({
-            status: "Success",
-            user: {
-              login_id: user.login_id,
-              name: user.name,
-              role: user.role,
-              email: user.email,
-            },
+  const { email, password, role } = req.body;
+  const sql = "SELECT * FROM login WHERE email=? AND role=?";
+  db.query(sql, [email, role], (err, data) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.json({ status: "Error", message: "Database error" });
+    }
+    if (data.length > 0) {
+      const user = data[0];
+      if (user.password === password) {
+        // Password matches, prepare user details for response
+        const userInfo = {
+          login_id: user.login_id,
+          name: user.name,
+          role: user.role,
+          email: user.email,
+        };
+
+        // Retrieve additional details from doctor table
+        if (role === "Doctor") {
+          const sqlDoctor = "SELECT * FROM doctor WHERE login_id=?";
+          db.query(sqlDoctor, [user.login_id], (err, doctorData) => {
+            if (err) {
+              console.error("Error fetching doctor details:", err);
+              return res.json({
+                status: "Error",
+                message: "Error fetching doctor details",
+              });
+            }
+            if (doctorData.length > 0) {
+              userInfo.doctor_id = doctorData[0].doctor_id;
+            }
+            res.json({ status: "Success", user: userInfo });
           });
         } else {
-          // Password does not match
-          return res.json({ status: "Failed", message: "Password does not match" });
+          // For other roles like Patient or Receptionist, respond immediately
+          res.json({ status: "Success", user: userInfo });
         }
       } else {
-        // No user found with the given email and role
-        return res.json({ status: "Failed", message: "Invalid credentials" });
+        res.json({ status: "Failed", message: "Password does not match" });
       }
+    } else {
+      res.json({ status: "Failed", message: "Invalid credentials" });
     }
-  );
+  });
 });
+
 
 app.post("/signup", (req, res) => {
   const sql =
@@ -238,6 +251,33 @@ app.get('/appointments/doctor/:doctor_id', (req, res) => {
   });
 });
 
+// Admin Users
+app.get("/users", (req, res) => {
+  const sql = "SELECT * FROM login";
+  db.query(sql, (err, data) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json("Error");
+    }
+    return res.json(data);
+  });
+});
+app.delete("/users/:id", (req, res) => {
+  const userId = req.params.id;
+  const sql = "DELETE FROM login WHERE login_id = ?";
+  
+  db.query(sql, [userId], (err, result) => {
+    if (err) {
+      console.error("Database error:", err); // Log the detailed error
+      return res.status(500).json({ error: "Error deleting user", details: err });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json("User not found");
+    }
+    return res.json("User deleted successfully");
+  });
+});
+
 
 // Fetch doctors details by email
 app.get("/doctors/email/:email", (req, res) => {
@@ -285,3 +325,29 @@ app.put("/doctors/email/:email", (req, res) => {
 });
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
+
+app.put('/appointments/:appointment_id', (req, res) => {
+  const { status } = req.body;
+  const { appointment_id } = req.params;
+
+  if (!status) {
+    return res.status(400).json({ error: 'Status is required' });
+  }
+
+  // Corrected SQL query with the WHERE keyword
+  const sql = 'UPDATE appointments SET status = ? WHERE appointment_id = ?';
+  const values = [status, appointment_id];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating appointment status:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    return res.json({ message: 'Appointment status updated successfully' });
+  });
+});

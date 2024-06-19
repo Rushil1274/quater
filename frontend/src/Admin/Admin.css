@@ -43,7 +43,50 @@
   font-size: 2rem;
 }
 
-/* Add Product Page */
+.btn-deluser {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-deluser:hover {
+  background-color: #b02a37;
+}
+
+.user-btn {
+  border-radius: 5px;
+  /* border: 1px solid; */
+  border: none;
+  background-color: #616161;
+  color: white;
+  font-family: 'Poppins';
+  font-weight: 400;
+  font-size: 20px;
+  margin: 18px;
+  box-shadow: 0 5px 7px rgba(0,0,0,0.1);
+  padding: 10px 20px;
+}
+
+.user-btn:hover,
+.user-h4:hover {
+  background-color: #3c3c3c;
+}
+
+.table thead tr th {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+  margin-right: 100px;
+  background-color: whitesmoke;
+  text-align: center;
+}
+
+/* Add Product Page
 .form-group input {
   width: 100%;
   padding: 7px 15px;
@@ -56,18 +99,18 @@
   border: 1px solid black;
   padding: 7px 15px;
   border-radius: 5px;
-}
+} */
 
-/* Order Page */
+/* Order Page
 .order-main-container {
   background-color: var(--secondary-color);
   border-radius: 5px;
   padding: 10px;
   margin: 10px;
-  /* width: 100%; */
-}
+  width: 100%;
+} */
 
-.order-main-container p {
+/* .order-main-container p {
   background-color: whitesmoke;
   padding: 5px;
   margin: 5px;
@@ -87,4 +130,4 @@
 
 .order-main-container ul li div p {
   width: 500px; 
-}
+} */
