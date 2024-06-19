@@ -4,7 +4,6 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import "./App.css";
-import { BASE_URL } from './config';
 
 const theme = createTheme({
   palette: {
@@ -23,17 +22,10 @@ const DoctorsDashboard = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState(0);
   const [pastAppointments, setPastAppointments] = useState(0);
 
-  // Assuming doctor_id is obtained from localStorage or another source
   const doctorId = JSON.parse(localStorage.getItem('user')).doctor_id;
 
   useEffect(() => {
-    const storedAppointments = JSON.parse(localStorage.getItem('appointments'));
-    if (storedAppointments && storedAppointments.length > 0) {
-      setAllAppointments(storedAppointments);
-      calculateAppointmentCounts(storedAppointments);
-    } else {
-      fetchAllAppointments();
-    }
+    fetchAllAppointments();
   }, []);
 
   useEffect(() => {
@@ -42,16 +34,15 @@ const DoctorsDashboard = () => {
 
   const fetchAllAppointments = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/appointments/doctor/${doctorId}`);
+      const response = await fetch(`http://localhost:8081/appointments/doctor/${doctorId}`);
       if (response.ok) {
         const data = await response.json();
         const updatedData = data.map(appointment => ({
           ...appointment,
-          status: 'Pending' // Initial status for all appointments
+          status: 'Pending'
         }));
         setAllAppointments(updatedData);
         calculateAppointmentCounts(updatedData);
-        localStorage.setItem('appointments', JSON.stringify(updatedData));
       } else {
         console.error('Failed to fetch appointments');
         setAllAppointments([]);
@@ -107,22 +98,24 @@ const DoctorsDashboard = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const updateAppointmentStatus = async (index, status, appointmentId) => {
+  const updateAppointmentStatus = async (index, status) => {
+    const appointment = appointments[index];
     try {
-      const response = await fetch(`http://localhost:8081/appointments/${appointmentId}`, {
+      const response = await fetch(`http://localhost:8081/appointments/${appointment.appointment_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ status }),
       });
-
       if (response.ok) {
         const updatedAppointments = [...appointments];
         updatedAppointments[index].status = status;
         setAppointments(updatedAppointments);
-        localStorage.setItem('appointments', JSON.stringify(updatedAppointments));
-        console.log('Appointment status updated successfully');
+        const updatedAllAppointments = allAppointments.map(appt => 
+          appt.appointment_id === appointment.appointment_id ? { ...appt, status } : appt
+        );
+        setAllAppointments(updatedAllAppointments);
       } else {
         console.error('Failed to update appointment status');
       }
@@ -160,39 +153,30 @@ const DoctorsDashboard = () => {
     <ThemeProvider theme={theme}>
       <Container maxWidth="lg" className="container-dd">
         <Grid container spacing={3} className='dd-main-container'>
-          {/* Total Appointments */}
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Total Appointments</Typography>
               <Typography variant="body1">{totalAppointments}</Typography>
             </Paper>
           </Grid>
-
-          {/* Today's Appointments */}
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Today's Appointments</Typography>
               <Typography variant="body1">{todayAppointments}</Typography>
             </Paper>
           </Grid>
-
-          {/* Upcoming Appointments */}
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Upcoming Appointments</Typography>
               <Typography variant="body1">{upcomingAppointments}</Typography>
             </Paper>
           </Grid>
-
-          {/* Past Appointments */}
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
               <Typography variant="h6" gutterBottom>Past Appointments</Typography>
               <Typography variant="body1">{pastAppointments}</Typography>
             </Paper>
           </Grid>
-
-          {/* Calendar */}
           <Grid item xs={12} md={4}>
             <Paper className="calendar-container">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -208,8 +192,6 @@ const DoctorsDashboard = () => {
               />
             </Paper>
           </Grid>
-
-          {/* Display Appointments */}
           <Grid item xs={12} md={8}>
             <Paper className="appointments-container">
               <Typography className='app-tyrography' variant="h6" gutterBottom>Appointments for {selectedDate.toDateString()}</Typography>
@@ -239,14 +221,14 @@ const DoctorsDashboard = () => {
                                 <Button
                                   variant="contained"
                                   color="primary"
-                                  onClick={() => updateAppointmentStatus(index, 'Approved', appointment.appointment_id)}
+                                  onClick={() => updateAppointmentStatus(index, 'Approved')}
                                 >
                                   Approve
                                 </Button>
                                 <Button
                                   variant="contained"
                                   color="secondary"
-                                  onClick={() => updateAppointmentStatus(index, 'Rejected', appointment.appointment_id)}
+                                  onClick={() => updateAppointmentStatus(index, 'Rejected')}
                                   style={{ marginLeft: '8px' }}
                                 >
                                   Reject
@@ -258,14 +240,14 @@ const DoctorsDashboard = () => {
                                 <Button
                                   variant="contained"
                                   color="primary"
-                                  onClick={() => updateAppointmentStatus(index, 'Completed', appointment.appointment_id)}
+                                  onClick={() => updateAppointmentStatus(index, 'Completed')}
                                 >
                                   Complete
                                 </Button>
                                 <Button
                                   variant="contained"
                                   color="secondary"
-                                  onClick={() => updateAppointmentStatus(index, 'Canceled', appointment.appointment_id)}
+                                  onClick={() => updateAppointmentStatus(index, 'Canceled')}
                                   style={{ marginLeft: '8px' }}
                                 >
                                   Cancel
