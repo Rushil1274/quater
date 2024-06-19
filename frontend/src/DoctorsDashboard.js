@@ -132,8 +132,8 @@ const DoctorsDashboard = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container maxWidth="lg" className="container">
-        <Grid container spacing={3}>
+      <Container maxWidth="lg" className="container-dd">
+        <Grid container spacing={3} className='dd-main-container'>
           {/* Total Appointments */}
           <Grid item xs={12} sm={6} md={3}>
             <Paper className="grid-item">
@@ -186,7 +186,7 @@ const DoctorsDashboard = () => {
           {/* Display Appointments */}
           <Grid item xs={12} md={8}>
             <Paper className="appointments-container">
-              <Typography variant="h6" gutterBottom>Appointments for {selectedDate.toDateString()}</Typography>
+              <Typography className='app-tyrography' variant="h6" gutterBottom>Appointments for {selectedDate.toDateString()}</Typography>
               <Divider style={{ margin: '1rem 0', borderWidth: '2px', backgroundColor: theme.palette.primary.main }} />
               {appointments.length > 0 ? (
                 <TableContainer>
@@ -253,7 +253,7 @@ const DoctorsDashboard = () => {
                   </Table>
                 </TableContainer>
               ) : (
-                <Typography variant="body1">No appointments for this date</Typography>
+                <Typography className='appt-tyrography' variant="body1">No appointments for this date</Typography>
               )}
             </Paper>
           </Grid>

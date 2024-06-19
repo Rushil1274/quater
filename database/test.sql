@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 13, 2024 at 01:28 PM
+-- Generation Time: Jun 19, 2024 at 10:00 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -37,6 +37,13 @@ CREATE TABLE `admin` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`id`, `login_id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
+(1, 27, 'Admin', 'admin.healthnest@gmail.com', 'Healthnest@123', 'Admin', '2024-06-19 07:06:29');
+
 -- --------------------------------------------------------
 
 --
@@ -63,10 +70,17 @@ CREATE TABLE `appointments` (
 --
 
 INSERT INTO `appointments` (`appointment_id`, `doctor_id`, `patient_id`, `notes`, `created_at`, `updated_at`, `appointment_date`, `appointment_time`, `patient_name`, `patient_email`, `patient_number`, `status`) VALUES
-(19, 1, 1, 'First appointment', '2024-06-11 10:27:54', '2024-06-11 10:27:54', '2024-06-20', '10:00', 'John Doe', 'john.doe@example.com', '1234567890', 'Scheduled'),
-(20, 2, 2, 'Second appointment', '2024-06-11 10:28:05', '2024-06-11 10:28:05', '2024-06-21', '11:00', 'Jane Smith', 'jane.smith@example.com', '0987654321', 'Scheduled'),
-(21, 3, 3, 'Third appointment', '2024-06-11 10:28:28', '2024-06-11 10:28:28', '2024-06-23', '13:00', 'Alice Brown', 'alice.brown@example.com', '5556667777', 'Scheduled'),
-(22, 1, 19, 'fever', '2024-06-12 10:10:57', '2024-06-12 10:10:57', 'Jun 12, 2024', '09:00 AM', 'kushal', 'hello@gmail.com', '5154498484', NULL);
+(22, 1, 19, 'fever', '2024-06-12 10:10:57', '2024-06-14 11:48:42', 'Jun 12, 2024', '09:00 AM', 'kushal', 'hello@gmail.com', '5154498484', 'Completed'),
+(23, 1, 6, 'HEADACHE', '2024-06-14 09:10:57', '2024-06-14 11:48:20', 'Jun 14, 2024', '12:00 PM', 'Alex Brown', 'alex@example.com', '4567789901', 'Completed'),
+(24, 1, 5, 'Mosquito Cut', '2024-06-14 09:12:05', '2024-06-14 09:12:05', 'Jun 15, 2024', '04:00 PM', 'Jane Smith', 'jane@example.com', '123-456-78', 'pending'),
+(25, 1, 4, 'Dog CUt', '2024-06-14 09:13:19', '2024-06-14 09:13:19', 'Jun 17, 2024', '07:00 PM', 'John Potter', 'john@example.com', '987-654-32', 'pending'),
+(26, 1, 5, 'hb', '2024-06-14 11:21:55', '2024-06-14 11:21:55', 'Jun 18, 2024', '12:00 PM', 'Jane Smith', 'jane@example.com', '123-456-78', 'pending'),
+(27, 1, 5, 'VS', '2024-06-14 11:22:30', '2024-06-14 11:22:30', 'Jun 18, 2024', '12:00 PM', 'Jane Smith', 'jane@example.com', '123-456-78', 'pending'),
+(29, 2, 24, 'FEVER', '2024-06-18 05:44:52', '2024-06-18 05:44:52', 'Jun 19, 2024', '12:00 PM', 'Het', 'het@gmail.com', '6576456754', 'pending'),
+(30, 8, 24, 'QGWV', '2024-06-18 05:46:05', '2024-06-18 05:46:05', 'Jun 25, 2024', '11:00 AM', 'Het', 'het@gmail.com', '6576456754', 'pending'),
+(31, 1, 6, 'GYUHUJ', '2024-06-19 05:10:28', '2024-06-19 05:10:28', 'Jun 20, 2024', '12:00 PM', 'Alex Brown', 'alex@example.com', '4567789901', 'pending'),
+(32, 1, 6, 'vfcsdc', '2024-06-19 05:10:58', '2024-06-19 05:10:58', 'Jun 26, 2024', '03:00 PM', 'Alex Brown', 'alex@example.com', '4567789901', 'pending'),
+(33, 1, 6, ' xz', '2024-06-19 05:11:28', '2024-06-19 05:11:28', 'Jun 23, 2024', '01:00 PM', 'Alex Brown', 'alex@example.com', '4567789901', 'pending');
 
 -- --------------------------------------------------------
 
@@ -103,7 +117,10 @@ CREATE TABLE `doctor` (
 INSERT INTO `doctor` (`doctor_id`, `login_id`, `name`, `email`, `password`, `role`, `age`, `gender`, `hospital`, `number`, `specialization`, `experience`, `created_at`, `updated_at`, `doc_pic`, `hospital_loc`, `fees`, `education`, `dob`) VALUES
 (1, 1, 'Dr. John Doe', 'johndoe@example.com', 'Password@1234', 'Doctor', '21', 'Male', 'City Hospital', '123-456-78', 'Cardiology', '10 years', '2024-05-22 11:09:36', '2024-06-12 08:48:40', 'path_to_doc_pic', '', '0', '', '2003-06-12'),
 (2, 2, 'Dr. Jane Smith', 'janesmith@example.com', 'Password@456', 'Doctor', '20', 'Female', 'General Hospital', '987-654-32', 'Pediatrics', '15 years', '2024-05-22 11:09:36', '2024-06-12 08:50:27', 'path_to_doc_pic', '', '0', '', '2004-06-12'),
-(3, 3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'Doctor', '38', 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', '2024-05-22 11:09:36', '2024-06-12 08:51:24', 'path_to_doc_pic', '', '0', '', '1985-11-12');
+(3, 3, 'Dr. Michael Johnson', 'michaeljohnson@example.com', 'Password@789', 'Doctor', '38', 'Male', 'Community Clinic', '456-789-01', 'Orthopedics', '12 years', '2024-05-22 11:09:36', '2024-06-12 08:51:24', 'path_to_doc_pic', '', '0', '', '1985-11-12'),
+(5, 20, 'Tirth', 't@gmail.com', 'Tirth@2002', 'Doctor', NULL, '', '', '', '', '', '2024-06-13 12:07:12', '2024-06-13 12:08:02', '', '', '', '', ''),
+(7, 22, 'rushil', 'r@gmail.com', 'Tirth@1234', 'Doctor', NULL, '', '', '', '', '', '2024-06-14 11:35:10', '2024-06-14 11:35:10', '', '', '', '', ''),
+(8, 23, 'Abhi', 'abhi@gmail.com', 'Abhi@1234', 'Doctor', NULL, '', '', '', '', '', '2024-06-15 07:04:01', '2024-06-15 07:04:01', '', '', '', '', '');
 
 --
 -- Triggers `doctor`
@@ -164,7 +181,14 @@ INSERT INTO `login` (`login_id`, `name`, `email`, `password`, `role`) VALUES
 (7, 'Alice Johnson', 'alice@example.com', 'Alice@1234', 'Receptionist'),
 (8, 'Bob Smith', 'bob@example.com', 'Bob@123456', 'Receptionist'),
 (9, 'Charlie Brown', 'charlie@example.com', 'Charlie@123', 'Receptionist'),
-(19, 'kushal', 'hello@gmail.com', 'Kushal@123', 'Patient');
+(19, 'kushal', 'hello@gmail.com', 'Kushal@123', 'Patient'),
+(20, 'Tirth', 't@gmail.com', 'Tirth@2002', 'Doctor'),
+(21, 'rushil', 'rushil@gmail.com', 'Rushil@2003', 'Doctor'),
+(22, 'rushil', 'r@gmail.com', 'Tirth@1234', 'Doctor'),
+(23, 'Abhi', 'abhi@gmail.com', 'Abhi@1234', 'Doctor'),
+(24, 'Het', 'het@gmail.com', 'Het@2002', 'Patient'),
+(26, 'Meet', 'm@gmail.com', 'Meet@1234', 'Patient'),
+(27, 'Admin', 'admin.healthnest@gmail.com', 'Healthnest@123', 'Admin');
 
 --
 -- Triggers `login`
@@ -292,7 +316,9 @@ INSERT INTO `patient` (`patient_id`, `login_id`, `email`, `password`, `role`, `a
 (1, 4, 'john@example.com', 'Password@123', 'Patient', '23', 'Male', '123 Main St', '987-654-32', 'Yes', '123444678590', '2024-05-22 16:44:14', '2024-06-12 08:51:59', 'John Potter', '2000-12-31', ''),
 (2, 5, 'jane@example.com', 'Password@456', 'Patient', '21', 'Female', '456 Elm St', '123-456-78', 'Yes', '987645432210', '2024-05-22 16:44:14', '2024-06-12 08:51:44', 'Jane Smith', '2002-12-31', ''),
 (3, 6, 'alex@example.com', 'Password@789', 'Patient', '24', 'Male', '789 Oak St', '4567789901', 'No', '5678-9012-34', '2024-05-22 16:44:14', '2024-06-12 08:52:14', 'Alex Brown', '1999-12-31', ''),
-(9, 19, 'hello@gmail.com', 'Kushal@123', 'Patient', '21', 'Male', 'jjhvyvtyvtcty', '5154498484', 'Yes', '845151151515', '2024-06-12 15:38:52', '2024-06-12 10:10:01', 'kushal', '2002-11-17', '');
+(9, 19, 'hello@gmail.com', 'Kushal@123', 'Patient', '21', 'Male', 'jjhvyvtyvtcty', '5154498484', 'Yes', '845151151515', '2024-06-12 15:38:52', '2024-06-12 10:10:01', 'kushal', '2002-11-17', ''),
+(10, 24, 'het@gmail.com', 'Het@2002', 'Patient', '19', 'Male', 'Ganesh Glory', '6576456754', 'No', '266267864466', '2024-06-15 12:35:29', '2024-06-15 07:07:18', 'Het', '2005-01-19', ''),
+(11, 26, 'm@gmail.com', 'Meet@1234', 'Patient', NULL, '', '', '', '', '', '2024-06-18 13:12:46', '2024-06-18 07:42:46', 'Meet', '0000-00-00', '');
 
 --
 -- Triggers `patient`
@@ -502,31 +528,31 @@ ALTER TABLE `time_slots`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `doctor`
 --
 ALTER TABLE `doctor`
-  MODIFY `doctor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `doctor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `login`
 --
 ALTER TABLE `login`
-  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `ratings_reviews`
