@@ -31,6 +31,7 @@ const DoctorsDashboard = () => {
   useEffect(() => {
     const storedAppointments = JSON.parse(localStorage.getItem(`appointments_${doctorId}`));
     if (storedAppointments) {
+      updatePastAppointmentsStatus(storedAppointments);
       setAllAppointments(storedAppointments);
       calculateAppointmentCounts(storedAppointments);
     } else {
@@ -42,11 +43,21 @@ const DoctorsDashboard = () => {
     filterAppointmentsByDate(selectedDate);
   }, [selectedDate, allAppointments]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchAppointments();
+    }, 3000);
+    
+    // Clear interval on component unmount
+    return () => clearInterval(interval);
+  }, [doctorId]);
+
   const fetchAppointments = async () => {
     try {
       const response = await fetch(`http://localhost:8081/appointments/doctor/${doctorId}`);
       if (response.ok) {
         const data = await response.json();
+        updatePastAppointmentsStatus(data);
         setAllAppointments(data);
         calculateAppointmentCounts(data);
         localStorage.setItem(`appointments_${doctorId}`, JSON.stringify(data));
@@ -57,6 +68,37 @@ const DoctorsDashboard = () => {
     } catch (error) {
       console.error('Error:', error);
       setAllAppointments([]);
+    }
+  };
+
+  const updatePastAppointmentsStatus = async (appointments) => {
+    const today = new Date();
+    const updatedAppointments = appointments.map(appointment => {
+      const appointmentDate = new Date(appointment.appointment_date);
+      if (appointmentDate < today && appointment.status !== 'Expired') {
+        appointment.status = 'Expired';
+        updateAppointmentStatusInBackend(appointment.appointment_id, 'Expired');
+      }
+      return appointment;
+    });
+    setAllAppointments(updatedAppointments);
+    localStorage.setItem(`appointments_${doctorId}`, JSON.stringify(updatedAppointments));
+  };
+
+  const updateAppointmentStatusInBackend = async (appointmentId, status) => {
+    try {
+      const response = await fetch(`http://localhost:8081/appointments/${appointmentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      });
+      if (!response.ok) {
+        console.error('Failed to update appointment status');
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 
@@ -219,7 +261,7 @@ const DoctorsDashboard = () => {
                           <TableCell>{appointment.notes}</TableCell>
                           <TableCell>{appointment.status}</TableCell>
                           <TableCell>
-                            {appointment.status === 'Pending' && (
+                            {appointment.status === 'pending' && (
                               <>
                                 <Button
                                   variant="contained"
@@ -232,7 +274,7 @@ const DoctorsDashboard = () => {
                                 <Button
                                   variant="contained"
                                   color="primary"
-                                  style={{ color: 'white' }}
+                                  style={{ marginLeft: '8px' }}
                                   onClick={() => updateAppointmentStatus(index, 'Rejected')}
                                 >
                                   Reject
