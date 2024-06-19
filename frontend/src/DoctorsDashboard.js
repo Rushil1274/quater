@@ -37,8 +37,12 @@ const DoctorsDashboard = () => {
       const response = await fetch(`http://localhost:8081/appointments/doctor/${doctorId}`);
       if (response.ok) {
         const data = await response.json();
-        setAllAppointments(data);
-        calculateAppointmentCounts(data);
+        const updatedData = data.map(appointment => ({
+          ...appointment,
+          status: 'Pending' // Initial status for all appointments
+        }));
+        setAllAppointments(updatedData);
+        calculateAppointmentCounts(updatedData);
       } else {
         console.error('Failed to fetch appointments');
         setAllAppointments([]);
@@ -94,15 +98,9 @@ const DoctorsDashboard = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const cancelAppointment = (index) => {
+  const updateAppointmentStatus = (index, status) => {
     const updatedAppointments = [...appointments];
-    updatedAppointments.splice(index, 1);
-    setAppointments(updatedAppointments);
-  };
-
-  const completeAppointment = (index) => {
-    const updatedAppointments = [...appointments];
-    updatedAppointments[index].status = 'Completed';
+    updatedAppointments[index].status = status;
     setAppointments(updatedAppointments);
   };
 
@@ -209,27 +207,42 @@ const DoctorsDashboard = () => {
                           <TableCell>{appointment.notes}</TableCell>
                           <TableCell>{appointment.status}</TableCell>
                           <TableCell>
-                            {!isPastDate(selectedDate) && !isToday(selectedDate) && (
+                            {appointment.status === 'Pending' && (
                               <>
-                                {appointment.status !== 'Completed' ? (
-                                  <>
-                                    <Button
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() => completeAppointment(index)}
-                                    >
-                                      Complete
-                                    </Button>
-                                    <Button
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() => cancelAppointment(index)}
-                                      style={{ marginLeft: '8px' }}
-                                    >
-                                      Cancel
-                                    </Button>
-                                  </>
-                                ) : null}
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => updateAppointmentStatus(index, 'Approved')}
+                                >
+                                  Approve
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  color="secondary"
+                                  onClick={() => updateAppointmentStatus(index, 'Rejected')}
+                                  style={{ marginLeft: '8px' }}
+                                >
+                                  Reject
+                                </Button>
+                              </>
+                            )}
+                            {appointment.status === 'Approved' && (
+                              <>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => updateAppointmentStatus(index, 'Completed')}
+                                >
+                                  Complete
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  color="secondary"
+                                  onClick={() => updateAppointmentStatus(index, 'Canceled')}
+                                  style={{ marginLeft: '8px' }}
+                                >
+                                  Cancel
+                                </Button>
                               </>
                             )}
                           </TableCell>
