@@ -1,6 +1,5 @@
-
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Button } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
@@ -52,15 +51,10 @@ const Users = () => {
     <section>
       <Container>
         <Row>
-          <Col lg="12">
-            <h4 className='user-h4'>Users</h4>
-          </Col>
-          <Col lg="12" className="pt-3">
-            <div className="text-center">
-              <Button className="mr-2" onClick={() => filterUsersByRole('all')}>All Users</Button>
-              <Button className="mr-2" onClick={() => filterUsersByRole('Doctor')}>Doctors</Button>
-              <Button onClick={() => filterUsersByRole('Patient')}>Patients</Button>
-            </div>
+          <Col lg="12" className='text-center'>
+            <button className='user-btn' onClick={() => filterUsersByRole('all')}>All Users</button>
+            <button className='user-btn' onClick={() => filterUsersByRole('Doctor')}>Doctors</button>
+            <button className='user-btn' onClick={() => filterUsersByRole('Patient')}>Patients</button>
           </Col>
           <Col lg="12" className="pt-3">
             <table className="table">
