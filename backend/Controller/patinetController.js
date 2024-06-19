@@ -162,7 +162,7 @@ exports.deletePatientById = (req, res) => {
 };
 
 exports.saveProfile = (req, res) => {
-  const { mobile, gender, dob, aadhaar, address, email } = req.body;
+  const { mobile, gender, dob, aadhaar, insurance, address, email } = req.body;
 
   // Check if the user exists in the login table
   const checkUserSql = "SELECT login_id, name, email, password, role FROM login WHERE email = ?";
@@ -196,13 +196,14 @@ exports.saveProfile = (req, res) => {
           !patient.adhar_no ||
           !patient.gender ||
           !patient.dob ||
+          !patient.insurance ||
           !patient.address;
 
         if (shouldUpdate) {
           // Update the existing patient record
           const updateSql =
-            "UPDATE patient SET number = ?, adhar_no = ?, gender = ?, dob = ?, address = ? WHERE login_id = ?";
-          const updateValues = [mobile, aadhaar, gender, dob, address, login_id];
+            "UPDATE patient SET number = ?, adhar_no = ?, gender = ?, dob = ?, insurance = ?, address = ? WHERE login_id = ?";
+          const updateValues = [mobile, aadhaar, gender, dob, insurance, address, login_id];
 
           db.query(updateSql, updateValues, (err, updateResult) => {
             if (err) {

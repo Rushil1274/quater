@@ -47,7 +47,7 @@ function Login() {
             login(res.data.user);
 
             if (values.role === "Admin") {
-              navigate("/admindashboard"); // Redirect to admin dashboard
+              navigate("/dashboard"); // Redirect to admin dashboard
             } else if (values.role === "Doctor") {
               navigate("/home");
             } else if (values.role === "Receptionist") {

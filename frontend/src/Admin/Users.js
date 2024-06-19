@@ -1,3 +1,6 @@
+
+
+
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import { toast } from 'react-toastify';
@@ -5,25 +8,31 @@ import axios from 'axios';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('http://localhost:8081/users');
-        setUsers(response.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        toast.error('Error fetching users');
-      }
-    };
-
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    setFilteredUsers(users); // Initialize filteredUsers with all users on load
+  }, [users]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:8081/users');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      toast.error('Error fetching users');
+    }
+  };
 
   const deleteUser = async (loginId) => {
     try {
       await axios.delete(`http://localhost:8081/users/${loginId}`);
-      setUsers(users.filter(user => user.login_id !== loginId)); // Remove deleted user from state
+      setUsers(users.filter(user => user.login_id !== loginId));
+      setFilteredUsers(filteredUsers.filter(user => user.login_id !== loginId)); // Update filteredUsers after deletion
       toast.success('User deleted!');
     } catch (error) {
       console.error('Error deleting user:', error.response?.data || error.message);
@@ -31,14 +40,33 @@ const Users = () => {
     }
   };
 
+  const filterUsersByRole = (role) => {
+    if (role === 'all') {
+      setFilteredUsers(users); // Show all users
+    } else {
+      const filtered = users.filter(user => user.role === role);
+      console.log(filtered); // Add this line to log the filtered array
+      setFilteredUsers(filtered);
+    }
+  };
+
   return (
     <section>
       <Container>
         <Row>
-          <Col lg="12">
-            <h4 className='user-h4'>Users</h4>
+          <Col lg="12" className='text-center'>
+            <button className='user-btn' onClick={() => filterUsersByRole('all')}>All Users</button>
+            <button className='user-btn' onClick={() => filterUsersByRole('Doctor')}>Doctors</button>
+            <button className='user-btn' onClick={() => filterUsersByRole('Patient')}>Patients</button>
           </Col>
-          <Col lg="12" className="pt-5">
+          <Col lg="12" className="pt-3">
+            <div className="">
+              {/* <Button onClick={() => filterUsersByRole('all')}>All Users</Button> */}
+              {/* <Button onClick={() => filterUsersByRole('Doctor')}>Doctors</Button> */}
+              {/* <Button onClick={() => filterUsersByRole('Patient')}>Patients</Button> */}
+            </div>
+          </Col>
+          <Col lg="12" className="pt-3">
             <table className="table">
               <thead>
                 <tr>
@@ -49,22 +77,21 @@ const Users = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
-                    <tr key={user.login_id}>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>{user.role}</td>
-                      <td>
-                        <button
-                          className="btn-deluser btn-danger"
-                          onClick={() => deleteUser(user.login_id)} // Use login_id here
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                }
+                {filteredUsers.map((user) => (
+                  <tr key={user.login_id}>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.role}</td>
+                    <td>
+                      <button
+                        className="btn-deluser btn-danger"
+                        onClick={() => deleteUser(user.login_id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </Col>
