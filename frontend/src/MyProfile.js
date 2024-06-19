@@ -65,6 +65,13 @@ const MyAppointments = () => {
 
     fetchAppointments();
   }, []); // Empty dependency array to run effect only once on component mount
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
+  const formatTime = (timeString) => {
+    return timeString.substring(11, 16); // Extracts 'HH:mm' from '2024-06-14T09:12:05.000Z'
+  };
 
   return (
     <div className="my-appointments">
@@ -78,7 +85,8 @@ const MyAppointments = () => {
             <th>Doctor Name</th>
             <th>Appointment Date</th>
             <th>Appointment Time</th>
-            <th>Appointment Created at</th>
+            <th>Appointment Created (Date)</th>
+            <th>Appointment Created (Time)</th>
             <th>Reason</th>
             <th>Status</th>
           </tr>
@@ -90,7 +98,9 @@ const MyAppointments = () => {
               <td>{appointment.doctor_name}</td>
               <td>{appointment.appointment_date}</td>
               <td>{appointment.appointment_time}</td>
-              <td>{appointment.created_at}</td>
+              <td>{formatDate(appointment.created_at)}</td>
+              <td>{formatTime(appointment.created_at)}</td>
+              {/* <td>{(appointment.created_at)}</td> */}
               <td>{appointment.notes}</td>
               <td>{appointment.status}</td>
             </tr>

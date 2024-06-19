@@ -996,13 +996,19 @@ ul {
 /* My Appointments */
 .table-ap thead tr th,
 .table-ap tbody tr td {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .table-ap thead tr th {
   background-color: whitesmoke;
   border-radius: 5px;
   box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.table-ap th,
+.table-ap td {
+  padding-bottom: 8px; 
   text-align: center;
 }
 
