@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'reactstrap'
 import './Admin.css'
+import { BASE_URL } from '../config';
+
 
 const AdminDashboard = () => {
 
@@ -11,7 +13,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchTotalUsers = async () => {
       try {
-        const response = await fetch('http://localhost:8081/users');
+        const response = await fetch(`${BASE_URL}/users`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -27,7 +29,7 @@ const AdminDashboard = () => {
 
   const fetchTotalDoctors = async () => {
     try {
-      const response = await fetch('http://localhost:8081/doctors');
+      const response = await fetch(`${BASE_URL}/doctors`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -42,7 +44,7 @@ const AdminDashboard = () => {
 
   const fetchTotalPatients = async () => {
     try {
-      const response = await fetch('http://localhost:8081/patients/');
+      const response = await fetch(`${BASE_URL}/patients/`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

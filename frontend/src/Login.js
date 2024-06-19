@@ -51,7 +51,7 @@ function Login() {
   
             // Redirect based on role
             if (values.role === "Admin") {
-              navigate("/adminDashboard");
+              navigate("/dashboard");
             } else if (values.role === "Doctor") {
               navigate("/home");
             } else if (values.role === "Receptionist") {

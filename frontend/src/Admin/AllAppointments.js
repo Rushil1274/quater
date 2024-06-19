@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import './Admin.css'
+import { BASE_URL } from '../config';
 
 const AllAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -8,7 +9,7 @@ const AllAppointments = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8081/appointments');
+        const response = await fetch(`${BASE_URL}/appointments`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
