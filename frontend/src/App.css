@@ -994,49 +994,16 @@ ul {
 }
 
 /* My Appointments */
-.my-appointments ul li {
-  background-color: #c3c3c3;
-  border-radius: 5px;
-  padding: 10px;
-  margin: 5px;
+.table-ap thead tr th,
+.table-ap tbody tr td {
+  font-size: 18px;
 }
 
-.my-appointments ul li p {
+.table-ap thead tr th {
   background-color: whitesmoke;
   border-radius: 5px;
-  margin: 5px;
-  padding: 5px;
-}
-
-.my-appointments ul li ul li {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-}
-
-.my-appointments ul li ul li img {
-  border-radius: 5px;
-  margin-right: 10px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .user-profile {
-    padding: 10px;
-  }
-
-  .user-profile nav ul {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .user-profile nav ul li {
-    margin-bottom: 10px;
-  }
-
-  .user-profile nav ul li:last-child {
-    margin-bottom: 0;
-  }
+  box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+  text-align: center;
 }
 
 /* Update Profile */
