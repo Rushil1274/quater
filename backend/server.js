@@ -325,3 +325,29 @@ app.put("/doctors/email/:email", (req, res) => {
 });
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
+
+app.put('/appointments/:appointment_id', (req, res) => {
+  const { status } = req.body;
+  const { appointment_id } = req.params;
+
+  if (!status) {
+    return res.status(400).json({ error: 'Status is required' });
+  }
+
+  // Corrected SQL query with the WHERE keyword
+  const sql = 'UPDATE appointments SET status = ? WHERE appointment_id = ?';
+  const values = [status, appointment_id];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating appointment status:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    return res.json({ message: 'Appointment status updated successfully' });
+  });
+});

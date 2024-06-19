@@ -26,7 +26,13 @@ const DoctorsDashboard = () => {
   const doctorId = JSON.parse(localStorage.getItem('user')).doctor_id;
 
   useEffect(() => {
-    fetchAllAppointments();
+    const storedAppointments = JSON.parse(localStorage.getItem('appointments'));
+    if (storedAppointments && storedAppointments.length > 0) {
+      setAllAppointments(storedAppointments);
+      calculateAppointmentCounts(storedAppointments);
+    } else {
+      fetchAllAppointments();
+    }
   }, []);
 
   useEffect(() => {
@@ -44,6 +50,7 @@ const DoctorsDashboard = () => {
         }));
         setAllAppointments(updatedData);
         calculateAppointmentCounts(updatedData);
+        localStorage.setItem('appointments', JSON.stringify(updatedData));
       } else {
         console.error('Failed to fetch appointments');
         setAllAppointments([]);
@@ -99,10 +106,28 @@ const DoctorsDashboard = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const updateAppointmentStatus = (index, status) => {
-    const updatedAppointments = [...appointments];
-    updatedAppointments[index].status = status;
-    setAppointments(updatedAppointments);
+  const updateAppointmentStatus = async (index, status, appointmentId) => {
+    try {
+      const response = await fetch(`http://localhost:8081/appointments/${appointmentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      });
+
+      if (response.ok) {
+        const updatedAppointments = [...appointments];
+        updatedAppointments[index].status = status;
+        setAppointments(updatedAppointments);
+        localStorage.setItem('appointments', JSON.stringify(updatedAppointments));
+        console.log('Appointment status updated successfully');
+      } else {
+        console.error('Failed to update appointment status');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const isPastDate = (date) => {
@@ -213,14 +238,14 @@ const DoctorsDashboard = () => {
                                 <Button
                                   variant="contained"
                                   color="primary"
-                                  onClick={() => updateAppointmentStatus(index, 'Approved')}
+                                  onClick={() => updateAppointmentStatus(index, 'Approved', appointment.appointment_id)}
                                 >
                                   Approve
                                 </Button>
                                 <Button
                                   variant="contained"
                                   color="secondary"
-                                  onClick={() => updateAppointmentStatus(index, 'Rejected')}
+                                  onClick={() => updateAppointmentStatus(index, 'Rejected', appointment.appointment_id)}
                                   style={{ marginLeft: '8px' }}
                                 >
                                   Reject
@@ -232,14 +257,14 @@ const DoctorsDashboard = () => {
                                 <Button
                                   variant="contained"
                                   color="primary"
-                                  onClick={() => updateAppointmentStatus(index, 'Completed')}
+                                  onClick={() => updateAppointmentStatus(index, 'Completed', appointment.appointment_id)}
                                 >
                                   Complete
                                 </Button>
                                 <Button
                                   variant="contained"
                                   color="secondary"
-                                  onClick={() => updateAppointmentStatus(index, 'Canceled')}
+                                  onClick={() => updateAppointmentStatus(index, 'Canceled', appointment.appointment_id)}
                                   style={{ marginLeft: '8px' }}
                                 >
                                   Cancel
