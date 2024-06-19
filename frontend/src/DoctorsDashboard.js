@@ -22,7 +22,8 @@ const DoctorsDashboard = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState(0);
   const [pastAppointments, setPastAppointments] = useState(0);
 
-  const doctorId = 1;
+  // Assuming doctor_id is obtained from localStorage or another source
+  const doctorId = JSON.parse(localStorage.getItem('user')).doctor_id;
 
   useEffect(() => {
     fetchAllAppointments();
