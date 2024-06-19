@@ -38,39 +38,65 @@ const AccountDetails = ({ user }) => {
   );
 };
 
+const MyAppointments = () => {
+  const [appointments, setAppointments] = useState([]);
 
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const userData = localStorage.getItem('user');
+        if (!userData) {
+          console.error('No user data found in localStorage');
+          return;
+        }
+        const user = JSON.parse(userData);
+        const patientId = user.login_id;
 
-const MyAppointments = ({ user }) => {
-  const [Appointments, setAppointments] = useState([]);
+        const response = await fetch(`${BASE_URL}/appointments/${patientId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch appointments');
+        }
+        const data = await response.json();
+        setAppointments(data);
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      }
+    };
+
+    fetchAppointments();
+  }, []); // Empty dependency array to run effect only once on component mount
 
   return (
     <div className="my-appointments">
-      {/* <h4>My Orders</h4> */}
-      {Appointments.length === 0 ? (
-        <p>You have not make any appointments.</p>
+      {appointments.length === 0 ? (
+        <p>You have not made any appointments.</p>
       ) : (
-        <ul>
-          {Appointments.map(order => (
-            <li key={order.id}>
-              <p>Appointments ID: {Appointments.id}</p>
-              <p>Total: {Appointments.totalAmount}</p>
-              <p>Items:</p>
-              <ul>
-                {order.cartItems.map(item => (
-                  <li key={item.id}>
-                    <img src={item.image} alt={item.productName} style={{ maxWidth: '100px' }} />
-                    <div>
-                      <p>Appointment Id: { }</p>
-                      <p>Doctor's name: { }</p>
-                      <p>Price: { }</p>
-                      <p>Quantity: { }</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </li>
+      <table className="table-ap">
+        <thead>
+          <tr>
+            <th>Appointment ID</th>
+            <th>Doctor Name</th>
+            <th>Appointment Date</th>
+            <th>Appointment Time</th>
+            <th>Appointment Created at</th>
+            <th>Reason</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {appointments.map(appointment => (
+            <tr key={appointment.login_id}>
+              <td>{appointment.appointment_id}</td>
+              <td>{appointment.doctor_name}</td>
+              <td>{appointment.appointment_date}</td>
+              <td>{appointment.appointment_time}</td>
+              <td>{appointment.created_at}</td>
+              <td>{appointment.notes}</td>
+              <td>{appointment.status}</td>
+            </tr>
           ))}
-        </ul>
+        </tbody>
+      </table>
       )}
     </div>
   );
@@ -108,28 +134,28 @@ const UpdateProfile = ({ user }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const response = await axios.put(`${BASE_URL}/patients/email/${storedUser.email}`, formData);
-    console.log("Update response:", response);
-    if (response.status === 200) {
-      alert("Profile updated successfully");
-    } else {
-      console.error("Failed to update profile:", response.data);
-      alert("Failed to update profile:" `${response.data.message || response.status}`);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const response = await axios.put(`${BASE_URL}/patients/email/${storedUser.email}`, formData);
+      console.log("Update response:", response);
+      if (response.status === 200) {
+        alert("Profile updated successfully");
+      } else {
+        console.error("Failed to update profile:", response.data);
+        alert("Failed to update profile:" `${response.data.message || response.status}`);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      if (error.response) {
+        console.error("Error response data:", error.response.data);
+        alert("Failed to update profile:" `${error.response.data.message || error.response.status}`);
+      } else {
+        alert("Failed to update profile: An unknown error occurred.");
+      }
     }
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    if (error.response) {
-      console.error("Error response data:", error.response.data);
-      alert("Failed to update profile:" `${error.response.data.message || error.response.status}`);
-    } else {
-      alert("Failed to update profile: An unknown error occurred.");
-    }
-  }
-};
+  };
 
 
 

@@ -21,10 +21,9 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    sessionStorage.removeItem('popupShown'); // Clear popupShown flag on logout
-    navigate("/login");
     toast.success('Logged out');
     closeProfileActions(); // Close profile actions after logout
+    navigate("/");
   };
 
   let nav_links = [
