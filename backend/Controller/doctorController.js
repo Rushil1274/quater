@@ -111,7 +111,6 @@ exports.deleteDoctorById = (req, res) => {
   });
 };
 
-
 exports.saveDoctorProfile = (req, res) => {
   const { name, mobile, gender, experience, specialization, fees, hospital, hospital_loc, education, email } = req.body;
 
@@ -139,12 +138,10 @@ exports.saveDoctorProfile = (req, res) => {
       }
 
       if (existingDoctor.length > 0) {
-        const doctor = existingDoctor[0];
-
         // Update the existing doctor record
         const updateSql =
-          "UPDATE doctor SET name = ?, number = ?, gender = ?, experience = ?, education = ?, specialization = ?, fees = ? ,hospital = ?, hospital_loc = ? WHERE login_id = ?";
-        const updateValues = [name, mobile, dob, gender, experience, specialization, fees, hospital, hospital_loc, fees, education, login_id];
+          "UPDATE doctor SET name = ?, number = ?, gender = ?, experience = ?, education = ?, specialization = ?, fees = ?, hospital = ?, hospital_loc = ? WHERE login_id = ?";
+        const updateValues = [name, mobile, gender, experience, education, specialization, fees, hospital, hospital_loc, login_id];
 
         db.query(updateSql, updateValues, (err, updateResult) => {
           if (err) {
@@ -155,9 +152,20 @@ exports.saveDoctorProfile = (req, res) => {
           return res.json({ message: "Doctor details updated successfully" });
         });
       } else {
-        return res.status(404).json({ error: "Doctor not found" });
+        // Insert new doctor record if not found (optional based on your application logic)
+        const insertSql =
+          "INSERT INTO doctor (login_id, name, number, gender, experience, education, specialization, fees, hospital, hospital_loc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        const insertValues = [login_id, name, mobile, gender, experience, education, specialization, fees, hospital, hospital_loc];
+
+        db.query(insertSql, insertValues, (err, insertResult) => {
+          if (err) {
+            console.error("Error inserting new doctor:", err);
+            return res.status(500).json({ error: "Internal Server Error" });
+          }
+
+          return res.json({ message: "Doctor profile created successfully" });
+        });
       }
     });
   });
 };
-

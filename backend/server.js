@@ -30,10 +30,11 @@ db.connect((err) => {
 
 const doctorRoutes = require("./routes/doctorRoutes");
 const patientRoutes = require("./routes/patinetRoutes");
+const { saveDoctorProfile } = require('../backend/Controller/doctorController');
 
 app.use("/doctors", doctorRoutes);
 app.use("/patients", patientRoutes);
-
+app.post('/doctors/saveProfile', saveDoctorProfile);
 
 app.post("/login", (req, res) => {
   const { email, password, role } = req.body;

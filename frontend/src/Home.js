@@ -31,8 +31,8 @@ function Home() {
     const [experience, setExperience] = useState('');
     const [education, setEducation] = useState('');
     const [fees, setFees] = useState('');
-    const [hospitalName, setHospitalName] = useState('');
-    const [hospitalAddress, setHospitalAddress] = useState('');
+    const [hospital, setHospital] = useState('');
+    const [hospital_loc, setHospital_loc] = useState('');
 
     useEffect(() => {
         const fetchDoctors = async () => {
@@ -89,11 +89,11 @@ function Home() {
                     setMobile(number || '');
                     setGender(gender || '');
                     setDob(dob || '');
-                    setHospitalAddress(hospital_loc || '');
+                    setHospital(hospital_loc || '');
                     setEducation(education || '');
                     setExperience(experience || '');
                     setFees(fees || '');
-                    setHospitalName(hospital || '');
+                    setHospital_loc(hospital || '');
                     setSpecialization(specialization || '');
                     if (!number || !gender || !dob || !hospital_loc || !education || !experience || !fees || !hospital || !specialization) {
                         const popupShown = sessionStorage.getItem('popupShown');
@@ -123,46 +123,50 @@ function Home() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const userString = localStorage.getItem('user');
-            if (!userString) {
-                console.error('User not found in localStorage');
-                return;
-            }
-            const { email } = JSON.parse(userString);
-            let postData = {
-                mobile,
-                gender,
-                dob,
-                email,
+          const userString = localStorage.getItem('user');
+          if (!userString) {
+            console.error('User not found in localStorage');
+            return;
+          }
+          
+          const { email } = JSON.parse(userString);
+          
+          let postData = {
+            mobile,
+            gender,
+            dob,
+            email,
+          };
+          
+          if (userRole === 'Patient') {
+            postData = {
+              ...postData,
+              aadhaar,
+              address,
+              insurance,
             };
-            if (userRole === 'Patient') {
-                postData = {
-                    ...postData,
-                    aadhaar,
-                    address,
-                    insurance,
-                };
-            }
-            else if (userRole === 'Doctor') {
-                postData = {
-                    ...postData,
-                    education,
-                    experience,
-                    fees,
-                    hospitalName,
-                    hospitalAddress,
-                    specialization,
-                };
-            }
-
-            const response = await axios.post(`${BASE_URL}/${userRole === 'Patient' ? 'patients' : 'doctors'}/saveProfile`, postData);
-            console.log(response.data);
-            setShowPopup(false);
-            sessionStorage.setItem('popupShown', 'true');
+          } else if (userRole === 'Doctor') {
+            postData = {
+              ...postData,
+              education,
+              experience,
+              fees,
+              hospital,
+              hospital_loc,
+              specialization,
+            };
+          }
+          
+          const response = await axios.post(`${BASE_URL}/${userRole === 'Patient' ? 'patients' : 'doctors'}/saveProfile`, postData);
+          
+          console.log(response.data);
+          setShowPopup(false);
+          sessionStorage.setItem('popupShown', 'true');
         } catch (error) {
-            console.error(`Failed to submit ${userRole === 'Patient' ? 'patient' : 'doctor'} details:`, error);
+          console.error(`Failed to submit ${userRole === 'Patient' ? 'patient' : 'doctor'} details:`, error);
         }
-    };
+      };
+      
 
     const handleMobileChange = (e) => {
         const value = e.target.value;
@@ -212,10 +216,10 @@ function Home() {
         setSpecialization(e.target.value);
     }
     const handleHospitalNameChange = (e) => {
-        setHospitalName(e.target.value);
+        setHospital(e.target.value);
     }
     const handleHospitalAddressChange = (e) => {
-        setHospitalAddress(e.target.value);
+        setHospital_loc(e.target.value);
     }
     const handleFeesChange = (e) => {
         const value = e.target.value;
@@ -392,7 +396,7 @@ function Home() {
                                             className="form-control"
                                             id="hospital-name"
                                             placeholder="Enter Your Hospital Name"
-                                            value={hospitalName}
+                                            value={hospital}
                                             onChange={handleHospitalNameChange}
                                             required
                                         />
@@ -406,7 +410,7 @@ function Home() {
                                             className="form-control"
                                             id="hospital-address"
                                             placeholder="Enter Your Hospital Address"
-                                            value={hospitalAddress}
+                                            value={hospital_loc}
                                             onChange={handleHospitalAddressChange}
                                             required
                                         />
