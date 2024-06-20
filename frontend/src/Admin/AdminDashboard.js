@@ -9,6 +9,7 @@ const AdminDashboard = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalDoctors, setTotalDoctors] = useState(0);
   const [totalPatients, setTotalPatients] = useState(0);
+  const [totalAppointments, setTotalAppointments] = useState(0);
 
   useEffect(() => {
     const fetchTotalUsers = async () => {
@@ -59,6 +60,20 @@ const AdminDashboard = () => {
   fetchTotalPatients();
 }, []);
 
+const fetchTotalAppointments = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/appointments`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    setTotalAppointments(data.length);
+  } catch (error) {
+    console.error('Error fetching total appointments:', error);
+  }
+};
+fetchTotalAppointments();
+
 return <section>
   <Container>
     <Row>
@@ -82,8 +97,8 @@ return <section>
       </Col>
       <Col className="lg-3">
         <div className="products_box">
-          <h5>Total Receiptionist</h5>
-          <span>sdf</span>
+          <h5>Total Appointments</h5>
+          <span>{totalAppointments}</span>
         </div>
       </Col>
     </Row>
