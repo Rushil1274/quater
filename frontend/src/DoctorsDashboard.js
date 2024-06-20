@@ -4,6 +4,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import "./App.css";
+import { BASE_URL } from './config';
 
 const theme = createTheme({
   palette: {
@@ -54,7 +55,7 @@ const DoctorsDashboard = () => {
 
   const fetchAppointments = async () => {
     try {
-      const response = await fetch(`http://localhost:8081/appointments/doctor/${doctorId}`);
+      const response = await fetch(`${BASE_URL}/appointments/doctor/${doctorId}`);
       if (response.ok) {
         const data = await response.json();
         updatePastAppointmentsStatus(data);
@@ -87,7 +88,7 @@ const DoctorsDashboard = () => {
 
   const updateAppointmentStatusInBackend = async (appointmentId, status) => {
     try {
-      const response = await fetch(`http://localhost:8081/appointments/${appointmentId}`, {
+      const response = await fetch(`${BASE_URL}/appointments/${appointmentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -143,7 +144,7 @@ const DoctorsDashboard = () => {
   const updateAppointmentStatus = async (index, status) => {
     const appointment = appointments[index];
     try {
-      const response = await fetch(`http://localhost:8081/appointments/${appointment.appointment_id}`, {
+      const response = await fetch(`${BASE_URL}/appointments/${appointment.appointment_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
