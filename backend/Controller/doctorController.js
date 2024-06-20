@@ -32,7 +32,7 @@ exports.getDoctorById = (req, res) => {
 exports.createDoctor = (req, res) => {
   const sql = `
     INSERT INTO doctor (
-      name, email, password, role, age, gender, hospital, number, specialization, experience, doc_pic
+      name, email, password, role, age, gender, hospital, number, specialization, experience, doc_pic, dob, hospital_loc
     ) VALUES (?)
   `;
   const values = [
@@ -46,7 +46,9 @@ exports.createDoctor = (req, res) => {
     req.body.number,
     req.body.specialization,
     req.body.experience,
-    req.body.doc_pic
+    req.body.doc_pic,
+    req.body.dob, // added dob
+    req.body.hospital_loc // added hospital_loc
   ];
 
   db.query(sql, [values], (err, data) => {
@@ -58,11 +60,12 @@ exports.createDoctor = (req, res) => {
   });
 };
 
+
 // Update doctor by doctor_id
 exports.updateDoctorById = (req, res) => {
   const sql = `
     UPDATE doctor SET 
-      name=?, email=?, password=?, role=?, age=?, gender=?, hospital=?, hospital_loc=?, fees=?, education=?, number=?, specialization=?, experience=?, doc_pic=?
+      name=?, email=?, password=?, role=?, age=?, gender=?, hospital=?, hospital_loc=?, fees=?, education=?, number=?, specialization=?, experience=?, doc_pic=?, dob=?
     WHERE doctor_id=?
   `;
   const values = [
@@ -79,6 +82,7 @@ exports.updateDoctorById = (req, res) => {
     req.body.experience,
     req.body.education,
     req.body.doc_pic,
+    req.body.dob, // added dob
     req.params.id
   ];
 
@@ -94,6 +98,7 @@ exports.updateDoctorById = (req, res) => {
     }
   });
 };
+
 
 // Delete doctor by doctor_id
 exports.deleteDoctorById = (req, res) => {
@@ -112,7 +117,7 @@ exports.deleteDoctorById = (req, res) => {
 };
 
 exports.saveDoctorProfile = (req, res) => {
-  const { name, mobile, gender, experience, specialization, fees, hospital, hospital_loc, education, email } = req.body;
+  const { mobile, gender, experience, specialization, fees, hospital, hospital_loc, education, email, dob } = req.body;
 
   // Check if the user exists in the login table
   const checkUserSql = "SELECT login_id, name, email, password, role FROM login WHERE email = ?";
@@ -140,8 +145,8 @@ exports.saveDoctorProfile = (req, res) => {
       if (existingDoctor.length > 0) {
         // Update the existing doctor record
         const updateSql =
-          "UPDATE doctor SET name = ?, number = ?, gender = ?, experience = ?, education = ?, specialization = ?, fees = ?, hospital = ?, hospital_loc = ? WHERE login_id = ?";
-        const updateValues = [name, mobile, gender, experience, education, specialization, fees, hospital, hospital_loc, login_id];
+          "UPDATE doctor SET number = ?, gender = ?, experience = ?, education = ?, specialization = ?, fees = ?, hospital = ?, hospital_loc = ?, dob = ? WHERE login_id = ?";
+        const updateValues = [mobile, gender, experience, education, specialization, fees, hospital, hospital_loc, dob, login_id];
 
         db.query(updateSql, updateValues, (err, updateResult) => {
           if (err) {
@@ -154,8 +159,8 @@ exports.saveDoctorProfile = (req, res) => {
       } else {
         // Insert new doctor record if not found (optional based on your application logic)
         const insertSql =
-          "INSERT INTO doctor (login_id, name, number, gender, experience, education, specialization, fees, hospital, hospital_loc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        const insertValues = [login_id, name, mobile, gender, experience, education, specialization, fees, hospital, hospital_loc];
+          "INSERT INTO doctor (login_id, number, gender, experience, education, specialization, fees, hospital, hospital_loc, dob) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        const insertValues = [login_id, mobile, gender, experience, education, specialization, fees, hospital, hospital_loc, dob];
 
         db.query(insertSql, insertValues, (err, insertResult) => {
           if (err) {
@@ -169,3 +174,4 @@ exports.saveDoctorProfile = (req, res) => {
     });
   });
 };
+
