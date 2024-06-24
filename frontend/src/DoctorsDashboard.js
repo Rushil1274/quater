@@ -73,15 +73,18 @@ const DoctorsDashboard = () => {
   };
 
   const updatePastAppointmentsStatus = async (appointments) => {
-    const today = new Date();
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0); // Set to the start of today
+
     const updatedAppointments = appointments.map(appointment => {
       const appointmentDate = new Date(appointment.appointment_date);
-      if (appointmentDate < today && appointment.status !== 'Expired') {
+      if (appointmentDate < todayStart && appointment.status !== 'Expired') {
         appointment.status = 'Expired';
         updateAppointmentStatusInBackend(appointment.appointment_id, 'Expired');
       }
       return appointment;
     });
+
     setAllAppointments(updatedAppointments);
     localStorage.setItem(`appointments_${doctorId}`, JSON.stringify(updatedAppointments));
   };
@@ -104,8 +107,9 @@ const DoctorsDashboard = () => {
   };
 
   const calculateAppointmentCounts = (data) => {
-    const today = new Date();
-    const todayStr = today.toDateString();
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0); // Set to the start of today
+    const todayStr = todayStart.toDateString();
 
     let total = data.length;
     let todayCount = 0;
@@ -116,7 +120,7 @@ const DoctorsDashboard = () => {
       const appointmentDate = new Date(appointment.appointment_date);
       if (appointmentDate.toDateString() === todayStr) {
         todayCount++;
-      } else if (appointmentDate > today) {
+      } else if (appointmentDate > todayStart && appointment.status !== 'Rejected') {
         upcoming++;
       } else {
         past++;
@@ -162,6 +166,9 @@ const DoctorsDashboard = () => {
         );
         setAllAppointments(updatedAllAppointments);
         localStorage.setItem(`appointments_${doctorId}`, JSON.stringify(updatedAllAppointments));
+
+        // Recalculate counts
+        calculateAppointmentCounts(updatedAllAppointments);
       } else {
         console.error('Failed to update appointment status');
       }
@@ -172,11 +179,13 @@ const DoctorsDashboard = () => {
 
   const isPastDate = (date) => {
     const today = new Date();
-    return date < today.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0); // Set to the start of today
+    return date < today;
   };
 
   const isToday = (date) => {
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to the start of today
     return date.toDateString() === today.toDateString();
   };
 
