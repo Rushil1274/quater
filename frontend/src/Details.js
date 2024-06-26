@@ -59,9 +59,6 @@ const Detail = () => {
                               <p align='left'>Experience: {doctor.experience}</p>
                               <p align='left'>Fees: {doctor.fees} INR</p>
                               <p align='left'>Address: {doctor.location} </p>
-                              <Link to="/appointment" className="bookButton" style={{ textDecoration: 'none' }}>
-                                  Book Appointment
-                              </Link>
                           </div>
                       </div>
                   </div>
