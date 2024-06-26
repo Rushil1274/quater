@@ -5,7 +5,7 @@
   overflow: hidden;
   border-radius: 8px;
   cursor: pointer;
-  width: 100%; /* Increase the card width */
+  /* width: 100%;  Increase the card width */
   max-width: 700px; /* Set a max-width if needed */
   margin: 0 auto; /* Center the card */
 }
