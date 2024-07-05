@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    image: jainam05/healthnest:frontend
+    image: enblitztechnologies/healthnest:frontend
     ports:
       - "65483:3000"
     depends_on:
@@ -14,7 +14,7 @@ services:
       - WEBSOCKET_URL=ws://backend:49350/ws
 
   backend:
-    image: jainam05/healthnest:backend
+    image: enblitztechnologies/healthnest:backend
     ports:
       - "49350:8081"
     depends_on:
@@ -27,9 +27,15 @@ services:
       DB_DATABASE: test
     networks:
       - healthnest-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   mysql:
-    image: jainam05/healthnest:mysql
+    image: enblitztechnologies/healthnest:mysql
     ports:
       - "3307:3306"  # Change this line to avoid port conflict
     environment:
