@@ -52,18 +52,16 @@ function App() {
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="dashboard/users" element={<Users />} />
         <Route path="dashboard/all-appointments" element={<AllAppointments />} />
-        {/* <Route path="/*" element={<ProtectedRoute />}>
-          <Route path="dashboard/add-products" element={<AddProducts />} />
-          <Route path="dashboard/orders" element={<Orders />} /> 
-        </Route> */}
-        {/* )} */}
+
+        <Route path="/*" element={<ProtectedRoute />}>
+          <Route path="myprofile/*" element={userRole === 'Doctor' ? (<DoctorsProfile />) : userRole === 'receptionist' ? (<ReceptionistProfile />) : (<MyProfile />)} />
+        </Route>
 
         <Route element={<ProtectedRoute userRole={userRole} />}>
+          <Route path="/doctorsdashboard" element={<DoctorsDashboard />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/appointment" element={<Appointment />} />
         </Route>
-        <Route path="/doctorsdashboard" element={<DoctorsDashboard />} />
-        <Route path="myprofile/*" element={userRole === 'Doctor' ? (<DoctorsProfile />) : userRole === 'receptionist' ? (<ReceptionistProfile />) : (<MyProfile />)} />
       </Routes>
       <Footer />
     </BrowserRouter>

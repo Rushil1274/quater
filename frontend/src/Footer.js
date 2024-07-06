@@ -34,7 +34,7 @@ const Footer = () => {
           <Link to = "/doctors" style={{ textDecoration: "none", color: "black"}}> <li>Search for Doctors</li> </Link>
           <Link to = "/Login" style={{ textDecoration: "none", color: "black"}}><li>Login</li> </Link>
           <Link to = "/signup" style={{ textDecoration: "none", color: "black"}}><li>Signup</li></Link>
-          <Link to = "/" style={{ textDecoration: "none", color: "black"}}><li>Book Appointment</li></Link>
+          <Link to = "/appointment" style={{ textDecoration: "none", color: "black"}}><li>Book Appointment</li></Link>
           <Link to = "myprofile/*" style={{ textDecoration: "none", color: "black"}}><li>My Profile</li></Link>
           </ul>
         </div>
