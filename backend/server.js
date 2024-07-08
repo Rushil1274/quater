@@ -30,7 +30,7 @@ db.connect((err) => {
 
 const doctorRoutes = require("./routes/doctorRoutes");
 const patientRoutes = require("./routes/patinetRoutes");
-const { saveDoctorProfile } = require('../backend/Controller/doctorController');
+const { saveDoctorProfile } = require('./Controller/doctorController');
 
 app.use("/doctors", doctorRoutes);
 app.use("/patients", patientRoutes);
